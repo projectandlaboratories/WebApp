@@ -20,28 +20,33 @@
 </head>
 <body>
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
-    	<a class="btn btn-primary text-center d-lg-flex" style="height: 60px;padding-top: 6px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);" >
-   			<img src="ios-arrow-round-back-white.svg" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;">
+    	<a class="btn btn-primary text-center d-lg-flex" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
+   			<img src="ios-arrow-round-back-white.svg" style="position:absolute; left: 0px; top: 0px; height: 60px; width: 60px;">
    		</a>
-        <a class="navbar-brand text-left flex-fill" style="margin-left: 16px;padding-top: 5px;height: auto;font-size: 40px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
+        <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
         	<br>ROOM MANAGEMENT<br><br></a>
-        <a class="btn btn-light text-center text-primary d-lg-flex justify-content-lg-center align-items-lg-center action-button" href="#" style="color: rgb(255,255,255);line-height: 23px;width: 122px;height: 60px;font-size: 20px;margin-right: 8px;font-family: Roboto, sans-serif;">Add room</a></h1>
+        <a class="btn btn-light text-center text-primary d-lg-flex justify-content-lg-center align-items-lg-center action-button" href="#" style="height: 55px;font-size: 20px;margin-right: 8px;position:absolute; right: 2px; top:8px; font-family: Roboto, sans-serif;">Add room</a>
+        </h1>
     <ul class="list-group">
         <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
         <span class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" style="font-size: 24px;">HALL</span>
-        <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;">13°C</span>
+        <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;position:absolute; right:50px">13°C</span>
         <img src="ios-alert-red.svg" style="height: 40px; width: 40px; visibility: hidden;">
         </li>
-        <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;"><span class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" style="font-size: 24px;">LIVING ROOM</span><span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;">18°C</span>
-        	 <img src="ios-alert-red.svg" style="height: 40px; width: 40px; visibility: visible;">
+        <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
+        <span class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" style="font-size: 24px;">LIVING ROOM</span>
+        <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;position:absolute; right:50px">18°C</span>
+        	 <img src="ios-alert-red.svg" style="height: 40px; width: 40px; visibility: visible;position:absolute; right:8px">
        	 </li>
-        <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;"><span class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" style="font-size: 24px;">BEDROOM</span><span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;">20°C</span>
-        	 <img src="ios-alert-red.svg" style="height: 40px; width: 40px; visibility: visible;">
+        <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
+        <span class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" style="font-size: 24px;">BEDROOM</span>
+        <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;position:absolute; right:50px;">20°C</span>
+        	 <img src="ios-alert-red.svg" style="height: 40px; width: 40px; visibility: visible;position:absolute; right:8px;">
        	 </li>
      </ul>
      <footer class="d-lg-flex align-items-lg-center" style="background-color: #ecf0f1;vertical-align: middle; position: absolute; bottom: 0px; right: 0px; left: 0px">
-     	<a class="btn btn-secondary text-center text-primary bg-light border-primary d-lg-flex" style="height: 60px;padding-top: 6px;margin-left: 8px;font-size: 30px;">PREV</a>
-     	<a class="btn btn-primary text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-right: 2px;position: absolute;right: 8px;font-size: 30px;">NEXT</a>
+     	<a class="btn btn-secondary text-center text-primary bg-light border-primary d-lg-flex" style="height: 60px;padding-top: 6px;margin-left: 8px;margin-bottom: 2px;font-size: 30px;">PREV</a>
+     	<a class="btn btn-primary text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-right: 2px;margin-bottom: 2px;position: absolute;right: 8px;font-size: 30px;">NEXT</a>
    	</footer>
     
     <script><%@include file="WEB-INF/assets/js/jquery.min.js"%></script> 

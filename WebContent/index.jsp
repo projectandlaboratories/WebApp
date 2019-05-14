@@ -33,16 +33,17 @@
             <div class="container-fluid" style="height: 70px;padding-right: 0px;padding-left: 0px;">
                 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;vertical-align: middle;">
                 	<a class="btn btn-link d-xl-flex align-items-xl-center" role="button" id="menu-toggle" href="#menu-toggle" style="height: 70px;">
-                		<img src="md-reorder-white.svg" style="height: 70px;"></a><a class="navbar-brand text-left flex-fill"
-                        href="#" style="margin-left: 16px;padding-top: 5px;height: auto;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;font-size: 20px;">Tue March 24, 2019, 22.36</a>
+                		<img src="md-reorder-white.svg" style="height: 100%;"></a><a class="navbar-brand text-left flex-fill"
+                        href="#" style="margin-left: 16px;padding-top: 5px;height: auto;margin-top: 0px;margin-bottom: 0px;min-width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;font-size: 30px;">Tue March 24, 2019, 22.36</a>
                     <button
                         class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" type="button" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px;">
-                        	<img src="ios-settings-white.svg" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;" ></img>
+                        	<img src="ios-settings-white.svg"  style="width:100%;" ></img>
                      	</button>
+                     	<!-- style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;" -->
                 </h1>
                 <div class="d-inline-flex flex-column">
                     <div><span>17'C</span></div>
-                    <div class="btn-group btn-group-vertical" role="group" style="right: 8px;position: absolute;width: 80px;height: 160px;">
+                    <div class="btn-group btn-group-vertical" role="group" style="right: 8px;position: absolute;width: 80px; top:20%;">
                     <button class="btn btn-primary" type="button" style="margin-bottom: 16px;align-self: end;padding-right: 8px;padding-left: 8px;">
                     	<img src="ios-add-white.svg" ></img>
                     	</button>
