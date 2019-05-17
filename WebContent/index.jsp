@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    <%@ page import="it.project.db.DBClass" %>
+    <%@ page import="it.project.db.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -10,11 +10,13 @@
 <body>
 
   <%  
-     DBClass db = new DBClass();
-  	 int value = db.getProva();
+
   %>
 
-<h1>PROVA,  il valore di value dal db è <%=value%></h1>
+<form action="${pageContext.request.contextPath}/myservlet" method="post">
+	<input type="text" name="query"/>
+    <input type="submit" name="button1" value="Button 1" />
+</form>
 
 </body>
 </html>

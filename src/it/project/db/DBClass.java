@@ -5,27 +5,25 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class DBClass {
 
-private Connection conn;
+protected Connection conn;
 	
 	
-	public DBClass() throws ClassNotFoundException, SQLException{
-		
-		Class.forName("com.mysql.cj.jdbc.Driver");
-		
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password");
-			conn.setAutoCommit(true);
-			
+	public DBClass(){
 	}
 	
-	public int getProva() {
+	//TODO da rimuovere
+	public int getProva(int id) {
 		Statement statement;
 		int valore = -1;
 		try {
 			statement = conn.createStatement();
-			String query = "SELECT value from PROVA where id=0";
+			String query = "SELECT value from PROVA where id=" + id;
 			ResultSet result = statement.executeQuery(query);
 			if (result.next())
 				valore = result.getInt("value");
@@ -36,4 +34,12 @@ private Connection conn;
 		
 		return valore;
 	}
+	
+	public void storeQueries(List<String> queries) {
+		DbSyncUtil.storeQueries(queries);
+	}
+	
+	
+	
+	
 }
