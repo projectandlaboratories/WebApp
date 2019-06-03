@@ -57,7 +57,9 @@
                     <button class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 90px;height: 90px;background-color: rgb(255,255,255);"><img src="ios-flower-primary.svg"></button>
                     <button class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 90px;height: 90px;background-color: rgb(255,255,255);"><img src="md-hand-primary.svg" ></button>
                 </div>
-                <footer class="d-flex d-md-flex d-lg-flex align-items-center align-items-md-center align-items-lg-center" style="background-color: #ecf0f1;vertical-align: middle;">
+                
+                               
+                <footer class="d-flex d-md-flex d-lg-flex align-items-center align-items-md-center align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle;">
                 	<button class="btn btn-light text-center bg-light border-light d-lg-flex" type="button" style="height: 60px;padding-top: 6px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);">
                 		<!-- i class="icon ion-android-arrow-back d-lg-flex justify-content-lg-center align-items-lg-center" style="font-size: 47px;width: auto;height: auto;font-family: Roboto, sans-serif;color: #2C3E50;"></i> -->
                 		<img src="ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">
