@@ -1,0 +1,35 @@
+
+
+input[type="range"] {
+  position: relative;
+  width: 40%;
+}
+
+input[type="range"]:before {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  margin-left: -10px;
+  content: attr(value);
+  display: block;
+  text-align: center;
+  width: 20px;
+  height: 10px;
+}
+
+.beautiful.progress .progress-bar.progress-bar-night {
+  background-color: #2C3E50;
+  background-image: none;
+  
+}
+
+.beautiful.progress .progress-bar.progress-bar-home {
+  background-color: #f2a654;
+  background-image: none;
+}
+
+.beautiful.progress .progress-bar.progress-bar-out {
+  background-color: #f96868;
+  background-image: none;
+}
+
