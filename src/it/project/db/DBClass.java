@@ -57,4 +57,18 @@ public class DBClass {
 		return valore;
 	}
 	
+	public static void executeQuery(String query){
+		Statement statement;
+		
+		try {
+			statement = conn.createStatement();
+			statement.executeUpdate(query);
+						
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+	}
+	
 }

@@ -1,4 +1,4 @@
-<%@page import="it.project.db.MQTTClientPublishOnly"%>
+<%@page import="it.project.db.MQTTClient"%>
 <%@page import="it.project.utils.DbIdentifiers"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -23,7 +23,7 @@
 <% 
 	//Setup connection e dbSync
 	DBClass.getConnection(DbIdentifiers.LOCAL);
-	MQTTClientPublishOnly.setConnection(DbIdentifiers.LOCAL);
+	MQTTClient.setConnection(DbIdentifiers.LOCAL);
 %>
 
 <body>
