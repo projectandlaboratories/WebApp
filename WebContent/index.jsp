@@ -1,3 +1,5 @@
+<%@page import="it.project.db.MQTTClientPublishOnly"%>
+<%@page import="it.project.utils.DbIdentifiers"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@ page import="it.project.db.DBClass" %>
@@ -17,6 +19,12 @@
     <style type="text/css"><%@include file="/assets/css/styles.css"%></style>
 
 </head>
+
+<% 
+	//Setup connection e dbSync
+	DBClass.getConnection(DbIdentifiers.LOCAL);
+	MQTTClientPublishOnly.setConnection(DbIdentifiers.LOCAL);
+%>
 
 <body>
     <div id="wrapper">
