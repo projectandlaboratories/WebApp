@@ -7,13 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Profile Time</title>
     
-    <style type="text/css"><%@include file="WEB-INF/assets/bootstrap/css/bootstrap.min.css"%></style>
-    <style type="text/css"><%@include file="WEB-INF/assets/fonts/font-awesome.min.css"%></style>
-    <style type="text/css"><%@include file="WEB-INF/assets/fonts/ionicons.min.css"%></style>
-    <style type="text/css"><%@include file="WEB-INF/assets/css/Sidebar-Menu-1.css"%></style>
-    <style type="text/css"><%@include file="WEB-INF/assets/css/Sidebar-Menu.css"%></style>
-    <style type="text/css"><%@include file="WEB-INF/assets/css/styles.css"%></style>
-     <style type="text/css"><%@include file="WEB-INF/assets/css/mystyle.css"%></style>
+    <style type="text/css"><%@include file="../assets/bootstrap/css/bootstrap.min.css"%></style>
+    <style type="text/css"><%@include file="../assets/fonts/font-awesome.min.css"%></style>
+    <style type="text/css"><%@include file="../assets/fonts/ionicons.min.css"%></style>
+    <style type="text/css"><%@include file="../assets/css/Sidebar-Menu-1.css"%></style>
+    <style type="text/css"><%@include file="../assets/css/Sidebar-Menu.css"%></style>
+    <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
+ 	<style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
 
 </head>
 <body>
@@ -121,9 +121,9 @@
    
 
     
-    <script><%@include file="WEB-INF/assets/js/jquery.min.js"%></script> 
-    <script><%@include file="WEB-INF/assets/bootstrap/js/bootstrap.min.js"%></script> 
-    <script><%@include file="WEB-INF/assets/js/script.min.js"%></script> 
+    <script><%@include file="../assets/js/jquery.min.js"%></script> 
+    <script><%@include file="../assets/bootstrap/js/bootstrap.min.js"%></script> 
+    <script><%@include file="../assets/js/script.min.js"%></script> 
     
       
 </body>

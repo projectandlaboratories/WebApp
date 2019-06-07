@@ -12,7 +12,7 @@
     <!--<style type="text/css"><%@include file="WEB-INF/assets/fonts/ionicons.min.css"%></style>
     
 	 	-->
-	<style type="text/css"><%@include file="WEB-INF/assets/web-fonts-with-css/css/fontawesome.min.css"%></style>
+	<style type="text/css"><%@include file="/assets/web-fonts-with-css/css/fontawesome.min.css"%></style>
    
     <!-- link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
  -->

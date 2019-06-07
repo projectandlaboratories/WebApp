@@ -7,41 +7,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Profile Time</title>
     
-    <style type="text/css"><%@include file="WEB-INF/assets/bootstrap/css/bootstrap.min.css"%></style>
-    <style type="text/css"><%@include file="WEB-INF/assets/fonts/font-awesome.min.css"%></style>
-    <style type="text/css"><%@include file="WEB-INF/assets/fonts/ionicons.min.css"%></style>
-    <style type="text/css"><%@include file="WEB-INF/assets/css/Sidebar-Menu-1.css"%></style>
-    <style type="text/css"><%@include file="WEB-INF/assets/css/Sidebar-Menu.css"%></style>
-    <style type="text/css"><%@include file="WEB-INF/assets/css/styles.css"%></style>
+    <style type="text/css"><%@include file="../assets/bootstrap/css/bootstrap.min.css"%></style>
+    <style type="text/css"><%@include file="../assets/fonts/font-awesome.min.css"%></style>
+    <style type="text/css"><%@include file="../assets/fonts/ionicons.min.css"%></style>
+    <style type="text/css"><%@include file="../assets/css/Sidebar-Menu-1.css"%></style>
+    <style type="text/css"><%@include file="../assets/css/Sidebar-Menu.css"%></style>
+    <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
 
 </head>
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
-        	<br>SET WORKING DAY TIME<br><br></a>
+        	<br>SET HOLIDAYS DAY TIME<br><br></a>
         </h1>
     
-    <div>
-	    <div style="position:absolute; width:50%; height:50%; left:0; padding:2%; text-align:center;">
+    <div style="margin-left: auto; margin-right: auto; width: 50%;">
+	    <div style="position:absolute; width:50%; height:50%; padding:2%; text-align:center;">
 	    What time do you wake up?<br><br>	    
-	    <input type="time" name="wakeup_time" value="07:00" style="align: center;" required>
+	    <input type="time" name="wakeup_time" value="09:00" style="align: center;" required>
 	    </div>
 	    
-	    <div style="position:absolute; width:50%; height:50%; left:0; top:50%; padding:2%; text-align:center;">
+	    <div style="position:absolute; width:50%; height:50%; top:50%; padding:2%; text-align:center;">
 	    What time do you go to bed?<br><br>	    
 	    <input type="time" name="bed_time" value="23:00" style="align: center;" required>
 	    </div>
 	    
-	    <div style="position:absolute; width:50%; height:50%;  left:50%; padding:2%; text-align:center;" >
-		What time do you leave home?<br><br>	    
-	    <input type="time" name="leave_time" value="08:00" style="align: center;" required>
-	    </div>
-	    
-	    <div style="position:absolute; width:50%; height:50%; top:50%; left:50%; padding:2%; text-align:center;">
-		What time do you come back home?<br><br>	    
-	    <input type="time" name="back_time" value="18:00" style="align: center;" required>
-	    </div>
     </div>
     
     
@@ -56,9 +47,9 @@
    	</footer>
 
     
-    <script><%@include file="WEB-INF/assets/js/jquery.min.js"%></script> 
-    <script><%@include file="WEB-INF/assets/bootstrap/js/bootstrap.min.js"%></script> 
-    <script><%@include file="WEB-INF/assets/js/script.min.js"%></script> 
+    <script><%@include file="../assets/js/jquery.min.js"%></script> 
+    <script><%@include file="../assets/bootstrap/js/bootstrap.min.js"%></script> 
+    <script><%@include file="../assets/js/script.min.js"%></script> 
     
       
 </body>
