@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@page import="it.project.dto.*"%>
+<%@page import="it.project.enums.*"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,8 +17,9 @@
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
 
 </head>
-<%Profile profile = new Profile();%>
+<% %>
 <body>
+
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
@@ -27,17 +29,17 @@
            
     <div style="transform: scale(1.2); position: absolute; left: 100px;  top: 100px;" >
 	    <div class="btn-group btn-group" data-toggle="buttons" >
-		    <label class="btn active"> <input type="checkbox" name='Mon' checked> Mon</label>
-		    <label class="btn active"> <input type="checkbox" name='Tue' checked> Tue </label>
-		    <label class="btn active"> <input type="checkbox" name='Wed' checked> Wed </label>
-		    <label class="btn active"> <input type="checkbox" name='Thu' checked> Thu </label>
-		    <label class="btn active"> <input type="checkbox" name='Fri' checked> Fri </label>
-		    <label class="btn active"> <input type="checkbox" name='Sat'> Sat </label>
-		    <label class="btn active"> <input type="checkbox" name='Sun'> Sun</label>		    
+		    <label class="btn active"> <input type="checkbox" name='Mon' > Mon</label>
+		    <label class="btn active"> <input type="checkbox" name='Tue' > Tue </label>
+		    <label class="btn active"> <input type="checkbox" name='Wed' > Wed </label>
+		    <label class="btn active"> <input type="checkbox" name='Thu' > Thu </label>
+		    <label class="btn active"> <input type="checkbox" name='Fri' > Fri </label>
+		    <label class="btn active"> <input type="checkbox" name='Sat' checked> Sat </label>
+		    <label class="btn active"> <input type="checkbox" name='Sun' checked> Sun</label>		    
 	</div>
     </div>
     
-    
+   
     
     <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">
      	
@@ -51,6 +53,10 @@
     <script><%@include file="../assets/bootstrap/js/bootstrap.min.js"%></script> 
     <script><%@include file="../assets/js/script.min.js"%></script> 
     
+    <script type="text/javascript">
+    
+    
+    </script>
       
 </body>
 </html>
