@@ -1,0 +1,2 @@
+ALTER TABLE profiles
+ADD END_HOUR int, ADD END_MIN INT;
