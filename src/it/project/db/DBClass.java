@@ -8,14 +8,18 @@ import java.sql.Statement;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import it.project.dto.Interval;
 import it.project.dto.Profile;
+import it.project.dto.Program;
 import it.project.enums.DayMoment;
 import it.project.enums.DayName;
 import it.project.enums.DayType;
 import it.project.utils.DbIdentifiers;
+import it.project.utils.ProfileUtil;
 
 public class DBClass {
 
@@ -78,7 +82,7 @@ public class DBClass {
 	
 	}
 	
-	public static List<Profile> getProfileList(){
+	public static List<Program> getProfileList(){
 		
 		List<Profile> profiles = new ArrayList<>();
 		Statement statement;
@@ -87,21 +91,18 @@ public class DBClass {
 			String query = "SELECT * from profiles";
 			ResultSet result = statement.executeQuery(query);
 			if (result.next()) {
-				String idProfile = result.getString("ID_PROFILE");
-				DayName dayOfWeek = DayName.valueOf(result.getString("DAY_OF_WEEK"));
-				DayType dayType = DayType.valueOf(result.getString("DAY_TYPE"));
-				DayMoment dayMoment = DayMoment.valueOf(result.getString("DAY_MOMENT"));
-				int startHour = result.getInt("START_HOUR");
-				int startMin = result.getInt("START_MIN");
-				int endHour = result.getInt("END_HOUR");
-				int endMin = result.getInt("END_MIN");
-				double temperature = result.getDouble("TEMPERATURE");
-				
-				Interval interval = new Interval(startHour,startMin,endHour,endMin,temperature,dayMoment);
-				Profile profile = new Profile(idProfile,dayOfWeek,dayType,interval);
+				Profile profile = ProfileUtil.getProfile(result);
 				profiles.add(profile);				
 			}
-		
+			
+			List<Program> programs = new ArrayList<>();
+			Map<String,List<Profile>> profileMap = ProfileUtil.groupProfilesById(profiles);
+			
+			for(String profileId : profileMap.keySet()) {
+				programs.add(ProfileUtil.getProgramFromProfile(profileMap.get(profileId)));
+			}
+			
+			return programs;
 		} catch (SQLException e) {
 			
 			e.printStackTrace();
