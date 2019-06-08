@@ -18,6 +18,7 @@ public class MyServlet extends HttpServlet {
 	@Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       
+		System.out.println(request.getParameter("prova"));
 		response.sendRedirect("index.jsp");
     }
 

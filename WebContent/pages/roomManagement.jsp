@@ -29,17 +29,17 @@
         </h1>
     <ul class="list-group">
         <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-        <span class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" style="font-size: 24px;">HALL</span>
+        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp" style="font-size: 24px;">HALL</a>
         <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;position:absolute; right:50px">13°C</span>
         <img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px; visibility: hidden;">
         </li>
         <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-        <span class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" style="font-size: 24px;">LIVING ROOM</span>
+        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp" style="font-size: 24px;">LIVING ROOM</a>
         <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;position:absolute; right:50px">18°C</span>
         	 <img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px; visibility: visible;position:absolute; right:8px">
        	 </li>
         <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-        <span class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" style="font-size: 24px;">BEDROOM</span>
+        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp" style="font-size: 24px;">BEDROOM</a>
         <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;position:absolute; right:50px;">20°C</span>
         	 <img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px; visibility: visible;position:absolute; right:8px;">
        	 </li>
