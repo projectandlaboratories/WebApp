@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@page import="it.project.dto.*"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,6 +16,7 @@
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
 
 </head>
+<%Profile profile = new Profile();%>
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	
