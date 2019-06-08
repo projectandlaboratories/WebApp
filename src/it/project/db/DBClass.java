@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import it.project.dto.Profile;
 import it.project.utils.DbIdentifiers;
 
 public class DBClass {
@@ -29,8 +30,8 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat", "root", "ily2marzo"); //Ilaria
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat", "root", "ily2marzo"); //Ilaria
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password");
 				conn.setAutoCommit(true);
 			}
@@ -71,5 +72,25 @@ public class DBClass {
 		}
 	
 	}
+	
+//	public static List<Profile> getProfileList(){
+//		
+//		List<Profile> profiles = new ArrayList<>();
+//		Statement statement;
+//		try {
+//			statement = conn.createStatement();
+//			String query = "SELECT * from profiles";
+//			ResultSet result = statement.executeQuery(query);
+//			if (result.next()) {
+//				
+//			}
+//		} catch (SQLException e) {
+//			
+//			e.printStackTrace();
+//		}
+//		
+//		return valore;
+//		return null;
+//	}
 	
 }
