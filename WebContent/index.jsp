@@ -32,7 +32,7 @@
             <ul class="sidebar-nav">
                 <li class="sidebar-brand" style="height: 70px;"> </li>
                 <li> <a class="text-light" href="index.jsp" style="font-size: 20px;">Home</a></li>
-                <li> <a class="text-light" href="#" style="font-size: 20px;">Temperature Profile</a></li>
+                <li> <a class="text-light" href="pages/profileList.jsp" style="font-size: 20px;">Temperature Profile</a></li>
                 <li> <a class="text-light" href="pages/roomManagement.jsp" style="font-size: 20px;">Room Management</a></li>
                 <li> <a class="text-light" href="pages/networkSettings.jsp" style="font-size: 20px;">Network</a></li>
             </ul>
@@ -84,7 +84,6 @@
     <script><%@include file="/assets/js/jquery.min.js"%></script> 
     <script><%@include file="/assets/bootstrap/js/bootstrap.min.js"%></script> 
     <script><%@include file="/assets/js/Sidebar-Menu.js"%></script> 
-    
     
     <!-- <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
