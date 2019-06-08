@@ -7,18 +7,18 @@ import java.util.Map;
 import it.project.enums.DayName;
 import it.project.enums.DayType;
 
-public class Programm {
+public class Program {
 	
 	private Map<DayName,DayType> days;
 	private Map<DayType, List<Interval>> intervals;
 	
-	public Programm() {
+	public Program() {
 		super();
 		days=new HashMap<>();
 		intervals = new HashMap<>();
 	}
 	
-	public Programm(Map<DayName, DayType> days, Map<DayType, List<Interval>> intervals) {
+	public Program(Map<DayName, DayType> days, Map<DayType, List<Interval>> intervals) {
 		super();
 		this.days = days;
 		this.intervals = intervals;
