@@ -41,6 +41,8 @@ public class DBClass {
 				Class.forName("com.mysql.cj.jdbc.Driver");
 				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat", "root", "ily2marzo"); //Ilaria
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password");
 				conn.setAutoCommit(true);
 			}
@@ -81,6 +83,27 @@ public class DBClass {
 		}
 	
 	}
+	
+	public static void createProfiles(Program program) {
+		Statement statement;
+		String name=program.getName();
+		Map<DayName,DayType> days =program.getDays();
+		for(DayName day: DayName.values()) {
+			DayType dayType=days.get(day);
+			List<Interval> intervals = program.getIntervals().get(dayType);
+			for(Interval interval:intervals) {
+				try {
+					statement = conn.createStatement();
+					String query = "INSERT INTO profiles (ID_PROFILE, DAY_OF_WEEK,DAY_TYPE,DAY_MOMENT, START_HOUR, START_MIN,END_HOUR, END_MIN, TEMPERATURE) "+
+									"VALUES ('"+name+"','"+day+"','"+dayType+"','"+interval.getDayMoment()+"',"+
+									interval.getStartHour()+","+interval.getStartMin()+","+interval.getEndHour()+","+interval.getEndMin()+","+interval.getTemperature()+")" ;
+					statement.executeUpdate(query);			
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	} 
 	
 	public static List<Program> getProfileList(){
 		

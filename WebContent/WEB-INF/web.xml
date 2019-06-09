@@ -20,4 +20,16 @@
 	<url-pattern>/servlet</url-pattern>
 </servlet-mapping>
 
+<servlet>
+    <servlet-name>newProgramServlet</servlet-name>
+    <servlet-class>it.project.servlet.NewProgramServlet</servlet-class>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>newProgramServlet</servlet-name>
+    <url-pattern>/newProgramServlet</url-pattern>
+</servlet-mapping>
+
+
+
 </web-app>

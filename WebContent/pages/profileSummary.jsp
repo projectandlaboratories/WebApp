@@ -1,5 +1,11 @@
+<%@page import="it.project.db.MQTTClient"%>
+<%@page import="it.project.utils.DbIdentifiers"%>
+<%@ page import="it.project.db.DBClass" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+     <%@page import="it.project.dto.*"%>
+<%@page import="it.project.enums.*"%>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,16 +22,28 @@
      <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
 
 </head>
+<jsp:useBean id="program" class="it.project.dto.Program" scope="session">  </jsp:useBean>
+<% 
+int outTemperature = Integer.parseInt(request.getParameter("out_temperature"));
+int homeTemperature = Integer.parseInt(request.getParameter("home_temperature"));
+int nightTemperature = Integer.parseInt(request.getParameter("night_temperature"));
+Program myProgram=(Program) session.getAttribute("program");
+myProgram.generateIntervalMap(outTemperature, homeTemperature, nightTemperature);
+%>
+<% 
+	//Setup connection e dbSync TODO non serve qui
+	DBClass.getConnection(DbIdentifiers.LOCAL);
+	MQTTClient.setConnection(DbIdentifiers.LOCAL);
+%>
+
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
         	<br>SUMMARY<br><br></a>
         </h1>
+<form action="/WebApp/newProgramServlet" target="_blank" method="POST">          
         
-        
-	
-    
     <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; margin-top:3%">
     
     	<div style="margin-bottom: 20px"><input type="text" name="profile_name" style="width:100%"></div>
@@ -49,13 +67,13 @@
 	   
    
 	    <div style="display: inline-flex; text-align: center; margin-top:2%">
-           	<button class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" style="font-size: 20px;margin-left: 8px;margin-right: 0px;padding-right: 16px;padding-left: 18px;">SAVE</button>
-        	
+           	<button type='submit' class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" style="font-size: 20px;margin-left: 8px;margin-right: 0px;padding-right: 16px;padding-left: 18px;">SAVE</button>
+      	
         </div>
 	
     </div>
     
-   
+</form>   
     
     <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">
      	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" href="profileSetTemperature.jsp" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
