@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+        <%@ page import="it.project.db.DBClass" %>
+    <%@ page import="it.project.dto.*" %>
+    <%@ page import="java.util.List" %>
+    <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,6 +20,14 @@
    <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
 
 </head>
+
+
+<c:forEach items="${profileList}" var="profileItem">
+	  <c:if test = "${profileItem.name eq param.profile}">
+	  	<c:set var="currentProfile" scope="page" value="${profileItem}"/>
+	  </c:if>
+</c:forEach>  
+
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	<a class="btn btn-primary text-center d-lg-flex" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >

@@ -2,7 +2,7 @@
     pageEncoding="ISO-8859-1"%>
     <%@ page import="it.project.db.DBClass" %>
     <%@ page import="it.project.dto.*" %>
-    <%@ page import="java.util.List;" %>
+    <%@ page import="java.util.List" %>
     <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html>
 
@@ -19,7 +19,7 @@
 
 </head>
 
-<c:set var="profileList" scope="session" value=<%=DBClass.getProfileList()%>/>
+<c:set var="profileList" scope="session" value="<%=DBClass.getProfileList()%>"/>
 
 <body>
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
@@ -31,21 +31,11 @@
         <a class="btn btn-light text-center text-primary d-lg-flex justify-content-lg-center align-items-lg-center action-button" href="profileDays.jsp" style="height: 55px;font-size: 20px;margin-right: 8px;position:absolute; right: 2px; top:8px; font-family: Roboto, sans-serif;">New Profile</a>
         </h1>
     <ul class="list-group">
-    
     	<c:forEach items="${profileList}" var="profile">
 	    	<li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-	        	<a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="profileShow.jsp" style="font-size: 24px;"> ${profile.idProfile} </a>
+	        	<a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="profileShow.jsp?profile=${profile.name}" style="font-size: 24px;"> ${profile.name} </a>
 	        </li>
-		</c:forEach>
-        <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="profileShow.jsp" style="font-size: 24px;">PROFILE 1</a>
-        </li>
-        <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="profileShow.jsp" style="font-size: 24px;">PROFILE 2</a>
-       	 </li>
-        <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="profileShow.jsp" style="font-size: 24px;">PROFILE 3</a>
-       	 </li>	    
+		</c:forEach>   
      </ul>
         
     <script><%@include file="../assets/js/jquery.min.js"%></script> 

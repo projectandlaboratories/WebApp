@@ -36,6 +36,7 @@ public class ProfileUtil {
 		}
 		
 		Program program = new Program(days,intervals);
+		program.setName(profiles.get(0).getIdProfile());
 		
 		return program;
 	}

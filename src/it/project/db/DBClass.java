@@ -113,7 +113,7 @@ public class DBClass {
 			statement = conn.createStatement();
 			String query = "SELECT * from profiles";
 			ResultSet result = statement.executeQuery(query);
-			if (result.next()) {
+			while (result.next()) {
 				Profile profile = ProfileUtil.getProfile(result);
 				profiles.add(profile);				
 			}
