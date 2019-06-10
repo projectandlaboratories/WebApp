@@ -28,7 +28,7 @@
 	}
 	catch(Exception e){
 %>
-<h1>Exception : <%=e.printStackTrace()%></h1>
+<h1>Exception : <%=e.getMessage()%></h1>
 <% 
 	}
 %>
