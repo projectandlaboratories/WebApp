@@ -22,8 +22,15 @@
 
 <% 
 	//Setup connection e dbSync
-	DBClass.getConnection(DbIdentifiers.LOCAL);
-	MQTTClient.setConnection(DbIdentifiers.LOCAL);
+	try{
+		DBClass.getConnection(DbIdentifiers.LOCAL);
+		MQTTClient.setConnection(DbIdentifiers.LOCAL);
+	}
+	catch(Exception e){
+%>
+<h1>Exception : <%=e.printStackTrace()%></h1>
+<% 
+	}
 %>
 
 <body>
