@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+    <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+     <%@ page import="it.project.enums.*" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,6 +18,10 @@
  	<style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
 
 </head>
+
+<c:set var="room" scope="page" value="id1"/> <!-- TODO il valore è statico, bisogna prendere le info dalla pagina precedente -->
+<c:set var="season" scope="page" value="<%=Season.WINTER%>"/> <!-- TODO il valore è statico, bisogna prendere le info dalla pagina corrente -->
+
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	<a class="btn btn-primary text-center d-lg-flex" href="roomManagement.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
@@ -38,7 +44,11 @@
                   
 	                <div style="display: inline-flex">
 	                    <div class="dropdown d-inline-flex"><button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" style="font-size: 20px;">Choose Profile</button>
-	                        <div class="dropdown-menu" role="menu" style="width:100%"><a class="dropdown-item" role="presentation" href="#">Profile 1</a><a class="dropdown-item" role="presentation" href="#">Profile 2</a><a class="dropdown-item" role="presentation" href="#">Profile 3</a></div>
+	                        <div class="dropdown-menu" role="menu" style="width:100%">
+	                        	<c:forEach items="${profileList}" var="profile">
+	    							<a class="dropdown-item" href="<%=request.getContextPath()%>/assignProgramToRoom?profile=${profile.name}&room=${room}&season=${season}" role="presentation">${profile.name}</a>
+								</c:forEach>
+	                        </div>
 	                    </div>
 	                    
 	                    <div style="display: inline-flex; position: absolute; right: 16px;">
@@ -80,7 +90,7 @@
 	                    
 	                    <div style="display: inline-flex; position: absolute; right: 16px;">
 	                       	<button class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" style="font-size: 20px;margin-left: 8px;margin-right: 0px;padding-right: 16px;padding-left: 18px;">Edit</button>
-	                    	<button class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" style="font-size: 20px;margin-left: 8px;padding-right: 16px;padding-left: 16px;">New</button>
+	                    	<button class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" onclick="location.href = 'profileDays.jsp'" style="font-size: 20px;margin-left: 8px;padding-right: 16px;padding-left: 16px;">New</button>
 	                   	</div>
 	                </div>
 	                

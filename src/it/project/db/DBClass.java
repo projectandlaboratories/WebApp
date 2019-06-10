@@ -18,6 +18,7 @@ import it.project.dto.Program;
 import it.project.enums.DayMoment;
 import it.project.enums.DayName;
 import it.project.enums.DayType;
+import it.project.enums.Season;
 import it.project.utils.DbIdentifiers;
 import it.project.utils.ProfileUtil;
 
@@ -39,12 +40,12 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat", "root", "ily2marzo"); //Ilaria
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
-				conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
 				conn.setAutoCommit(true);
 			}
 		}
@@ -134,6 +135,19 @@ public class DBClass {
 		}
 		
 		return null;
+	}
+	
+	public static void updateRoomProfile(String roomId, String profileName, Season season) {
+		Statement statement;
+		try {
+			statement = conn.createStatement();
+			String query = "UPDATE rooms SET ID_PROFILE_" + season.name() + "= '" + profileName + "' WHERE ID_ROOM = '" + roomId + "'" ;
+			statement.executeUpdate(query);
+			//MQTTClient.sendMessage(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 }

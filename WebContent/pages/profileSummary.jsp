@@ -42,7 +42,7 @@ myProgram.generateIntervalMap(outTemperature, homeTemperature, nightTemperature)
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
         	<br>SUMMARY<br><br></a>
         </h1>
-<form action="/WebApp/newProgramServlet" target="_blank" method="POST">          
+<form action="<%=request.getContextPath()+"/newProgramServlet"%>" target="_blank" method="POST">          
         
     <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; margin-top:3%">
     
