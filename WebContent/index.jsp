@@ -28,7 +28,7 @@
 	}
 	catch(Exception e){
 %>
-<h1>Exception : <%=e.getMessage()%></h1>
+<h5>Exception : <%=e.getMessage()%></h5>
 <% 
 	}
 %>
