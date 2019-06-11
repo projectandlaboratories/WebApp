@@ -1,8 +1,9 @@
 package it.project.dto;
 
 import it.project.enums.DayMoment;
+import it.project.utils.ProfileUtil;
 
-public class Interval {
+public class Interval implements Comparable<Object>{
 	private int startHour;
 	private int startMin;
 	private int endHour;
@@ -50,6 +51,9 @@ public class Interval {
 	public double getTemperature() {
 		return temperature;
 	}
+	public int getIntTemperature() {
+		return (int)temperature;
+	}
 	public void setTemperature(double temperature) {
 		this.temperature = temperature;
 	}
@@ -59,5 +63,22 @@ public class Interval {
 	public void setDayMoment(DayMoment dayMoment) {
 		this.dayMoment = dayMoment;
 	}
+	@Override 
+    public int compareTo(Object o) {
+        Interval other = (Interval) o; 
+        return (this.startHour*60+this.startMin) - (other.startHour*60+other.startMin) ;
+    }
 	
+	@Override 
+	public boolean equals(Object obj) {
+		Interval other = (Interval) obj; 
+		return (this.startHour==other.startHour && this.startMin==other.startMin);  
+	}
+	
+	public float getPercentageOfDay() {
+		return (float)((endHour*60+endHour)-(startHour*60+startMin))/(24*60)*100;
+	}
+	public String getColor() {
+		return ProfileUtil.getDayMomentColors().get(this.dayMoment);
+	}
 }

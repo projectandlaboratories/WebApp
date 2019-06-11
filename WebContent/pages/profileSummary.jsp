@@ -1,6 +1,3 @@
-<%@page import="it.project.db.MQTTClient"%>
-<%@page import="it.project.utils.DbIdentifiers"%>
-<%@ page import="it.project.db.DBClass" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
      <%@page import="it.project.dto.*"%>
@@ -22,47 +19,41 @@
      <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
 
 </head>
-<jsp:useBean id="program" class="it.project.dto.Program" scope="session">  </jsp:useBean>
-<% 
-int outTemperature = Integer.parseInt(request.getParameter("out_temperature"));
-int homeTemperature = Integer.parseInt(request.getParameter("home_temperature"));
-int nightTemperature = Integer.parseInt(request.getParameter("night_temperature"));
-Program myProgram=(Program) session.getAttribute("program");
-myProgram.generateIntervalMap(outTemperature, homeTemperature, nightTemperature);
-%>
-<% 
-	//Setup connection e dbSync TODO non serve qui
-	DBClass.getConnection(DbIdentifiers.LOCAL);
-	MQTTClient.setConnection(DbIdentifiers.LOCAL);
-%>
+<jsp:useBean id="currentProfile" class="it.project.dto.Program" scope="session">  </jsp:useBean>
 
+<% 
+String alertCode=request.getParameter("alert");
+if(request.getParameter("out_temperature")!=null){
+	int outTemperature = Integer.parseInt(request.getParameter("out_temperature"));
+	int homeTemperature = Integer.parseInt(request.getParameter("home_temperature"));
+	int nightTemperature = Integer.parseInt(request.getParameter("night_temperature"));
+	Program myProgram=(Program) session.getAttribute("currentProfile");
+	myProgram.generateIntervalMap(outTemperature, homeTemperature, nightTemperature);	
+}
+%>
+<script type="text/javascript">
+if(<%=alertCode%> !== null){
+	alertCode=<%=alertCode%>
+	if(alertCode==1){
+		alert("Profile name already present!")
+	}
+	else if(alertCode == 2){
+		alert("Profile name can't be empty!")
+	}
+}
+</script>
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
         	<br>SUMMARY<br><br></a>
         </h1>
-<form action="/WebApp/newProgramServlet" target="_blank" method="POST">          
+<form action="/WebApp/newProgramServlet" method="POST">          
         
     <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; margin-top:3%">
     
-    	<div style="margin-bottom: 20px"><input type="text" name="profile_name" style="width:100%"></div>
-    	
-    	<div class="progress beautiful" style="height: 30px;  margin-top: 10px">
-		    <div class="progress-bar progress-bar-night" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 30%;"><span id="working_day_night_temp">23</span></div>
-		    <div class="progress-bar progress-bar-home" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 5%;"></div>
-		    <div class="progress-bar progress-bar-out" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 40%;"><span id="working_day_out_temp">18</span></div>
-		    <div class="progress-bar progress-bar-home" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 20%;"><span id="working_day_home_temp">21</span></div>
-		    <div class="progress-bar progress-bar-night" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 5%;"></div>
-		</div>
-		<div>Mon-Tue-Wed-Thu-Fri</div>
-		
-		<div class="progress beautiful" style="height: 30px; margin-top: 10px">
-		    <div class="progress-bar progress-bar-night" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 30%;"><span id="holiday_night_temp">23</span></div>
-		    <div class="progress-bar progress-bar-home" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 65%;"><span id="holiday_home_temp">21</span></div>
-		    <div class="progress-bar progress-bar-night" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 5%;"></div>
-		</div>
-		<div>Sat-Sun</div>
+    	<div style="margin-bottom: 20px"><input type="text" placeholder="enter profile name" name="profile_name" style="width:100%"></div>	
+    	<jsp:include page="profileBars.jsp" /> 
 	   
 	   
    
@@ -77,7 +68,7 @@ myProgram.generateIntervalMap(outTemperature, homeTemperature, nightTemperature)
     
     <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">
      	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" href="profileSetTemperature.jsp" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
-     		<img src="ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
+     		<img src="../images/ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
      	</a>
      	
    	</footer>

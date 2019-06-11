@@ -18,15 +18,18 @@
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
 
 </head>
-<jsp:useBean id="program" class="it.project.dto.Program" scope="session">  </jsp:useBean>
+<jsp:useBean id="currentProfile" class="it.project.dto.Program" scope="session">  </jsp:useBean>
 <c:forEach var="dayName" items="<%=DayName.values()%>">
 	
-		<%DayName dayName = (DayName)pageContext.getAttribute("dayName"); 
+		<%
+		
+		DayName dayName = (DayName)pageContext.getAttribute("dayName"); 
 		DayType dayType = DayType.HOLIDAY;
+		//request.getParameterMap().containsKey("paramname")
 		if(request.getParameter(dayName.toString()) == null){
 			dayType = DayType.WORKING;
 		}
-		((Program) session.getAttribute("program")).setDay(dayName, dayType);
+		((Program) session.getAttribute("currentProfile")).setDay(dayName, dayType);
 		%>
 		</c:forEach> 
 
@@ -36,7 +39,7 @@
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
         	<br>SET WORKING DAY TIME<br><br></a>
         </h1>
- <form action="profileTimeHolidays.jsp" target="_blank" method="POST">          
+ <form action="profileTimeHolidays.jsp" method="POST">          
     <div>
 	    <div style="position:absolute; width:50%; height:50%; left:0; padding:2%; text-align:center;">
 	    What time do you wake up?<br><br>	    
@@ -63,10 +66,10 @@
     
     <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">
      	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" href="profileDays.jsp" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
-     		<img src="ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
+     		<img src="../images/ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
      	</a>
      	<button type="submit" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center"  style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">
-     		<img src="ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">                     
+     		<img src="../images/ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">                     
      	</button>
    	</footer>
 </form>

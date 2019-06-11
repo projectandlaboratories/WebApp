@@ -20,19 +20,19 @@
 
 </head>
 
-<jsp:useBean id="program" class="it.project.dto.Program" scope="session">  </jsp:useBean>
+<jsp:useBean id="currentProfile" class="it.project.dto.Program" scope="session">  </jsp:useBean>
 
 	
 <% String wakeupTime = request.getParameter("wakeup_time");
 String bedTime = request.getParameter("bed_time");
-((Program) session.getAttribute("program")).setHolidaysHours(wakeupTime, bedTime);%>
+((Program) session.getAttribute("currentProfile")).setHolidaysHours(wakeupTime, bedTime);%>
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
         	<br>SET TEMPERATURE<br><br></a>
         </h1>
-<form action="profileSummary.jsp" target="_blank" method="POST">                  
+<form action="profileSummary.jsp" method="POST">                  
     <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; padding-right:3%;">
     	<div>
     		<span style="width: 100px;display: inline-block;padding-top: 30px;">OUT</span> 
@@ -52,10 +52,10 @@ String bedTime = request.getParameter("bed_time");
  
      <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">
      	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
-     		<img src="ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
+     		<img src="../images/ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
      	</a>
      	<button type="submit" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">
-     		<img src="ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">                     
+     		<img src="../images/ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">                     
      	</button>
    	</footer>
 </form>

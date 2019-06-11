@@ -16,6 +16,11 @@ input[type="range"]:before {
   width: 20px;
   height: 10px;
 }
+.beautiful.progress {
+ 
+  background-image: none;
+  
+}
 
 .beautiful.progress .progress-bar.progress-bar-night {
   background-color: #2C3E50;

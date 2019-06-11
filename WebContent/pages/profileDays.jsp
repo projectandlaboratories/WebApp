@@ -17,7 +17,7 @@
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
 
 </head>
-<jsp:useBean id="program" class="it.project.dto.Program" scope="session">  </jsp:useBean>
+<jsp:useBean id="currentProfile" class="it.project.dto.Program" scope="session">  </jsp:useBean>
 <body>
 
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
@@ -26,7 +26,7 @@
         	<br>WHAT DAYS ARE YOU AT HOME?<br><br></a>
         </h1>
         
-<form action="profileTimeWorkingDays.jsp" target="_blank" method="POST">       
+<form action="profileTimeWorkingDays.jsp" method="POST">       
     <div style="transform: scale(1.2); position: absolute; left: 100px;  top: 100px;" >
 	    <div class="btn-group btn-group" data-toggle="buttons" >
 		    <label class="btn active"> <input type="checkbox" name='<%=DayName.MON%>' > <%=DayName.MON%></label>
@@ -42,7 +42,7 @@
     
     <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">     	
      	<button type="submit" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">
-     		<img src="ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px"> <!--  href="profileTimeWorkingDays.jsp" -->                     
+     		<img src="../images/ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px"> <!--  href="profileTimeWorkingDays.jsp" -->                     
      	</button>
    	</footer>
 </form>

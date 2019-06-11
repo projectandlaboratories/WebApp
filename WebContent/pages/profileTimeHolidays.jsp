@@ -18,23 +18,20 @@
     <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
 
 </head>
-<jsp:useBean id="program" class="it.project.dto.Program" scope="session">  </jsp:useBean>
+<jsp:useBean id="currentProfile" class="it.project.dto.Program" scope="session">  </jsp:useBean>
 
 	
 <% String wakeupTime = request.getParameter("wakeup_time");
 String bedTime = request.getParameter("bed_time");
 String leaveTime = request.getParameter("leave_time");
 String backTime = request.getParameter("back_time");
-((Program) session.getAttribute("program")).setWorkingHours(wakeupTime, bedTime, leaveTime, backTime);
-
-
-//((Program) session.getAttribute("program"));
+((Program) session.getAttribute("currentProfile")).setWorkingHours(wakeupTime, bedTime, leaveTime, backTime);
 %>
 
 
 <body>
 <body>
-<form action="profileSetTemperature.jsp" target="_blank" method="POST">          
+<form action="profileSetTemperature.jsp" method="POST">          
  
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	
@@ -59,10 +56,10 @@ String backTime = request.getParameter("back_time");
     
     <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">
      	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" href="profileTimeWorkingDays.jsp" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
-     		<img src="ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
+     		<img src="../images/ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
      	</a>
      	<button type="submit" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center"  style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">
-     		<img src="ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">                     
+     		<img src="../images/ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">                     
      	</button>
    	</footer>
 </form>

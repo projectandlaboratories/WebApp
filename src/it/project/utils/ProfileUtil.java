@@ -26,13 +26,15 @@ public class ProfileUtil {
 				days.put(profile.getDayOfWeek(), profile.getDayType());
 			
 			if(intervals.containsKey(profile.getDayType())) {
-				intervals.get(profile.getDayType()).add(profile.getInterval());
+				if(!intervals.get(profile.getDayType()).contains(profile.getInterval()))
+					intervals.get(profile.getDayType()).add(profile.getInterval());
 			}
 			else {
 				List<Interval> programIntervalList = new ArrayList<>();
 				programIntervalList.add(profile.getInterval());
 				intervals.put(profile.getDayType(), programIntervalList);
 			}
+			
 		}
 		
 		Program program = new Program(days,intervals);
@@ -75,5 +77,12 @@ public class ProfileUtil {
 		return profile;
 		
 	}
-
+	
+	public static Map<DayMoment, String> getDayMomentColors() {
+		Map<DayMoment, String> colors = new HashMap<DayMoment, String>();
+		colors.put(DayMoment.NIGHT, "#2C3E50");
+		colors.put(DayMoment.HOME, "#f2a654");
+		colors.put(DayMoment.OUT, "#f96868");
+		return colors;
+	}
 }
