@@ -1,7 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    <%@page import="it.project.dto.*"%>
+<%@page import="it.project.dto.*"%>
 <%@page import="it.project.enums.*"%>
+<%@page import="it.project.utils.ProfileUtil"%>
+<%@page import="java.util.*"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html>
 <html>
@@ -21,11 +23,50 @@
 <jsp:useBean id="currentProfile" class="it.project.dto.Program" scope="session">  </jsp:useBean>
 
 	
-<% String wakeupTime = request.getParameter("wakeup_time");
-String bedTime = request.getParameter("bed_time");
+<%
+Program myProgram=(Program)session.getAttribute("currentProfile");
+//prendo parametri dalla pagina precedente
+String wakeupTimeW = request.getParameter("wakeup_time");
+String bedTimeW = request.getParameter("bed_time");
 String leaveTime = request.getParameter("leave_time");
 String backTime = request.getParameter("back_time");
-((Program) session.getAttribute("currentProfile")).setWorkingHours(wakeupTime, bedTime, leaveTime, backTime);
+
+if(wakeupTimeW==null){//vuol dire che sono entrata in questa pagina facendo back dalla successiva
+	wakeupTimeW=myProgram.getWakeupTimeW();
+	bedTimeW=myProgram.getBedTimeW();
+	leaveTime=myProgram.getLeaveTime();
+	backTime=myProgram.getBackTime();
+}
+myProgram.setWorkingHours(wakeupTimeW, bedTimeW, leaveTime, backTime);
+
+
+//Setto i parametri della pagina corrente
+String wakeupTime="09:00";
+String bedTime = "23:00";
+if(myProgram.getWakeupTimeH()!=null){//vengo dalla pagina precedente
+	wakeupTime=myProgram.getWakeupTimeH();
+	bedTime=myProgram.getBedTimeH();
+}else if(myProgram.getIntervals().get(DayType.HOLIDAY)!=null){
+	List<Interval> holidayIntervals = myProgram.getIntervals().get(DayType.HOLIDAY);
+	Collections.sort(holidayIntervals);
+	boolean afterMidnight=false;
+	for(Interval interval:holidayIntervals){
+		if(interval.getDayMoment()==DayMoment.HOME){
+			if(interval.getStartHour()==0 && interval.getStartMin()==0){//il primo intervallo è home
+				afterMidnight=true;
+				bedTime=ProfileUtil.getTimeString(interval.getEndHour(),interval.getEndMin());
+			}else{ 
+				wakeupTime=ProfileUtil.getTimeString(interval.getStartHour(),interval.getStartMin());
+				if(!afterMidnight){
+					bedTime=ProfileUtil.getTimeString(interval.getEndHour(),interval.getEndMin());
+				}
+			}
+		}
+	}
+}
+
+
+
 %>
 
 
@@ -42,12 +83,12 @@ String backTime = request.getParameter("back_time");
     <div style="margin-left: auto; margin-right: auto; width: 50%;">
 	    <div style="position:absolute; width:50%; height:50%; padding:2%; text-align:center;">
 	    What time do you wake up?<br><br>	    
-	    <input type="time" name="wakeup_time" value="09:00" style="align: center;" required>
+	    <input type="time" name="wakeup_time" value="<%=wakeupTime%>" style="align: center;" required>
 	    </div>
 	    
 	    <div style="position:absolute; width:50%; height:50%; top:50%; padding:2%; text-align:center;">
 	    What time do you go to bed?<br><br>	    
-	    <input type="time" name="bed_time" value="23:00" style="align: center;" required>
+	    <input type="time" name="bed_time" value="<%=bedTime %>" style="align: center;" required>
 	    </div>
 	    
     </div>

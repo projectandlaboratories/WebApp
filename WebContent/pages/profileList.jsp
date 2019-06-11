@@ -19,7 +19,7 @@
 
 </head>
 
-
+<%session.removeAttribute("currentProfile"); %>
 
 <body>
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">

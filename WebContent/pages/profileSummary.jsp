@@ -2,6 +2,7 @@
     pageEncoding="ISO-8859-1"%>
      <%@page import="it.project.dto.*"%>
 <%@page import="it.project.enums.*"%>
+<%@page import="java.util.*"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html>
 <html>
@@ -23,12 +24,27 @@
 
 <% 
 String alertCode=request.getParameter("alert");
+Program myProgram=(Program) session.getAttribute("currentProfile");
+
+//prendo parametri dalla pagina precedente
 if(request.getParameter("out_temperature")!=null){
 	int outTemperature = Integer.parseInt(request.getParameter("out_temperature"));
 	int homeTemperature = Integer.parseInt(request.getParameter("home_temperature"));
 	int nightTemperature = Integer.parseInt(request.getParameter("night_temperature"));
-	Program myProgram=(Program) session.getAttribute("currentProfile");
+	Map<DayMoment, Integer> temperature = new HashMap<>();
+	temperature.put(DayMoment.NIGHT,nightTemperature);
+	temperature.put(DayMoment.HOME,homeTemperature);
+	temperature.put(DayMoment.OUT,outTemperature);
+	myProgram.setTemperatureMap(temperature);
 	myProgram.generateIntervalMap(outTemperature, homeTemperature, nightTemperature);	
+}
+//Setto i parametri della pagina corrente
+String name="";
+String action="ADD";
+if(myProgram.getName()!=null){
+	name=myProgram.getName();
+	session.setAttribute("previousName", name);
+	action="UPDATE";
 }
 %>
 <script type="text/javascript">
@@ -52,13 +68,13 @@ if(<%=alertCode%> !== null){
         
     <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; margin-top:3%">
     
-    	<div style="margin-bottom: 20px"><input type="text" placeholder="enter profile name" name="profile_name" style="width:100%"></div>	
+    	<div style="margin-bottom: 20px"><input type="text" placeholder="enter profile name" name="profile_name" value="<%=name %>" style="width:100%"></div>	
     	<jsp:include page="profileBars.jsp" /> 
 	   
 	   
    
 	    <div style="display: inline-flex; text-align: center; margin-top:2%">
-           	<button type='submit' class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" style="font-size: 20px;margin-left: 8px;margin-right: 0px;padding-right: 16px;padding-left: 18px;">SAVE</button>
+           	<button type='submit' name="ACTION" value="<%=action %>" class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" style="font-size: 20px;margin-left: 8px;margin-right: 0px;padding-right: 16px;padding-left: 18px;">SAVE</button>
       	
         </div>
 	

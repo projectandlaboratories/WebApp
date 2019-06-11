@@ -2,6 +2,8 @@
     pageEncoding="ISO-8859-1"%>
 <%@page import="it.project.dto.*"%>
 <%@page import="it.project.enums.*"%>
+<%@page import="it.project.utils.ProfileUtil"%>
+<%@page import="java.util.*"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html>
 <html>
@@ -19,19 +21,71 @@
 
 </head>
 <jsp:useBean id="currentProfile" class="it.project.dto.Program" scope="session">  </jsp:useBean>
-<c:forEach var="dayName" items="<%=DayName.values()%>">
-	
-		<%
-		
-		DayName dayName = (DayName)pageContext.getAttribute("dayName"); 
+
+
+
+<%
+Program myProgram=((Program) session.getAttribute("currentProfile"));
+//prendo parametri dalla pagina precedente
+if(request.getParameter("caller") != null && request.getParameter("caller").compareTo("profileDays")==0){
+	for(DayName dayName:DayName.values()){
 		DayType dayType = DayType.HOLIDAY;
-		//request.getParameterMap().containsKey("paramname")
+
 		if(request.getParameter(dayName.toString()) == null){
 			dayType = DayType.WORKING;
 		}
-		((Program) session.getAttribute("currentProfile")).setDay(dayName, dayType);
-		%>
-		</c:forEach> 
+		myProgram.setDay(dayName, dayType);	
+	}
+}
+
+//Setto i parametri della pagina corrente
+String wakeupTime="07:00";
+String bedTime = "23:00";
+String leaveTime = "08:00";
+String backTime = "18:00";
+if(myProgram.getWakeupTimeW()!=null){//vengo dalla pagina precedente
+	wakeupTime=myProgram.getWakeupTimeW();
+	bedTime=myProgram.getBedTimeW();
+	leaveTime=myProgram.getLeaveTime();
+	backTime=myProgram.getBackTime();
+}else if(myProgram.getIntervals().get(DayType.WORKING)!=null){
+	boolean readTemperature=false;
+	if(myProgram.getTemperatureMap()==null){
+		readTemperature=true;
+	}
+	Map<DayMoment, Integer> temperature = new HashMap<>();
+	List<Interval> workingIntervals = myProgram.getIntervals().get(DayType.WORKING);
+	Collections.sort(workingIntervals);
+	boolean wakeleave=false;
+	boolean afterMidnight=false;
+	for(Interval interval:workingIntervals){
+		if(readTemperature){
+			temperature.put(interval.getDayMoment(), (int) interval.getTemperature());	
+		}
+		if(interval.getDayMoment()==DayMoment.HOME){
+			
+			if(interval.getStartHour()==0 && interval.getStartMin()==0){//il primo intervallo è home
+				afterMidnight=true;
+				bedTime=ProfileUtil.getTimeString(interval.getEndHour(),interval.getEndMin());
+			}else if(!wakeleave){
+				wakeleave=true;
+				wakeupTime=ProfileUtil.getTimeString(interval.getStartHour(),interval.getStartMin());
+				leaveTime=ProfileUtil.getTimeString(interval.getEndHour(),interval.getEndMin());
+			}else{
+				backTime=ProfileUtil.getTimeString(interval.getStartHour(),interval.getStartMin());
+				if(!afterMidnight){
+					bedTime=ProfileUtil.getTimeString(interval.getEndHour(),interval.getEndMin());
+				}
+			}
+		}
+	}
+	if(readTemperature){
+		myProgram.setTemperatureMap(temperature);
+	}
+}
+
+
+%>
 
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
@@ -43,22 +97,22 @@
     <div>
 	    <div style="position:absolute; width:50%; height:50%; left:0; padding:2%; text-align:center;">
 	    What time do you wake up?<br><br>	    
-	    <input type="time" name="wakeup_time" value="07:00" style="align: center;" required>
+	    <input type="time" name="wakeup_time" value="<%=wakeupTime%>" style="align: center;" required>
 	    </div>
 	    
 	    <div style="position:absolute; width:50%; height:50%; left:0; top:50%; padding:2%; text-align:center;">
 	    What time do you go to bed?<br><br>	    
-	    <input type="time" name="bed_time" value="23:00" style="align: center;" required>
+	    <input type="time" name="bed_time" value="<%=bedTime%>" style="align: center;" required>
 	    </div>
 	    
 	    <div style="position:absolute; width:50%; height:50%;  left:50%; padding:2%; text-align:center;" >
 		What time do you leave home?<br><br>	    
-	    <input type="time" name="leave_time" value="08:00" style="align: center;" required>
+	    <input type="time" name="leave_time" value="<%=leaveTime%>" style="align: center;" required>
 	    </div>
 	    
 	    <div style="position:absolute; width:50%; height:50%; top:50%; left:50%; padding:2%; text-align:center;">
 		What time do you come back home?<br><br>	    
-	    <input type="time" name="back_time" value="18:00" style="align: center;" required>
+	    <input type="time" name="back_time" value="<%=backTime%>" style="align: center;" required>
 	    </div>
     </div>
     

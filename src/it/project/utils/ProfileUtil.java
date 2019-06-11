@@ -84,4 +84,36 @@ public class ProfileUtil {
 		colors.put(DayMoment.OUT, "#f96868");
 		return colors;
 	}
+	
+	public static Map<DayName,String> getDefaultDays(){
+		Map<DayName,String> checked = new HashMap<>();
+		checked.put(DayName.MON, "");
+		checked.put(DayName.TUE, "");
+		checked.put(DayName.WED, "");
+		checked.put(DayName.THU, "");
+		checked.put(DayName.FRI, "");
+		checked.put(DayName.SAT, "checked");
+		checked.put(DayName.SUN, "checked");
+		return checked;
+	}
+	
+	public static  Map<DayMoment, Integer> getDefaultTemperatures(){
+		Map<DayMoment, Integer> temperature = new HashMap<>();
+		temperature.put(DayMoment.NIGHT,20);
+		temperature.put(DayMoment.HOME,20);
+		temperature.put(DayMoment.OUT,20);
+		return temperature;
+	}
+	
+	public static String getTimeString(int h, int m) {
+		String hour = Integer.toString(h);
+		String min = Integer.toString(m);
+		if(h<=9){
+			hour=new String("0"+hour);
+		}
+		if(m<=9){
+			min=new String("0"+min);
+		}
+		return new String(hour+":"+min);	
+	}
 }

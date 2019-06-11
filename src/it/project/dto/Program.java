@@ -12,13 +12,15 @@ public class Program {
 	private Map<DayName,DayType> days;
 	private Map<DayType, List<Interval>> intervals;
 	
-	//attributi usati durante la creazione del programma
+	//attributi usati durante creazione e update del programma
 	private String wakeupTimeW;
 	private String bedTimeW;	
 	private String leaveTime;	
 	private String backTime;
 	private String wakeupTimeH;
-	private String bedTimeH;	
+	private String bedTimeH;
+	private Map<DayMoment,Integer> temperatureMap;
+	
 		
 	public Program() {
 		super();
@@ -140,6 +142,14 @@ public class Program {
 		this.bedTimeH = bedTimeH;
 	}
 	
+	public Map<DayMoment, Integer> getTemperatureMap() {
+		return temperatureMap;
+	}
+
+	public void setTemperatureMap(Map<DayMoment, Integer> temperatureMap) {
+		this.temperatureMap = temperatureMap;
+	}
+	
 	public Map<DayType, List<Interval>> generateIntervalMap(float outTemperature, float homeTemperature, float nightTemperature){
 		List<Interval> workingIntervals=generateWorkingInterval(outTemperature, homeTemperature, nightTemperature);
 		this.intervals.put(DayType.WORKING, workingIntervals);
@@ -230,7 +240,7 @@ public class Program {
 		return intervals;
 	}
 	
-private List<Interval> generateHolidayInterval(float homeTemperature, float nightTemperature){
+	private List<Interval> generateHolidayInterval(float homeTemperature, float nightTemperature){
 		
 		List<Interval> intervals= new ArrayList<>();
 		

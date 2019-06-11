@@ -76,7 +76,7 @@ public class Interval implements Comparable<Object>{
 	}
 	
 	public float getPercentageOfDay() {
-		return (float)((endHour*60+endHour)-(startHour*60+startMin))/(24*60)*100;
+		return ((float)((endHour*60+endMin)-(startHour*60+startMin)))/(24*60)*100;
 	}
 	public String getColor() {
 		return ProfileUtil.getDayMomentColors().get(this.dayMoment);

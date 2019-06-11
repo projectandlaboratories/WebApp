@@ -128,6 +128,18 @@ public class DBClass {
 		
 	}
 	
+	public static void deleteProfiles(String name) {
+		Statement statement;		
+		try {
+			statement = conn.createStatement();
+			String query = "DELETE from profiles where id_profile='"+name+"'";
+			statement.executeUpdate(query);
+			MQTTClient.sendMessage(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	} 
 	public static List<Program> getProfileList(){
 		
 		List<Profile> profiles = new ArrayList<>();

@@ -1,7 +1,10 @@
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@page import="it.project.dto.*"%>
 <%@page import="it.project.enums.*"%>
+<%@page import="java.util.*"%>
+<%@page import="it.project.utils.ProfileUtil"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html>
 <html>
@@ -23,9 +26,23 @@
 <jsp:useBean id="currentProfile" class="it.project.dto.Program" scope="session">  </jsp:useBean>
 
 	
-<% String wakeupTime = request.getParameter("wakeup_time");
+<% 
+Program myProgram=(Program)session.getAttribute("currentProfile");
+//prendo parametri dalla pagina precedente
+String wakeupTime = request.getParameter("wakeup_time");
 String bedTime = request.getParameter("bed_time");
-((Program) session.getAttribute("currentProfile")).setHolidaysHours(wakeupTime, bedTime);%>
+
+if(wakeupTime==null && bedTime==null){//vuol dire che sono entrata in questa pagina facendo back dalla successiva
+	wakeupTime=myProgram.getWakeupTimeH();
+	bedTime=myProgram.getBedTimeH();
+}
+myProgram.setHolidaysHours(wakeupTime, bedTime);
+//Setto i parametri della pagina corrente
+Map<DayMoment,Integer> temperatureMap=ProfileUtil.getDefaultTemperatures();
+if(myProgram.getTemperatureMap()!=null){
+	temperatureMap=myProgram.getTemperatureMap();
+}
+%>
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	
@@ -36,22 +53,22 @@ String bedTime = request.getParameter("bed_time");
     <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; padding-right:3%;">
     	<div>
     		<span style="width: 100px;display: inline-block;padding-top: 30px;">OUT</span> 
-    		<input type="range" class="range" min="16" max="26" value="20" name="out_temperature">
+    		<input type="range" class="range" min="16" max="26" value="<%=temperatureMap.get(DayMoment.OUT) %>" name="out_temperature">
     	</div>
 	  
 	  	<div>
     		<span style="width: 100px;display: inline-block;padding-top: 40px;">HOME</span>
-    		<input type="range" class="range" min="16" max="26" value="20" name="home_temperature">
+    		<input type="range" class="range" min="16" max="26" value="<%=temperatureMap.get(DayMoment.HOME) %>" name="home_temperature">
     	</div>
     	
     	<div>
     		<span style="width: 100px;display: inline-block;padding-top: 40px;">NIGHT</span>
-    		<input type="range" class="range" min="16" max="26" value="20" name="night_temperature">
+    		<input type="range" class="range" min="16" max="26" value="<%=temperatureMap.get(DayMoment.NIGHT) %>" name="night_temperature">
     	</div>	   
     </div>
  
      <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">
-     	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
+     	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" href="profileTimeHolidays.jsp" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
      		<img src="../images/ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
      	</a>
      	<button type="submit" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">

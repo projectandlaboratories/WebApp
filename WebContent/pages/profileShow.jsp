@@ -31,7 +31,7 @@
    			<img src="../images/ios-arrow-round-back-white.svg" style="position:absolute; left: 0px; top: 0px; height: 60px; width: 60px;">
    		</a>
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
-        	<br>PROFILE DETAIL <br><br></a>
+        	<br><c:out value = "${currentProfile.name}"/><br><br></a>
         </h1>  
 	
     
@@ -40,12 +40,14 @@
     	
     	<jsp:include page="profileBars.jsp" /> 
     		   
-   
+  
 	    <div style="display: inline-flex; text-align: center; margin-top:50px">
-           	<button class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px;">DELETE</button>
+	     <form action="<%=request.getContextPath()+"/newProgramServlet"%>" method="POST">  
+           	<button type='submit' name="ACTION" value="DELETE" class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px;">DELETE</button>
+       	</form> 
         	<button class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;padding-right: 16px;padding-left: 16px;">EDIT</button>
         </div>
-	
+	  
     </div>
 
 
