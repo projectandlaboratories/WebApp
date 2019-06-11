@@ -3,6 +3,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@ page import="it.project.db.DBClass" %>
+    <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 
@@ -22,9 +23,20 @@
 
 <% 
 	//Setup connection e dbSync
-	DBClass.getConnection(DbIdentifiers.LOCAL);
-	MQTTClient.setConnection(DbIdentifiers.LOCAL);
+	try{
+		DBClass.getConnection(DbIdentifiers.LOCAL);
+		MQTTClient.setConnection(DbIdentifiers.LOCAL);
+	}
+	catch(Exception e){
 %>
+<h5>Exception : <%=e.getMessage()%></h5>
+<% 
+	}
+%>
+
+
+<c:set var="profileList" scope="session" value="<%=DBClass.getProfileList()%>"/>
+
 
 <body>
     <div id="wrapper">

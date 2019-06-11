@@ -34,7 +34,6 @@ public class ProfileUtil {
 				programIntervalList.add(profile.getInterval());
 				intervals.put(profile.getDayType(), programIntervalList);
 			}
-			
 		}
 		
 		Program program = new Program(days,intervals);
