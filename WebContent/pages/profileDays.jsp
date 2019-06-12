@@ -19,7 +19,11 @@
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
 
 </head>
-<%Program myProgram=((Program) session.getAttribute("currentProfile"));
+<%
+
+String caller=(String)session.getAttribute("caller");
+
+Program myProgram=((Program) session.getAttribute("currentProfile"));
 Map<DayName,String> checked = ProfileUtil.getDefaultDays();
 
 if(myProgram!=null && myProgram.getDays().size()!=0){
@@ -34,7 +38,9 @@ if(myProgram!=null && myProgram.getDays().size()!=0){
 <body>
 
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
-    	
+    	<a class="btn btn-primary text-center d-lg-flex" href="<%=caller %>" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
+   			<img src="../images/ios-arrow-round-back-white.svg" style="position:absolute; left: 0px; top: 0px; height: 60px; width: 60px;">
+   		</a>
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
         	<br>WHAT DAYS ARE YOU AT HOME?<br><br></a>
         </h1>
@@ -55,7 +61,7 @@ if(myProgram!=null && myProgram.getDays().size()!=0){
     
     <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">     	
      	<button type="submit" name="caller" value="profileDays" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">
-     		<img src="../images/ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px"> <!--  href="profileTimeWorkingDays.jsp" -->                     
+     		<img src="../images/ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">                   
      	</button>
    	</footer>
 </form>

@@ -10,7 +10,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">  
-<title>Network Settings</title>
+<title>Profile List</title>
 
     <style type="text/css"><%@include file="../assets/bootstrap/css/bootstrap.min.css"%></style>
     <style type="text/css"><%@include file="../assets/fonts/font-awesome.min.css"%></style>
@@ -19,7 +19,8 @@
 
 </head>
 
-<%session.removeAttribute("currentProfile"); %>
+<%session.removeAttribute("currentProfile");
+session.setAttribute("caller", "profileList.jsp");%>
 
 <body>
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
