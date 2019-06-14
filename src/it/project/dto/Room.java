@@ -1,6 +1,7 @@
 package it.project.dto;
 
 import it.project.enums.SystemType;
+import it.project.enums.Mode;
 
 public class Room {
 	
@@ -10,12 +11,13 @@ public class Room {
 	private boolean connState;
 	private Program winterProfile;
 	private Program summerProfile;
+	private Mode mode;
 	private int manualTemp;
 	private SystemType manualSystem;
 	
 	
 	public Room(String room, String roomName, int idAirCond, boolean connState, Program winterProfile,
-			Program summerProfile, int manualTemp, SystemType manualSystem) {
+			Program summerProfile, Mode mode, int manualTemp, SystemType manualSystem) {
 		super();
 		this.room = room;
 		this.roomName = roomName;
@@ -23,8 +25,19 @@ public class Room {
 		this.connState = connState;
 		this.winterProfile = winterProfile;
 		this.summerProfile = summerProfile;
+		this.mode=mode;
 		this.manualTemp = manualTemp;
 		this.manualSystem = manualSystem;
+	}
+
+
+	public Mode getMode() {
+		return mode;
+	}
+
+
+	public void setMode(Mode mode) {
+		this.mode = mode;
 	}
 
 

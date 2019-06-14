@@ -16,11 +16,7 @@ import it.project.dto.Interval;
 import it.project.dto.Profile;
 import it.project.dto.Program;
 import it.project.dto.Room;
-import it.project.enums.DayMoment;
-import it.project.enums.DayName;
-import it.project.enums.DayType;
-import it.project.enums.Season;
-import it.project.enums.SystemType;
+import it.project.enums.*;
 import it.project.utils.DbIdentifiers;
 import it.project.utils.ProfileUtil;
 
@@ -260,13 +256,14 @@ public class DBClass {
 				boolean connState = result.getBoolean("CONN_STATE");
 				String summerProfileName = result.getString("ID_PROFILE_SUMMER");
 				String winterProfileName = result.getString("ID_PROFILE_WINTER");
+				Mode mode = Mode.valueOf(result.getString("MODE"));
 				int manualTemp = result.getInt("MANUAL_TEMP");
 				SystemType manualSystem = SystemType.valueOf(result.getString("MANUAL_SYSTEM"));
 				
 				Program summerProfile = getProfileByName(summerProfileName);
 				Program winterProfile = getProfileByName(winterProfileName);
 				
-				Room room = new Room(idRoom,roomName,idAirCond,connState, winterProfile,summerProfile, manualTemp, manualSystem);
+				Room room = new Room(idRoom,roomName,idAirCond,connState, winterProfile,summerProfile,mode, manualTemp, manualSystem);
 				rooms.put(idRoom, room);
 			}
 			

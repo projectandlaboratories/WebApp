@@ -2,6 +2,10 @@
 <%@page import="it.project.enums.SystemType"%>
 <%@page import="it.project.db.MQTTDbSync"%>
 <%@page import="it.project.utils.DbIdentifiers"%>
+<%@page import="java.text.DecimalFormat"%>
+<%@page import="java.util.*"%>
+<%@page import="it.project.dto.Room"%>
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@ page import="it.project.db.DBClass" %>
@@ -44,13 +48,27 @@
 <% 
 	}
 %>
+<c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
 <%
-String mode=Mode.MANUAL.toString();
-String targetTemp="17.5";
-String act = SystemType.HOT.toString();
+Map<String,Room> roomMap = (Map<String,Room>) session.getAttribute("roomMap");
+String currentRoomId = "id1";
+Room currentRoom = roomMap.get(currentRoomId);
+
+String mode=currentRoom.getMode().toString();
+String targetTemp;
+String act;
+if(currentRoom.getMode().equals(Mode.MANUAL)){	
+	targetTemp=Double.toString(currentRoom.getManualTemp());	
+	act = SystemType.HOT.toString();
+}else{
+	//TODO prendi targetTemp da temperature
+	targetTemp="17.5";	
+	//TODO prendi act in base alla stagione
+	act = SystemType.HOT.toString();
+}
 
 %>
-<c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
+
 
 <body onload=initializeParameters()>
     <div id="wrapper">
@@ -247,8 +265,10 @@ String act = SystemType.HOT.toString();
     
     	function onDecreaseClick(){
     		var currentTemp = parseFloat(targetTemp.value);
-    		if(currentTemp<=16.0)
+    		if(currentTemp<=16.0){
     			return;
+    		}
+    			
     		
     		targetTemp.value=Number(currentTemp - 0.1).toFixed(1);
     		targetTempShown.innerHTML = targetTemp.value;
