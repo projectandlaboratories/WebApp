@@ -231,7 +231,7 @@ public class DBClass {
 		List<Profile> profiles = new ArrayList<>();
 		try {
 			statement = conn.createStatement();
-			int temperature = -1;
+			int temperature = -100;
 			String query = "SELECT TEMPERATURE from temperatures where ID_ROOM = '" + roomId + "' order by timestamp desc limit 1";
 			ResultSet result = statement.executeQuery(query);
 			while (result.next()) {
@@ -240,7 +240,7 @@ public class DBClass {
 			return temperature;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return -1;
+			return -100;
 		}
 	}
 	

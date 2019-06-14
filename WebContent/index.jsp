@@ -2,7 +2,9 @@
 <%@page import="it.project.utils.DbIdentifiers"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-    <%@ page import="it.project.db.DBClass" %>
+    <%@ page import="it.project.db.*" %>
+    <%@ page import="javax.*" %>
+    <%@ page import="java.util.*" %>
     <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -43,12 +45,11 @@
 	}
 %>
 
-
 <c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
 
 
 <body>
-    <div id="wrapper">
+    <div id="wrapper" class="toggled">
         <div id="sidebar-wrapper" style="background-color: #2C3E50;">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand" style="height: 70px;"> </li>
@@ -63,7 +64,7 @@
                 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;vertical-align: middle;">
                 	<a class="btn btn-link d-xl-flex align-items-xl-center" role="button" id="menu-toggle" href="#menu-toggle" style="height: 70px;">
                 		<img src="images/md-reorder-white.svg" style="height: 100%;"></a>
-                	<a class="navbar-brand text-left flex-fill" href="#" style="margin-left: 16px;padding-top: 5px;height: auto;margin-top: 0px;margin-bottom: 0px;min-width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;font-size: 30px;">Tue March 24, 2019, 22.36</a>
+                	<a class="navbar-brand text-left flex-fill" href="#" style="margin-left: 16px;padding-top: 5px;height: auto;margin-top: 0px;margin-bottom: 0px;min-width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;font-size: 30px;"><%=new Date().toString()%></a>
                     <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" type="button" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px; top: 0px; ">
                         	<img src="images/ios-car-white.svg"  style="width:100%;" ></img>
                      </button> 
@@ -82,7 +83,11 @@
 					    <div id="right">Right Side Menu</div>
 					</div>  -->
                     <div style="position:absolute; width:100%; height:100%; margin-left: 64px;">
-               			<div id="left" style="font-size:900%; color: #2C3E50;">21.5</div>
+               			
+               				<iframe src="pages/temperature.jsp" frameBorder="0">
+               				
+               				</iframe>
+               			
                			<!--  div id="middle">Random Content</div>-->
 				    	<div id="right">
 				    		<span  style="font-size:600%; color: #2C3E50; position:absolute; right: 80px; top:25px;">17.0</span>

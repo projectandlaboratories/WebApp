@@ -1,6 +1,9 @@
 package it.project.servlet;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -8,6 +11,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.MediaType;
 
 import it.project.db.DBClass;
 import it.project.dto.Program;
@@ -46,6 +52,7 @@ public class AssignProgramToRoom extends HttpServlet {
 		if(season.equals(Season.SUMMER))
 			((Map<String, Room>) request.getSession(false).getAttribute("roomMap")).get(roomId).setSummerProfile(profile);
 		response.sendRedirect(request.getContextPath()+"/pages/roomManagementItem.jsp?roomId=" + roomId);
+		
 	}
 
 	/**

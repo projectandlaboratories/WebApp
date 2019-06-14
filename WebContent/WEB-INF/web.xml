@@ -9,8 +9,6 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-  
-  
   <servlet>
     <servlet-name>newProgramServlet</servlet-name>
     <servlet-class>it.project.servlet.NewProgramServlet</servlet-class>
@@ -19,8 +17,7 @@
     <servlet-name>newProgramServlet</servlet-name>
     <url-pattern>/newProgramServlet</url-pattern>
   </servlet-mapping>
-  
-   <servlet>
+  <servlet>
     <servlet-name>assignProgramToRoom</servlet-name>
     <servlet-class>it.project.servlet.AssignProgramToRoom</servlet-class>
   </servlet>
