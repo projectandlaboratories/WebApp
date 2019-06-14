@@ -11,7 +11,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MQTTClient{
+public class MQTTDbSync{
 	
 	private static final int qos = 2;
     private static String send_topic,subscribe_topic;

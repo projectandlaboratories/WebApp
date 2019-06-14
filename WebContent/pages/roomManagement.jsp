@@ -2,6 +2,10 @@
     pageEncoding="ISO-8859-1"%>
     <%@ page import="it.project.db.DBClass" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+    <%@ page import="it.project.db.DBClass" %>
+    <%@ page import="it.project.dto.*" %>
+    <%@ page import="java.util.List" %>
+    <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 
 <html>
 <head>
@@ -18,6 +22,9 @@
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
 
 </head>
+
+<c:set var="profileMap" scope="session" value="<%=DBClass.getProfileMap()%>"/>
+
 <body>
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	<a class="btn btn-primary text-center d-lg-flex" href="../index.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
@@ -29,17 +36,17 @@
         </h1>
     <ul class="list-group">
         <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp" style="font-size: 24px;">HALL</a>
+        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp?roomId=id1&roomName=HALL" style="font-size: 24px;">HALL</a>
         <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;position:absolute; right:50px">13°C</span>
         <img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px; visibility: hidden;">
         </li>
         <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp" style="font-size: 24px;">LIVING ROOM</a>
+        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp?roomId=id1&roomName=LIVING ROOM" style="font-size: 24px;">LIVING ROOM</a>
         <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;position:absolute; right:50px">18°C</span>
         	 <img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px; visibility: visible;position:absolute; right:8px">
        	 </li>
         <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp" style="font-size: 24px;">BEDROOM</a>
+        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp?roomId=id1&roomName=BEDROOM" style="font-size: 24px;">BEDROOM</a>
         <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;position:absolute; right:50px;">20°C</span>
         	 <img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px; visibility: visible;position:absolute; right:8px;">
        	 </li>

@@ -2,6 +2,7 @@
     pageEncoding="ISO-8859-1"%>
     <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
      <%@ page import="it.project.enums.*" %>
+     <%@ page import="it.project.db.DBClass" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,8 +20,11 @@
 
 </head>
 
-<c:set var="room" scope="page" value="id1"/> <!-- TODO il valore è statico, bisogna prendere le info dalla pagina precedente -->
-<c:set var="season" scope="page" value="<%=Season.WINTER%>"/> <!-- TODO il valore è statico, bisogna prendere le info dalla pagina corrente -->
+<c:set var="roomId" scope="session" value="${param.roomId}"/>
+<c:set var="currentProfileWinter" scope="page" value="<%=DBClass.getRoomProfile(request.getParameter(\"roomId\"), Season.WINTER)%>"/>
+<c:set var="currentProfileSummer" scope="page" value="<%=DBClass.getRoomProfile(request.getParameter(\"roomId\"), Season.SUMMER)%>"/>
+
+
 <%session.setAttribute("caller", "roomManagementItem.jsp"); //todo aggiungere eventuale parametro ?nome=cucina%>
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
@@ -28,94 +32,31 @@
    			<img src="../images/ios-arrow-round-back-white.svg" style="position:absolute; left: 0px; top: 0px; height: 60px; width: 60px;">
    		</a>
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
-        	<br>ROOM DETAIL<br><br></a>
+        	<br>${param.roomName}<br><br></a>
         </h1>
         
         
 	<div>
         <div>
             <ul class="nav nav-tabs">
-                <li class="nav-item flex-fill"><a class="nav-link active d-lg-flex flex-fill justify-content-lg-center" role="tab" data-toggle="tab" href="#tab-1" style="font-size: 20px;text-align:center">Winter</a></li>
-                <li class="nav-item flex-fill"><a class="nav-link d-lg-flex flex-fill justify-content-lg-center" role="tab" data-toggle="tab" href="#tab-2" style="font-size: 20px;text-align:center">Summer</a></li>
+                <li class="nav-item flex-fill"><a class="nav-link active d-lg-flex flex-fill justify-content-lg-center" role="tab" href="#tab-1" data-toggle="tab" style="font-size: 20px;text-align:center">Winter</a></li>
+                <li class="nav-item flex-fill"><a class="nav-link d-lg-flex flex-fill justify-content-lg-center" href="#tab-2" role="tab" data-toggle="tab" style="font-size: 20px;text-align:center">Summer</a></li>
             </ul>
             
             <div class="tab-content">
-                <div class="tab-pane active" role="tabpanel" id="tab-1" style="margin: 16px;">
-                  
-	                <div style="display: inline-flex">
-	                    <div class="dropdown d-inline-flex"><button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" style="font-size: 20px;">Choose Profile</button>
-	                        <div class="dropdown-menu" role="menu" style="width:100%">
-	                        	<c:forEach items="${profileList}" var="profile">
-	    							<a class="dropdown-item" href="<%=request.getContextPath()%>/assignProgramToRoom?profile=${profile.name}&room=${room}&season=${season}" role="presentation">${profile.name}</a>
-								</c:forEach>
-	                        </div>
-	                    </div>
-	                    
-	                    <div style="display: inline-flex; position: absolute; right: 16px;">
-	                       	<button class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" style="font-size: 20px;margin-left: 8px;margin-right: 0px;padding-right: 16px;padding-left: 18px;">Edit</button>
-	                    	<button class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 8px;padding-right: 16px;padding-left: 16px;">New</button>
-	                   	</div>
-	                </div>
-	                
-	                <!-- TODO jsp:include page="profileBars.jsp"  occorre variabile di sessione currentProfile-->
-	                <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; margin-top:5%">
-						<div class="progress beautiful" style="height: 30px;  margin-top: 10px">
-						    <div class="progress-bar progress-bar-night" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 30%;"><span id="working_day_night_temp">23</span></div>
-						    <div class="progress-bar progress-bar-home" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 5%;"></div>
-						    <div class="progress-bar progress-bar-out" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 40%;"><span id="working_day_out_temp">18</span></div>
-						    <div class="progress-bar progress-bar-home" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 20%;"><span id="working_day_home_temp">21</span></div>
-						    <div class="progress-bar progress-bar-night" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 5%;"></div>
-						</div>
-						<div>Mon-Tue-Wed-Thu-Fri</div>
-						
-						<div class="progress beautiful" style="height: 30px; margin-top: 10px">
-						    <div class="progress-bar progress-bar-night" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 30%;"><span id="holiday_night_temp">23</span></div>
-						    <div class="progress-bar progress-bar-home" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 65%;"><span id="holiday_home_temp">21</span></div>
-						    <div class="progress-bar progress-bar-night" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 5%;"></div>
-						</div>
-						<div>Sat-Sun</div>
-					   
-					
-				    </div>
-				    
-	    
-               	 </div>
+                <div class="tab-pane active" role="tabpanel" id="tab-1" style="margin: 16px;">            
+	                <jsp:include page="roomManagementTabView.jsp">
+	                	<jsp:param name="profile" value="${currentProfileWinter}"/>
+	                	<jsp:param name="season" value="<%=Season.WINTER%>"/>
+	                </jsp:include>			 
+               	</div>
                	 
-               	 <div class="tab-pane" role="tabpanel" id="tab-2" style="margin: 16px;">
-                 	<div style="display: inline-flex">
-	                    <div class="dropdown d-inline-flex"><button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" style="font-size: 20px;">Choose Profile</button>
-	                        <div class="dropdown-menu" role="menu" style="width:100%"><a class="dropdown-item" role="presentation" href="#">Profile 1</a><a class="dropdown-item" role="presentation" href="#">Profile 2</a><a class="dropdown-item" role="presentation" href="#">Profile 3</a></div>
-	                    </div>
-	                    
-	                    <div style="display: inline-flex; position: absolute; right: 16px;">
-	                       	<button class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" style="font-size: 20px;margin-left: 8px;margin-right: 0px;padding-right: 16px;padding-left: 18px;">Edit</button>
-	                    	<button class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" onclick="location.href = 'profileDays.jsp'" style="font-size: 20px;margin-left: 8px;padding-right: 16px;padding-left: 16px;">New</button>
-	                   	</div>
-	                </div>
-	                
-	                
-	                <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; margin-top:5%">				    	
-				    
-	                <!-- TODO jsp:include page="profileBars.jsp"  occorre variabile di sessione currentProfile-->
-				    	<div class="progress beautiful" style="height: 30px;  margin-top: 10px">
-						    <div class="progress-bar progress-bar-night" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 30%;"><span id="working_day_night_temp">23</span></div>
-						    <div class="progress-bar progress-bar-home" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 5%;"></div>
-						    <div class="progress-bar progress-bar-out" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 40%;"><span id="working_day_out_temp">18</span></div>
-						    <div class="progress-bar progress-bar-home" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 20%;"><span id="working_day_home_temp">21</span></div>
-						    <div class="progress-bar progress-bar-night" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 5%;"></div>
-						</div>
-						<div>Mon-Tue-Wed-Thu-Fri</div>
-						
-						<div class="progress beautiful" style="height: 30px; margin-top: 10px">
-						    <div class="progress-bar progress-bar-night" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 30%;"><span id="holiday_night_temp">23</span></div>
-						    <div class="progress-bar progress-bar-home" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 65%;"><span id="holiday_home_temp">21</span></div>
-						    <div class="progress-bar progress-bar-night" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 5%;"></div>
-						</div>
-						<div>Sat-Sun</div>
-					   
-					
-				    </div>
-               	 </div>
+           		<div class="tab-pane" role="tabpanel" id="tab-2" style="margin: 16px;">
+                 	<jsp:include page="roomManagementTabView.jsp">
+	                	<jsp:param name="profile" value="${currentProfileSummer}"/>
+	                	<jsp:param name="season" value="<%=Season.SUMMER%>"/>
+	                </jsp:include>	
+               	</div>
             </div>
         </div>
     </div>

@@ -44,7 +44,7 @@
 %>
 
 
-<c:set var="profileList" scope="session" value="<%=DBClass.getProfileList()%>"/>
+
 
 
 <body>

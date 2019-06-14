@@ -36,7 +36,7 @@ public class AssignProgramToRoom extends HttpServlet {
 		Season season = Season.valueOf(request.getParameter("season"));
 		
 		DBClass.updateRoomProfile(roomId, profileName, season);
-		response.sendRedirect(request.getContextPath()+"/pages/roomManagementItem.jsp");
+		response.sendRedirect(request.getContextPath()+"/pages/roomManagementItem.jsp?roomId=" + roomId);
 	}
 
 	/**

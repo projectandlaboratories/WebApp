@@ -40,9 +40,9 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat", "root", "ily2marzo"); //Ilaria
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
@@ -100,7 +100,7 @@ public class DBClass {
 									"VALUES ('"+name+"','"+day+"','"+dayType+"','"+interval.getDayMoment()+"',"+
 									interval.getStartHour()+","+interval.getStartMin()+","+interval.getEndHour()+","+interval.getEndMin()+","+interval.getTemperature()+")" ;
 					statement.executeUpdate(query);
-					MQTTClient.sendMessage(query);
+					MQTTDbSync.sendMessage(query);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -134,13 +134,13 @@ public class DBClass {
 			statement = conn.createStatement();
 			String query = "DELETE from profiles where id_profile='"+name+"'";
 			statement.executeUpdate(query);
-			MQTTClient.sendMessage(query);
+			MQTTDbSync.sendMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	} 
-	public static List<Program> getProfileList(){
+	public static Map<String,Program> getProfileMap(){
 		
 		List<Profile> profiles = new ArrayList<>();
 		Statement statement;
@@ -153,13 +153,14 @@ public class DBClass {
 				profiles.add(profile);				
 			}
 			
-			List<Program> programs = new ArrayList<>();
+			Map<String,Program> programs = new HashMap<>();
 			Map<String,List<Profile>> profileMap = ProfileUtil.groupProfilesById(profiles);
 			
 			for(String profileId : profileMap.keySet()) {
-				programs.add(ProfileUtil.getProgramFromProfile(profileMap.get(profileId)));
+				programs.put(profileId,ProfileUtil.getProgramFromProfile(profileMap.get(profileId)));
 			}
 			
+
 			return programs;
 		} catch (SQLException e) {
 			
@@ -175,11 +176,32 @@ public class DBClass {
 			statement = conn.createStatement();
 			String query = "UPDATE rooms SET ID_PROFILE_" + season.name() + "= '" + profileName + "' WHERE ID_ROOM = '" + roomId + "'" ;
 			statement.executeUpdate(query);
-			//MQTTClient.sendMessage(query);
+			MQTTDbSync.sendMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 	}
+	
+	public static String getRoomProfile(String roomId, Season season) {
+		
+		Statement statement;
+		String profileId = null;
+		try {
+			statement = conn.createStatement();
+			String query = "SELECT ID_PROFILE_" + season + " from rooms where ID_ROOM = '" + roomId + "'";
+			ResultSet result = statement.executeQuery(query);
+			while (result.next()) {
+				profileId = result.getString(1);				
+			}
+			
+			return profileId;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
 	
 }
