@@ -1,4 +1,6 @@
-<%@page import="it.project.db.MQTTClient"%>
+<%@page import="it.project.enums.Mode"%>
+<%@page import="it.project.enums.SystemType"%>
+<%@page import="it.project.db.MQTTDbSync"%>
 <%@page import="it.project.utils.DbIdentifiers"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -34,7 +36,7 @@
 	//Setup connection e dbSync
 	try{
 		DBClass.getConnection(DbIdentifiers.LOCAL);
-		MQTTClient.setConnection(DbIdentifiers.LOCAL);
+		MQTTDbSync.setConnection(DbIdentifiers.LOCAL);
 	}
 	catch(Exception e){
 %>
@@ -42,12 +44,13 @@
 <% 
 	}
 %>
+<%
+String mode=Mode.MANUAL.toString();
+String targetTemp="17.5";
+String act = SystemType.HOT.toString();
 
-
-
-
-
-<body>
+%>
+<body onload=initializeParameters()>
     <div id="wrapper">
         <div id="sidebar-wrapper" style="background-color: #2C3E50;">
             <ul class="sidebar-nav">
@@ -84,24 +87,35 @@
                     <div style="position:absolute; width:100%; height:100%; margin-left: 64px;">
                			<div id="left" style="font-size:900%; color: #2C3E50;">21.5</div>
                			<!--  div id="middle">Random Content</div>-->
-				    	<div id="right">
-				    		<span  style="font-size:600%; color: #2C3E50; position:absolute; right: 100px; top:25px;">17.0</span>
 				    	
-					    	<div style="position:absolute; bottom: 0px; right:0px; height: 80px;font-size: 60px;">
-			              		<button class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 80px;height: 80px;background-color: rgb(255,255,255);"><img src="images/ios-flame-primary.svg"></button>
-			              		<button class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 80px;height: 80px;background-color: rgb(255,255,255);"><img src="images/ios-snow-primary.svg"></button>
-			              		<button class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 80px;height: 80px;background-color: rgb(255,255,255);"><img src="images/md-hand-primary.svg" ></button>
-	                		</div>
-				    		<!-- input type="range" min="16" max="26" value="20" name="manual_temperature" style="transform:rotate(90deg); position:absolute; top:30%; right:-50px">
-				    		 -->
-				    		 
-				    		 <div class="btn-group btn-group-vertical" role="group" style="right: 8px;position: absolute;width: 65px; top:10px;">
-			                    <button class="btn btn-primary" type="button" style="margin-bottom: 16px;align-self: end;padding-right: 8px;padding-left: 8px;">
-			                    	<img src="images/ios-add-white.svg" ></img>
-			                    </button>
-			                   	<button class="btn btn-primary" type="button" style="padding-right: 8px;padding-left: 8px;">
-			                   		<img src="images/ios-remove-white.svg" ></img></button></div> 
-					    	</div>
+				    	 
+				    	<div id="right">
+					    	<form action="<%=request.getContextPath()+"/newProgramServlet"%>" method="POST">
+					    	
+					    		
+					    		<input type="hidden" name="mode" value=<%=mode%>>   
+					    		<input type="hidden" name="targetTemp" value=<%=targetTemp%>>  
+					    		<input type="hidden" name="act" value=<%=act%>>
+					    		          
+					    		<span id="targetTempShown" style="font-size:600%; color: #2C3E50; position:absolute; right: 100px; top:25px;"></span>
+					    	
+						    	<div style="position:absolute; bottom: 0px; right:0px; height: 80px;font-size: 60px;">
+				              		<button disabled id=<%=SystemType.HOT%> onclick="onHotSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img id="hotImage" src="images/ios-flame-primary.svg"></button>
+				              		<button id=<%=SystemType.COLD%> onclick="onColdSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img id="coldImage" src="images/ios-snow-primary.svg"></button>
+				              		<button onclick="onModeClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img id="manualImage" src="images/md-hand-primary.svg" ></button>
+		                			<button type="submit" name="action" value="changeManualProgrammableMode" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img src="images/ios-checkmark-primary.svg"></button>
+		                		</div>
+					    		
+					    		 <div class="btn-group btn-group-vertical" role="group" style="right: 8px;position: absolute;width: 65px; top:10px;">
+				                    <button id="increase" onclick="onIncreaseClick()" class="btn btn-primary" type="button" style="margin-bottom: 16px;align-self: end;padding-right: 8px;padding-left: 8px;">
+				                    	<img src="images/ios-add-white.svg" ></img>
+				                    </button>
+				                   	<button id="decrease" onclick="onDecreaseClick()" class="btn btn-primary" type="button" style="padding-right: 8px;padding-left: 8px;">
+				                   		<img src="images/ios-remove-white.svg" ></img></button>
+				                 </div> 
+			                 </form>
+					    </div>
+						   
                		</div>  
                     
                     
@@ -125,7 +139,119 @@
     <script><%@include file="/assets/js/jquery.min.js"%></script> 
     <script><%@include file="/assets/bootstrap/js/bootstrap.min.js"%></script> 
     <script><%@include file="/assets/js/Sidebar-Menu.js"%></script> 
+   
+    <script type="text/javascript">
+    var hotSystemButton = document.getElementById("<%=SystemType.HOT%>");
+    var coldSystemButton = document.getElementById("<%=SystemType.COLD%>");
+    var increaseButton = document.getElementById("increase");
+    var decreaseButton = document.getElementById("decrease");
+    var targetTempShown = document.getElementById("targetTempShown");
+    //inizializzale in qualche modo, in una funzione eseguita al caricamento della pagina
+    var mode = document.getElementsByName("mode");
+    var targetTemp = document.getElementsByName("targetTemp");
+    var act = document.getElementsByName("act");
     
+    	//ok
+    	function initializeParameters(){
+    		mode.value="<%=mode%>"
+    		updateModeButton();
+    		
+    		targetTemp.value="<%=targetTemp%>"
+    		targetTempShown.innerHTML ="<%=targetTemp%>"
+    		
+    		act.value="<%=act%>"
+    		updateActButtons();
+    		
+    		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  		
+    		
+    	}
+    
+    	function onHotSystemClick(){
+    		act.value="<%=SystemType.HOT%>"
+    		//seleziona hot
+    		document.getElementById("hotImage").setAttribute('src','images/ios-flame-primary.svg');
+    		//deseleziona cold
+    		document.getElementById("coldImage").setAttribute('src','images/ios-snow-not-selected.svg');
+    		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
+    	}
+    	
+    	function onColdSystemClick(){
+    		act.value="<%=SystemType.COLD%>"
+    		//seleziona cold
+    		document.getElementById("coldImage").setAttribute('src','images/ios-snow-primary.svg');
+    		//deseleziona hot
+    		document.getElementById("hotImage").setAttribute('src','images/ios-flame-not-selected.svg');
+    		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
+    	}
+    	
+    	function updateActButtons(){
+    		if(act.value=="<%=SystemType.HOT%>"){
+    			onHotSystemClick();
+    		}else{
+    			onColdSystemClick();
+    		}
+    	}
+
+    	function updateModeButton(){
+    		if(mode.value=="<%=Mode.MANUAL%>"){
+    			enableManualMode();
+    		}else{
+    			disableManualMode();
+    		}
+    	}
+    	
+    	function enableManualMode(){
+    		console.log("enable Manual!");
+    		document.getElementById("manualImage").setAttribute('src','images/md-hand-primary.svg');
+    		mode.value="<%=Mode.MANUAL%>"
+    		//cambia colore alla manina
+    		increaseButton.disabled = false;
+    		decreaseButton.disabled = false;
+    		hotSystemButton.removeAttribute("disabled");
+    		coldSystemButton.removeAttribute("disabled");
+    		updateActButtons();
+    		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
+    	}
+    	
+    	
+
+    	function disableManualMode(){
+    		console.log("Disable Manual!");
+    		document.getElementById("manualImage").setAttribute('src','images/md-hand-not-selected.svg');
+    		mode.value="<%=Mode.PROGRAMMABLE%>"
+    		//cambia colore alla manina		
+    		increaseButton.disabled = true;
+    		decreaseButton.disabled = true;
+    		hotSystemButton.setAttribute("disabled","disabled");
+    		coldSystemButton.setAttribute("disabled","disabled");
+    		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
+    	}
+    	
+    	function onModeClick(){
+    		if(mode.value=="<%=Mode.MANUAL%>"){
+    			disableManualMode();
+    		}else{
+    			enableManualMode();
+    		}
+    	}
+    	
+    	function onIncreaseClick(){
+    		var currentTemp = parseFloat(targetTemp.value);
+    		if(currentTemp>=26.0)
+    			return;
+    		targetTemp.value=Number(currentTemp + 0.1).toFixed(1);
+        	targetTempShown.innerHTML = targetTemp.value;
+    	}
+    
+    	function onDecreaseClick(){
+    		var currentTemp = parseFloat(targetTemp.value);
+    		if(currentTemp<=16.0){
+    			return;
+    		}
+    		targetTemp.value=Number(currentTemp - 0.1).toFixed(1);
+    		targetTempShown.innerHTML = targetTemp.value;
+    	}
+    </script>
     <!-- <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/Sidebar-Menu.js"></script> -->
