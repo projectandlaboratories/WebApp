@@ -4,7 +4,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
     <%@ page import="it.project.db.DBClass" %>
     <%@ page import="it.project.dto.*" %>
-    <%@ page import="java.util.List" %>
+    <%@ page import="java.util.*" %>
     <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 
 <html>
@@ -34,24 +34,20 @@
         	<br>ROOM MANAGEMENT<br><br></a>
         <a class="btn btn-light text-center text-primary d-lg-flex justify-content-lg-center align-items-lg-center action-button" href="#" style="height: 55px;font-size: 20px;margin-right: 8px;position:absolute; right: 2px; top:8px; font-family: Roboto, sans-serif;">Add room</a>
         </h1>
-    <ul class="list-group">
-        <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp?roomId=id1&roomName=HALL" style="font-size: 24px;">HALL</a>
-        <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;position:absolute; right:50px">13°C</span>
-        <img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px; visibility: hidden;">
-        </li>
-        <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp?roomId=id1&roomName=LIVING ROOM" style="font-size: 24px;">LIVING ROOM</a>
-        <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;position:absolute; right:50px">18°C</span>
-        	 <img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px; visibility: visible;position:absolute; right:8px">
-       	 </li>
-        <li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px;padding-right: 16px;padding-bottom: 8px;padding-left: 16px;margin-top: 0px;height: 64px;">
-        <a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp?roomId=id1&roomName=BEDROOM" style="font-size: 24px;">BEDROOM</a>
-        <span class="d-inline-flex" style="font-size: 24px;margin-right: 8px;position:absolute; right:50px;">20°C</span>
-        	 <img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px; visibility: visible;position:absolute; right:8px;">
-       	 </li>
-     </ul>
-     <footer class="d-lg-flex align-items-lg-center" style="background-color: #ecf0f1;vertical-align: middle; position: absolute; bottom: 0px; right: 0px; left: 0px">
+	<ul class="list-group">
+		<c:forEach items="${roomMap}" var="roomItem">
+			<c:set var="roomId" scope="page" value="${roomItem.key}"/>
+			<li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px; padding-right: 16px; padding-bottom: 8px; padding-left: 16px; margin-top: 0px; height: 64px;">
+				<a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp?roomId=${roomId}" style="font-size: 24px;">${roomItem.value.roomName}</a> 
+				<span class="d-inline-flex" style="font-size: 24px; margin-right: 8px; position: absolute; right: 50px"><%=DBClass.getRoomLastTemp((String) pageContext.findAttribute("roomId"))%>°</span>
+				<!-- connstate = ${roomItem.value.connState} -->
+				<c:if test="${roomItem.value.connState eq false}">
+					<img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px;">
+				</c:if>
+			</li>
+		</c:forEach>
+	</ul>
+	<footer class="d-lg-flex align-items-lg-center" style="background-color: #ecf0f1;vertical-align: middle; position: absolute; bottom: 0px; right: 0px; left: 0px">
      	<a class="btn btn-secondary text-center text-primary bg-light border-primary d-lg-flex" style="height: 60px;padding-top: 6px;margin-left: 8px;margin-bottom: 2px;font-size: 30px;">PREV</a>
      	<a class="btn btn-primary text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-right: 2px;margin-bottom: 2px;position: absolute;right: 8px;font-size: 30px;">NEXT</a>
    	</footer>

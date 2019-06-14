@@ -15,10 +15,12 @@ import java.util.Map;
 import it.project.dto.Interval;
 import it.project.dto.Profile;
 import it.project.dto.Program;
+import it.project.dto.Room;
 import it.project.enums.DayMoment;
 import it.project.enums.DayName;
 import it.project.enums.DayType;
 import it.project.enums.Season;
+import it.project.enums.SystemType;
 import it.project.utils.DbIdentifiers;
 import it.project.utils.ProfileUtil;
 
@@ -203,5 +205,76 @@ public class DBClass {
 		
 	}
 	
+	public static Program getProfileByName(String profileName) {
+		Statement statement;
+		List<Profile> profiles = new ArrayList<>();
+		try {
+			statement = conn.createStatement();
+			String query = "SELECT * from profiles where ID_PROFILE = '" + profileName + "'";
+			ResultSet result = statement.executeQuery(query);
+			while (result.next()) {
+				Profile profile = ProfileUtil.getProfile(result);
+				profiles.add(profile);
+			}
+			Program program = ProfileUtil.getProgramFromProfile(profiles);
+			return program;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	
+	public static int getRoomLastTemp(String roomId) {
+		Statement statement;
+		List<Profile> profiles = new ArrayList<>();
+		try {
+			statement = conn.createStatement();
+			int temperature = -1;
+			String query = "SELECT TEMPERATURE from temperatures where ID_ROOM = '" + roomId + "' order by timestamp desc limit 1";
+			ResultSet result = statement.executeQuery(query);
+			while (result.next()) {
+				temperature = result.getInt("TEMPERATURE");
+			}
+			return temperature;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
+	
+	
+	public static Map<String,Room> getRooms(){
+		
+		Map<String,Room> rooms = new HashMap<>();
+		Statement statement;
+		try {
+			statement = conn.createStatement();
+			String query = "SELECT * from rooms";
+			ResultSet result = statement.executeQuery(query);
+			while (result.next()) {
+				String idRoom = result.getString("ID_ROOM");
+				String roomName = result.getString("ROOM_NAME");
+				int idAirCond = result.getInt("ID_AIR_COND");
+				boolean connState = result.getBoolean("CONN_STATE");
+				String summerProfileName = result.getString("ID_PROFILE_SUMMER");
+				String winterProfileName = result.getString("ID_PROFILE_WINTER");
+				int manualTemp = result.getInt("MANUAL_TEMP");
+				SystemType manualSystem = SystemType.valueOf(result.getString("MANUAL_SYSTEM"));
+				
+				Program summerProfile = getProfileByName(summerProfileName);
+				Program winterProfile = getProfileByName(winterProfileName);
+				
+				Room room = new Room(idRoom,roomName,idAirCond,connState, winterProfile,summerProfile, manualTemp, manualSystem);
+				rooms.put(idRoom, room);
+			}
+			
+			return rooms;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 	
 }

@@ -1,4 +1,4 @@
-<%@page import="it.project.db.MQTTClient"%>
+<%@page import="it.project.db.MQTTDbSync"%>
 <%@page import="it.project.utils.DbIdentifiers"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -34,7 +34,7 @@
 	//Setup connection e dbSync
 	try{
 		DBClass.getConnection(DbIdentifiers.LOCAL);
-		MQTTClient.setConnection(DbIdentifiers.LOCAL);
+		MQTTDbSync.setConnection(DbIdentifiers.LOCAL);
 	}
 	catch(Exception e){
 %>
@@ -44,7 +44,7 @@
 %>
 
 
-
+<c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
 
 
 <body>

@@ -21,8 +21,8 @@
 </head>
 
 <c:set var="roomId" scope="session" value="${param.roomId}"/>
-<c:set var="currentProfileWinter" scope="page" value="<%=DBClass.getRoomProfile(request.getParameter(\"roomId\"), Season.WINTER)%>"/>
-<c:set var="currentProfileSummer" scope="page" value="<%=DBClass.getRoomProfile(request.getParameter(\"roomId\"), Season.SUMMER)%>"/>
+<c:set var="currentProfileWinter" scope="page" value="${roomMap[roomId].winterProfile}"/>
+<c:set var="currentProfileSummer" scope="page" value="${roomMap[roomId].summerProfile}"/>
 
 
 <%session.setAttribute("caller", "roomManagementItem.jsp"); //todo aggiungere eventuale parametro ?nome=cucina%>
@@ -32,7 +32,7 @@
    			<img src="../images/ios-arrow-round-back-white.svg" style="position:absolute; left: 0px; top: 0px; height: 60px; width: 60px;">
    		</a>
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
-        	<br>${param.roomName}<br><br></a>
+        	<br>${roomMap[roomId].roomName}<br><br></a>
         </h1>
         
         
@@ -46,14 +46,14 @@
             <div class="tab-content">
                 <div class="tab-pane active" role="tabpanel" id="tab-1" style="margin: 16px;">            
 	                <jsp:include page="roomManagementTabView.jsp">
-	                	<jsp:param name="profile" value="${currentProfileWinter}"/>
+	                	<jsp:param name="profile" value="${currentProfileWinter.name}"/>
 	                	<jsp:param name="season" value="<%=Season.WINTER%>"/>
 	                </jsp:include>			 
                	</div>
                	 
            		<div class="tab-pane" role="tabpanel" id="tab-2" style="margin: 16px;">
                  	<jsp:include page="roomManagementTabView.jsp">
-	                	<jsp:param name="profile" value="${currentProfileSummer}"/>
+	                	<jsp:param name="profile" value="${currentProfileSummer.name}"/>
 	                	<jsp:param name="season" value="<%=Season.SUMMER%>"/>
 	                </jsp:include>	
                	</div>
