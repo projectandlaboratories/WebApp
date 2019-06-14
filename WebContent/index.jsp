@@ -50,6 +50,8 @@ String targetTemp="17.5";
 String act = SystemType.HOT.toString();
 
 %>
+<c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
+
 <body onload=initializeParameters()>
     <div id="wrapper">
         <div id="sidebar-wrapper" style="background-color: #2C3E50;">
@@ -245,9 +247,9 @@ String act = SystemType.HOT.toString();
     
     	function onDecreaseClick(){
     		var currentTemp = parseFloat(targetTemp.value);
-    		if(currentTemp<=16.0){
+    		if(currentTemp<=16.0)
     			return;
-    		}
+    		
     		targetTemp.value=Number(currentTemp - 0.1).toFixed(1);
     		targetTempShown.innerHTML = targetTemp.value;
     	}
