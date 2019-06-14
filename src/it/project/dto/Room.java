@@ -12,12 +12,12 @@ public class Room {
 	private Program winterProfile;
 	private Program summerProfile;
 	private Mode mode;
-	private int manualTemp;
+	private double manualTemp;
 	private SystemType manualSystem;
 	
 	
 	public Room(String room, String roomName, int idAirCond, boolean connState, Program winterProfile,
-			Program summerProfile, Mode mode, int manualTemp, SystemType manualSystem) {
+			Program summerProfile, Mode mode, double manualTemp, SystemType manualSystem) {
 		super();
 		this.room = room;
 		this.roomName = roomName;
@@ -101,12 +101,12 @@ public class Room {
 	}
 
 
-	public int getManualTemp() {
+	public double getManualTemp() {
 		return manualTemp;
 	}
 
 
-	public void setManualTemp(int manualTemp) {
+	public void setManualTemp(double manualTemp) {
 		this.manualTemp = manualTemp;
 	}
 

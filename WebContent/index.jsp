@@ -53,6 +53,7 @@
 <%
 Map<String,Room> roomMap = (Map<String,Room>) session.getAttribute("roomMap");
 String currentRoomId = "id1";
+session.setAttribute("currentRoomId", currentRoomId);
 Room currentRoom = roomMap.get(currentRoomId);
 
 String mode=currentRoom.getMode().toString();
@@ -67,7 +68,6 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 	//TODO prendi act in base alla stagione
 	act = SystemType.HOT.toString();
 }
-
 
 %>
 
@@ -95,36 +95,25 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
                 </h1>
                 
                 <div class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px ">
-                    <div style="height:100%; display: inline-grid">
-                    	<img style="margin-left:8px; margin-right:8px; margin-top:12px; margin-bottom:16px; height:30px;" src="images/ios-flame-primary.svg">
-                    	<img style="margin-left:8px; margin-right:8px; margin-top:12px; margin-bottom:16px; height:30px;" src="images/ios-snow-primary.svg">
-                    	<img style="margin-left:8px; margin-right:8px; margin-top:12px; margin-bottom:16px; height:30px;" src="images/ios-thermometer-primary.svg">
-                    	<img style="margin-left:8px; margin-right:8px; margin-top:12px; margin-bottom:16px; height:30px;" src="images/ios-flower-primary.svg">
-                    </div>
-                    <!-- div id="container">
-					    <div id="left">Left Side Menu</div>
-					    <div id="middle">Random Content</div>
-					    <div id="right">Right Side Menu</div>
-					</div>  -->
+                   
+                   	<iframe src="pages/indexIcons.jsp" scrolling="no" style="height: 250px" frameBorder="0"></iframe>
+                   
                     <div style="position:absolute; width:100%; height:100%; margin-left: 64px;">
                			
-               				<iframe src="pages/temperature.jsp" frameBorder="0">
-               				
-               				</iframe>
-               			
-               			<!--  div id="middle">Random Content</div>-->
+             			<iframe src="pages/temperature.jsp" style="height: 100%; width: 50%" frameBorder="0"></iframe>				    	
+				    	 
 				    	<div id="right">
-					    	<form action="<%=request.getContextPath()+"/newProgramServlet"%>" method="POST">
+					    	<form action="<%=request.getContextPath()+"/UpdateMode"%>" method="POST">
 					    	
 					    		
-					    		<input type="hidden" name="mode" value=<%=mode%>>   
-					    		<input type="hidden" name="targetTemp" value=<%=targetTemp%>>  
-					    		<input type="hidden" name="act" value=<%=act%>>
+					    		<input type="hidden" id="mode" name="mode" value=<%=mode%>>   
+					    		<input type="hidden" id="targetTemp" name="targetTemp" value=<%=targetTemp%>>  
+					    		<input type="hidden" id="act" name="act" value=<%=act%>>
 					    		          
 					    		<span id="targetTempShown" style="font-size:600%; color: #2C3E50; position:absolute; right: 100px; top:25px;"></span>
 					    	
 						    	<div style="position:absolute; bottom: 0px; right:0px; height: 80px;font-size: 60px;">
-				              		<button disabled id=<%=SystemType.HOT%> onclick="onHotSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img id="hotImage" src="images/ios-flame-primary.svg"></button>
+				              		<button id=<%=SystemType.HOT%> onclick="onHotSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white; "><img id="hotImage" src="images/ios-flame-primary.svg"></button>
 				              		<button id=<%=SystemType.COLD%> onclick="onColdSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img id="coldImage" src="images/ios-snow-primary.svg"></button>
 				              		<button onclick="onModeClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img id="manualImage" src="images/md-hand-primary.svg" ></button>
 		                			<button type="submit" name="action" value="changeManualProgrammableMode" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img src="images/ios-checkmark-primary.svg"></button>
@@ -143,12 +132,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
                		</div>  
                     
                     
-                    <!-- div class="btn-group btn-group-vertical" role="group" style="right: 8px;position: absolute;width: 80px; top:20%;">
-                    <button class="btn btn-primary" type="button" style="margin-bottom: 16px;align-self: end;padding-right: 8px;padding-left: 8px;">
-                    	<img src="images/ios-add-white.svg" ></img>
-                    	</button>
-                   	<button class="btn btn-primary" type="button" style="padding-right: 8px;padding-left: 8px;">
-                   		<img src="images/ios-remove-white.svg" ></img></button></div>  -->
+                    
                 </div>
 
                <footer class="d-flex d-md-flex d-lg-flex align-items-center align-items-md-center align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle;">
@@ -176,23 +160,24 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     var decreaseButton = document.getElementById("decrease");
     var targetTempShown = document.getElementById("targetTempShown");
     //inizializzale in qualche modo, in una funzione eseguita al caricamento della pagina
-    var mode = document.getElementsByName("mode");
-    var targetTemp = document.getElementsByName("targetTemp");
-    var act = document.getElementsByName("act");
+    var mode = document.getElementById("mode");
+    var targetTemp = document.getElementById("targetTemp");
+    var act = document.getElementById("act");
     
     	//ok
     	function initializeParameters(){
     		mode.value="<%=mode%>"
+    		act.value="<%=act%>"
+    	    		
     		updateModeButton();
     		
     		targetTemp.value="<%=targetTemp%>"
     		targetTempShown.innerHTML ="<%=targetTemp%>"
     		
-    		act.value="<%=act%>"
-    		updateActButtons();
+    		
     		
     		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  		
-    		
+    		console.log(document.getElementById("mode").value+" "+document.getElementById("targetTemp").value+" "+ document.getElementById("act").value);  	
     	}
     
     	function onHotSystemClick(){
@@ -236,10 +221,10 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		//cambia colore alla manina
     		increaseButton.disabled = false;
     		decreaseButton.disabled = false;
-    		hotSystemButton.removeAttribute("disabled");
-    		coldSystemButton.removeAttribute("disabled");
+    		hotSystemButton.style.display = "-webkit-inline-box";
+    		coldSystemButton.style.display = "-webkit-inline-box";  
     		updateActButtons();
-    		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
+    		//console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
     	}
     	
     	
@@ -251,9 +236,10 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		//cambia colore alla manina		
     		increaseButton.disabled = true;
     		decreaseButton.disabled = true;
-    		hotSystemButton.setAttribute("disabled","disabled");
-    		coldSystemButton.setAttribute("disabled","disabled");
-    		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
+    		hotSystemButton.style.display = "none";
+    		coldSystemButton.style.display = "none";   		
+
+    		//console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
     	}
     	
     	function onModeClick(){

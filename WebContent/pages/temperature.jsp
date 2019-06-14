@@ -8,7 +8,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-<div id="left" style="font-size:700%; color: #2C3E50;">
+<div id="left" style="font-size:780%; font-family: Roboto, sans-serif; color: #2C3E50;">
 21.5°
 </div>
 </body>

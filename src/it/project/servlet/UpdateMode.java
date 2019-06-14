@@ -6,6 +6,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import it.project.enums.*;
+import it.project.db.DBClass;
 
 /**
  * Servlet implementation class UpdateMode
@@ -28,6 +30,7 @@ public class UpdateMode extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
+		
 	}
 
 	/**
@@ -35,7 +38,14 @@ public class UpdateMode extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
+
+		Mode mode = Mode.valueOf((String)request.getParameter("mode"));
+		Double targetTemp=Double.parseDouble(request.getParameter("targetTemp"));
+		SystemType systemType = SystemType.valueOf(request.getParameter("act"));
+		//System.out.println(mode+" " + targetTemp+" "+systemType);
+		String currentRoomId = (String) request.getSession().getAttribute("currentRoomId");
+		DBClass.updateRoomMode(currentRoomId, mode, targetTemp, systemType);
+		response.sendRedirect("index.jsp");
 	}
 
 }

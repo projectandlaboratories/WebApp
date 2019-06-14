@@ -181,6 +181,22 @@ public class DBClass {
 		
 	}
 	
+	public static void updateRoomMode(String roomId, Mode mode, Double targetTemp, SystemType systemType) {
+		Statement statement;
+		try {
+			statement = conn.createStatement();
+			String query = "UPDATE rooms SET MODE= '" + mode + "', MANUAL_TEMP= '" + targetTemp + "', MANUAL_SYSTEM= '" + systemType 
+					+ "' WHERE ID_ROOM = '" + roomId + "'" ;
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+
+	
 	public static String getRoomProfile(String roomId, Season season) {
 		
 		Statement statement;
@@ -257,7 +273,7 @@ public class DBClass {
 				String summerProfileName = result.getString("ID_PROFILE_SUMMER");
 				String winterProfileName = result.getString("ID_PROFILE_WINTER");
 				Mode mode = Mode.valueOf(result.getString("MODE"));
-				int manualTemp = result.getInt("MANUAL_TEMP");
+				double manualTemp = result.getDouble("MANUAL_TEMP");
 				SystemType manualSystem = SystemType.valueOf(result.getString("MANUAL_SYSTEM"));
 				
 				Program summerProfile = getProfileByName(summerProfileName);
