@@ -100,7 +100,7 @@ public class DBClass {
 									"VALUES ('"+name+"','"+day+"','"+dayType+"','"+interval.getDayMoment()+"',"+
 									interval.getStartHour()+","+interval.getStartMin()+","+interval.getEndHour()+","+interval.getEndMin()+","+interval.getTemperature()+")" ;
 					statement.executeUpdate(query);
-					MQTTClient.sendMessage(query);
+					MQTTDbSync.sendMessage(query);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -134,7 +134,7 @@ public class DBClass {
 			statement = conn.createStatement();
 			String query = "DELETE from profiles where id_profile='"+name+"'";
 			statement.executeUpdate(query);
-			MQTTClient.sendMessage(query);
+			MQTTDbSync.sendMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -176,7 +176,7 @@ public class DBClass {
 			statement = conn.createStatement();
 			String query = "UPDATE rooms SET ID_PROFILE_" + season.name() + "= '" + profileName + "' WHERE ID_ROOM = '" + roomId + "'" ;
 			statement.executeUpdate(query);
-			MQTTClient.sendMessage(query);
+			MQTTDbSync.sendMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
