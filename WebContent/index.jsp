@@ -85,25 +85,27 @@
                			<div id="left" style="font-size:900%; color: #2C3E50;">21.5</div>
                			<!--  div id="middle">Random Content</div>-->
 				    	<div id="right">
-				    		<span  style="font-size:600%; color: #2C3E50; position:absolute; right: 80px; top:25px;">17.0</span>
+				    		<span  style="font-size:600%; color: #2C3E50; position:absolute; right: 100px; top:25px;">17.0</span>
 				    	
-					    	<div style="position:absolute; bottom: 0px; right:20px; height: 80px;font-size: 60px;">
+					    	<div style="position:absolute; bottom: 0px; right:0px; height: 80px;font-size: 60px;">
 			              		<button class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 80px;height: 80px;background-color: rgb(255,255,255);"><img src="images/ios-flame-primary.svg"></button>
 			              		<button class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 80px;height: 80px;background-color: rgb(255,255,255);"><img src="images/ios-snow-primary.svg"></button>
 			              		<button class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 80px;height: 80px;background-color: rgb(255,255,255);"><img src="images/md-hand-primary.svg" ></button>
 	                		</div>
-				    		<input type="range" min="16" max="26" value="20" name="manual_temperature" style="transform:rotate(90deg); position:absolute; top:30%; right:-50px">
-				    		
-				    	</div>
+				    		<!-- input type="range" min="16" max="26" value="20" name="manual_temperature" style="transform:rotate(90deg); position:absolute; top:30%; right:-50px">
+				    		 -->
+				    		 
+				    		 <div class="btn-group btn-group-vertical" role="group" style="right: 8px;position: absolute;width: 65px; top:10px;">
+			                    <button class="btn btn-primary" type="button" style="margin-bottom: 16px;align-self: end;padding-right: 8px;padding-left: 8px;">
+			                    	<img src="images/ios-add-white.svg" ></img>
+			                    </button>
+			                   	<button class="btn btn-primary" type="button" style="padding-right: 8px;padding-left: 8px;">
+			                   		<img src="images/ios-remove-white.svg" ></img></button></div> 
+					    	</div>
                		</div>  
                     
                     
-                    <!-- div class="btn-group btn-group-vertical" role="group" style="right: 8px;position: absolute;width: 80px; top:20%;">
-                    <button class="btn btn-primary" type="button" style="margin-bottom: 16px;align-self: end;padding-right: 8px;padding-left: 8px;">
-                    	<img src="images/ios-add-white.svg" ></img>
-                    	</button>
-                   	<button class="btn btn-primary" type="button" style="padding-right: 8px;padding-left: 8px;">
-                   		<img src="images/ios-remove-white.svg" ></img></button></div>  -->
+                    
                 </div>
 
                <footer class="d-flex d-md-flex d-lg-flex align-items-center align-items-md-center align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle;">
