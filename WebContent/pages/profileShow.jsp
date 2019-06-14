@@ -18,12 +18,7 @@
 
 </head>
 
-<%//ho messo currentProfile come variabile di sessione per poterla referenziare in profileBars %>
-<c:forEach items="${profileList}" var="profileItem">
-	  <c:if test = "${profileItem.name eq param.profile}">
-	  	<c:set var="currentProfile" scope="session" value="${profileItem}"/>
-	  </c:if>
-</c:forEach>  
+<c:set var="currentProfile" scope="session" value="${profileMap[param.profile]}"/> 
 
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
@@ -38,7 +33,7 @@
     <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; margin-top:3%">
 
     	
-    	<jsp:include page="profileBars.jsp" /> 
+    	<jsp:include page="profileBars.jsp" />
     		   
   
 	    <div style="display: inline-flex; text-align: center; margin-top:50px">
