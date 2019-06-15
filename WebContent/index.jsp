@@ -1,10 +1,12 @@
-<%@page import="it.project.enums.Mode"%>
-<%@page import="it.project.enums.SystemType"%>
+<%@page import="it.project.utils.ProfileUtil"%>
+<%@page import="it.project.enums.*"%>
 <%@page import="it.project.db.MQTTDbSync"%>
 <%@page import="it.project.utils.DbIdentifiers"%>
 <%@page import="java.text.DecimalFormat"%>
 <%@page import="java.util.*"%>
 <%@page import="it.project.dto.Room"%>
+<%@page import="it.project.dto.Program"%>
+<%@page import="it.project.dto.Interval"%>
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -55,18 +57,20 @@ Map<String,Room> roomMap = (Map<String,Room>) session.getAttribute("roomMap");
 String currentRoomId = "id1";
 session.setAttribute("currentRoomId", currentRoomId);
 Room currentRoom = roomMap.get(currentRoomId);
+Date date =  new Date();
+Season season;
+
+
 
 String mode=currentRoom.getMode().toString();
-String targetTemp;
+String targetTemp="0";
 String act;
 if(currentRoom.getMode().equals(Mode.MANUAL)){	
 	targetTemp=Double.toString(currentRoom.getManualTemp());	
 	act = SystemType.HOT.toString();
 }else{
-	//TODO prendi targetTemp da temperature
-	targetTemp="17.5";	
-	//TODO prendi act in base alla stagione
-	act = SystemType.HOT.toString();
+	targetTemp = ProfileUtil.getCurrentTemperature(currentRoom);	
+	act = SystemType.HOT.toString(); //non è visualizzato
 }
 
 %>
@@ -88,8 +92,8 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
                 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;vertical-align: middle;">
                 	<a class="btn btn-link d-xl-flex align-items-xl-center" role="button" id="menu-toggle" href="#menu-toggle" style="height: 70px;">
                 		<img src="images/md-reorder-white.svg" style="height: 100%;"></a>
-                	<a class="navbar-brand text-left flex-fill" href="#" style="margin-left: 16px;padding-top: 5px;height: auto;margin-top: 0px;margin-bottom: 0px;min-width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;font-size: 30px;"><%=new Date().toString()%></a>
-                    <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" type="button" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px; top: 0px; ">
+                	<a class="navbar-brand text-left flex-fill" id="date" style="margin-left: 16px;padding-top: 5px;height: auto;margin-top: 0px;margin-bottom: 0px;min-width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;font-size: 30px;"></a>
+                    <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" onclick="window.location.href='pages/weekendMode.jsp'" type="button" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px; top: 0px; ">
                         	<img src="images/ios-car-white.svg"  style="width:100%;" ></img>
                      </button> 
                 </h1>
@@ -116,7 +120,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 				              		<button id=<%=SystemType.HOT%> onclick="onHotSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white; "><img id="hotImage" src="images/ios-flame-primary.svg"></button>
 				              		<button id=<%=SystemType.COLD%> onclick="onColdSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img id="coldImage" src="images/ios-snow-primary.svg"></button>
 				              		<button onclick="onModeClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img id="manualImage" src="images/md-hand-primary.svg" ></button>
-		                			<button type="submit" name="action" value="changeManualProgrammableMode" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img src="images/ios-checkmark-primary.svg"></button>
+		                			<button type="submit" name="ACTION" value="changeManualProgrammableMode" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img src="images/ios-checkmark-primary.svg"></button>
 		                		</div>
 					    		
 					    		 <div class="btn-group btn-group-vertical" role="group" style="right: 8px;position: absolute;width: 65px; top:10px;">
@@ -163,23 +167,32 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     var mode = document.getElementById("mode");
     var targetTemp = document.getElementById("targetTemp");
     var act = document.getElementById("act");
+	var timerID = setInterval(function() {
+		setDate();
+		if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
+			setProfileTemperature();
+		}
+		
+	}, 60 * 1000); 
     
-    	//ok
+
     	function initializeParameters(){
     		mode.value="<%=mode%>"
     		act.value="<%=act%>"
-    	    		
-    		updateModeButton();
+    	    updateModeButton();
     		
     		targetTemp.value="<%=targetTemp%>"
     		targetTempShown.innerHTML ="<%=targetTemp%>"
-    		
-    		
-    		
+    		   		
     		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  		
-    		console.log(document.getElementById("mode").value+" "+document.getElementById("targetTemp").value+" "+ document.getElementById("act").value);  	
+    		
+    		setDate();
+    		if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
+    			setProfileTemperature();
+    		}
     	}
-    
+    	
+    	
     	function onHotSystemClick(){
     		act.value="<%=SystemType.HOT%>"
     		//seleziona hot
@@ -218,7 +231,6 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		console.log("enable Manual!");
     		document.getElementById("manualImage").setAttribute('src','images/md-hand-primary.svg');
     		mode.value="<%=Mode.MANUAL%>"
-    		//cambia colore alla manina
     		increaseButton.disabled = false;
     		decreaseButton.disabled = false;
     		hotSystemButton.style.display = "-webkit-inline-box";
@@ -232,8 +244,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     	function disableManualMode(){
     		console.log("Disable Manual!");
     		document.getElementById("manualImage").setAttribute('src','images/md-hand-not-selected.svg');
-    		mode.value="<%=Mode.PROGRAMMABLE%>"
-    		//cambia colore alla manina		
+    		mode.value="<%=Mode.PROGRAMMABLE%>"	
     		increaseButton.disabled = true;
     		decreaseButton.disabled = true;
     		hotSystemButton.style.display = "none";
@@ -263,11 +274,25 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		if(currentTemp<=16.0){
     			return;
     		}
-    			
-    		
     		targetTemp.value=Number(currentTemp - 0.1).toFixed(1);
     		targetTempShown.innerHTML = targetTemp.value;
     	}
+    	
+
+    	function setDate(){
+    		var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute:'numeric'};
+    	    var d = new Date();
+    	    var n = d.toLocaleDateString("en-US",options);
+    	    document.getElementById("date").innerHTML = n;
+    	}
+    	
+		function setProfileTemperature(){
+			targetTemp.value="<%=ProfileUtil.getCurrentTemperature(currentRoom)%>";	
+    	}
+		
+	
+    	//clearInterval(timerID); // The setInterval it cleared and doesn't run anymore.
+    	
     </script>
     <!-- <script src="assets/js/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>

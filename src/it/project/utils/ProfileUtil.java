@@ -3,6 +3,8 @@ package it.project.utils;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,7 @@ import java.util.Map;
 import it.project.dto.Interval;
 import it.project.dto.Profile;
 import it.project.dto.Program;
+import it.project.dto.Room;
 import it.project.enums.DayMoment;
 import it.project.enums.DayName;
 import it.project.enums.DayType;
@@ -115,5 +118,33 @@ public class ProfileUtil {
 			min=new String("0"+min);
 		}
 		return new String(hour+":"+min);	
+	}
+	
+	public static String getCurrentTemperature(Room currentRoom) {
+		String temperature = "0";
+		Program program;
+		Date today = new Date(); 
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(today); 
+		int month=cal.get(Calendar.MONTH);
+		
+		if(month<3 ||month>9){		
+			program=currentRoom.getWinterProfile();
+		}else{		
+			program=currentRoom.getSummerProfile();
+		}
+
+		int dayIndex=(cal.get(Calendar.DAY_OF_WEEK)+7-2)%7;
+		DayName day=DayName.values()[dayIndex];
+		DayType dayType = program.getDays().get(day);
+		int now = cal.get(Calendar.HOUR)*60 + cal.get(Calendar.MINUTE);
+		
+		for(Interval interval:program.getIntervals().get(dayType)){
+			if(interval.getStartHour()*60+interval.getStartMin() <= now && interval.getEndHour()*60+interval.getEndMin() >= now){
+				temperature = Double.toString(interval.getTemperature());
+				break;
+			}
+		}
+		return temperature;
 	}
 }

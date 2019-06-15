@@ -1,6 +1,11 @@
 package it.project.servlet;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,14 +43,35 @@ public class UpdateMode extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
-		Mode mode = Mode.valueOf((String)request.getParameter("mode"));
-		Double targetTemp=Double.parseDouble(request.getParameter("targetTemp"));
-		SystemType systemType = SystemType.valueOf(request.getParameter("act"));
-		//System.out.println(mode+" " + targetTemp+" "+systemType);
-		String currentRoomId = (String) request.getSession().getAttribute("currentRoomId");
-		DBClass.updateRoomMode(currentRoomId, mode, targetTemp, systemType);
-		response.sendRedirect("index.jsp");
+		
+		String action = request.getParameter("ACTION");
+		
+		switch(action) {
+		 	case "changeManualProgrammableMode":
+		 		Mode mode = Mode.valueOf((String)request.getParameter("mode"));
+				Double targetTemp=Double.parseDouble(request.getParameter("targetTemp"));
+				SystemType systemType = SystemType.valueOf(request.getParameter("act"));
+				//System.out.println(mode+" " + targetTemp+" "+systemType);
+				String currentRoomId = (String) request.getSession().getAttribute("currentRoomId");
+				DBClass.updateRoomMode(currentRoomId, mode, targetTemp, systemType);
+				response.sendRedirect("index.jsp");
+		 		break;
+		 	case "setWeekendMode"://todo weekend mode
+		 		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
+		 		Date date;
+				try {
+					date = (Date)formatter.parse(request.getParameter("date"));
+					System.out.println(date);
+					//todo convertire in stringa sql e salvare su db
+					
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+		 		
+		 		break;
+		}
+		
 	}
 
 }
