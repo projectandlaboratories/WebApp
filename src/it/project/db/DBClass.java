@@ -38,9 +38,9 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat", "root", "ily2marzo"); //Ilaria
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
@@ -289,5 +289,40 @@ public class DBClass {
 			return null;
 		}
 	}
+	
+	public static ActuatorState getActuatorState(String roomId) {
+		Statement statement;
+		try {
+			statement = conn.createStatement();
+			ActuatorState state = null;
+			String query = "SELECT STATE from actuators where ID_ROOM = '" + roomId + "' order by timestamp desc limit 1";
+			ResultSet result = statement.executeQuery(query);
+			while (result.next()) {
+				state = ActuatorState.valueOf(result.getString("STATE"));
+			}
+			return state;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static boolean isWeekendMode() {
+		Statement statement;
+		boolean isWeekendMode = false;
+		try {
+			statement = conn.createStatement();
+			String query = "SELECT START_TIME from weekend_mode where WMODE = true and END_TIME > now();";
+			ResultSet result = statement.executeQuery(query);
+			while (result.next()) {
+				isWeekendMode = true;
+			}
+			return isWeekendMode;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	
 }

@@ -7,6 +7,9 @@
 <%@page import="it.project.dto.Room"%>
 <%@page import="it.project.dto.Program"%>
 <%@page import="it.project.dto.Interval"%>
+    <%@page import="java.util.Date"%>
+    <%@page import="java.text.DateFormat"%>
+    <%@page import="java.text.SimpleDateFormat"%>
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
@@ -54,12 +57,12 @@
 <c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
 <%
 Map<String,Room> roomMap = (Map<String,Room>) session.getAttribute("roomMap");
-String currentRoomId = "id1";
+String currentRoomId = "id1";  //TODO prendere da DB
 session.setAttribute("currentRoomId", currentRoomId);
 Room currentRoom = roomMap.get(currentRoomId);
 Date date =  new Date();
 Season season;
-
+DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
 
 
 String mode=currentRoom.getMode().toString();
@@ -82,7 +85,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
             <ul class="sidebar-nav">
                 <li class="sidebar-brand" style="height: 70px;"> </li>
                 <li> <a class="text-light" href="index.jsp" style="font-size: 20px;">Home</a></li>
-                <li> <a class="text-light" href="pages/profileList.jsp" style="font-size: 20px;">Temperature Profile</a></li>
+                <li> <a class="text-light" href="pages/weekendMode.jsp" style="font-size: 20px;">Temperature Profile</a></li>
                 <li> <a class="text-light" href="pages/roomManagement.jsp" style="font-size: 20px;">Room Management</a></li>
                 <li> <a class="text-light" href="pages/networkSettings.jsp" style="font-size: 20px;">Network</a></li>
             </ul>
@@ -93,18 +96,70 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
                 	<a class="btn btn-link d-xl-flex align-items-xl-center" role="button" id="menu-toggle" href="#menu-toggle" style="height: 70px;">
                 		<img src="images/md-reorder-white.svg" style="height: 100%;"></a>
                 	<a class="navbar-brand text-left flex-fill" id="date" style="margin-left: 16px;padding-top: 5px;height: auto;margin-top: 0px;margin-bottom: 0px;min-width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;font-size: 30px;"></a>
-                    <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" onclick="window.location.href='pages/weekendMode.jsp'" type="button" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px; top: 0px; ">
-                        	<img src="images/ios-car-white.svg"  style="width:100%;" ></img>
+                    <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#exampleModalCenter" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px; top: 0px; ">
+                        	<img id="weekendIcon" src="images/ios-car-white.svg"  style="width:100%;" ></img>
                      </button> 
                 </h1>
-                
-                <div class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px ">
+
+                <c:set var="isWeekendMode" scope="page" value="true"/> <!-- TODO valore da prendere da db, probabilmente da mettere nell'iframe che si aggiorna-->
+                <c:choose>
+					<c:when test="${isWeekendMode eq true}">
+						<c:set var="inputDisable" scope="page" value="disabled"/>
+						<c:set var="popupText" scope="page" value="YOU ARE IN WEEKEND MODE UNTIL"/>
+						<c:set var="submitBtnText" scope="page" value="Stop weekend mode"/>
+						<c:set var="submitValueText" scope="page" value="removeWeekendMode"/>
+					</c:when>
+					<c:otherwise>
+						<c:set var="inputDisable" scope="page" value=""/>
+						<c:set var="popupText" scope="page" value="WHEN WILL YOU COME BACK?"/>
+						<c:set var="submitBtnText" scope="page" value="Save changes"/>	
+						<c:set var="submitValueText" scope="page" value="setWeekendMode"/>					
+					</c:otherwise>
+				</c:choose>
+        
+                <!-- Weekend mode Popup -->
+				<div class="modal fade" id="exampleModalCenter" tabindex="-1"
+					role="dialog" aria-labelledby="exampleModalCenterTitle"
+					aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLongTitle">
+									${popupText}
+								</h5>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<form action="<%=request.getContextPath() + "/UpdateMode"%>" method="POST">
+								<div class="modal-body">
+										<input type="datetime-local" name="date" ${inputDisable}
+											value="<%=dateFormat.format(date)%>"
+											style="width: 70%; margin-bottom: 2%; height: 60px; margin-left: 15%; text-align: center;"></input>					
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary"
+										data-dismiss="modal">Close</button>
+									<button type="submit" name="ACTION" value="${submitValueText}" class="btn btn-primary">${submitBtnText}</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+				<div class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px ">
                    
-                   	<iframe src="pages/indexIcons.jsp" scrolling="no" style="height: 250px" frameBorder="0"></iframe>
+                   <div style="height:100%; display: inline-grid">
+                    	<img id="hotIcon" style="margin-left:8px; margin-right:8px; margin-top:12px; margin-bottom:16px; height:30px;" src="images/ios-flame-primary.svg">
+                    	<img id="coldIcon" style="margin-left:8px; margin-right:8px; margin-top:12px; margin-bottom:16px; height:30px;" src="images/ios-snow-primary.svg">
+                    	<img id="antifreezeIcon" style="margin-left:8px; margin-right:8px; margin-top:12px; margin-bottom:16px; height:30px;" src="images/ios-thermometer-not-selected.svg">
+                    	<img id="fanIcon" style="margin-left:8px; margin-right:8px; margin-top:12px; margin-bottom:16px; height:30px;" src="images/ios-flower-not-selected.svg">
+                    </div>
                    
                     <div style="position:absolute; width:100%; height:100%; margin-left: 64px;">
                			
-             			<iframe src="pages/temperature.jsp" style="height: 100%; width: 50%" frameBorder="0"></iframe>				    	
+             			<div id="left" style="font-size:900%; color: #2C3E50;"><span id="currentTemp"></span></div>				    	
 				    	 
 				    	<div id="right">
 					    	<form action="<%=request.getContextPath()+"/UpdateMode"%>" method="POST">
@@ -156,8 +211,9 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     <script><%@include file="/assets/js/jquery.min.js"%></script> 
     <script><%@include file="/assets/bootstrap/js/bootstrap.min.js"%></script> 
     <script><%@include file="/assets/js/Sidebar-Menu.js"%></script> 
-   
+       
     <script type="text/javascript">
+    
     var hotSystemButton = document.getElementById("<%=SystemType.HOT%>");
     var coldSystemButton = document.getElementById("<%=SystemType.COLD%>");
     var increaseButton = document.getElementById("increase");
@@ -166,9 +222,12 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     //inizializzale in qualche modo, in una funzione eseguita al caricamento della pagina
     var mode = document.getElementById("mode");
     var targetTemp = document.getElementById("targetTemp");
+    var currentTemp = document.getElementById("currentTemp");
     var act = document.getElementById("act");
 	var timerID = setInterval(function() {
 		setDate();
+		setTemperature();
+		updateIcons();
 		if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
 			setProfileTemperature();
 		}
@@ -180,7 +239,8 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		mode.value="<%=mode%>"
     		act.value="<%=act%>"
     	    updateModeButton();
-    		
+    		updateIcons();
+    		setTemperature();
     		targetTemp.value="<%=targetTemp%>"
     		targetTempShown.innerHTML ="<%=targetTemp%>"
     		   		
@@ -289,6 +349,44 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 		function setProfileTemperature(){
 			targetTemp.value="<%=ProfileUtil.getCurrentTemperature(currentRoom)%>";	
     	}
+		
+		function setTemperature(){
+			currentTemp.innerHTML = "<%=DBClass.getRoomLastTemp(currentRoom.getRoom())%>°"
+		}
+		
+		function updateIcons(){
+			
+			var hotIcon = document.getElementById("hotIcon")
+			var coldIcon = document.getElementById("coldIcon")
+			var antifreezeIcon = document.getElementById("antifreezeIcon")
+			var fanIcon = document.getElementById("fanIcon")
+			var weekendIcon = document.getElementById("weekendIcon")
+			
+			var state = <%=DBClass.getActuatorState(currentRoom.getRoom())%>
+			
+			switch(state){
+			case <%=ActuatorState.HOT%>:
+				hotIcon.src = "images/ios-flame-primary.svg";
+				coldIcon.src = "images/ios-snow-not-selected.svg";
+				break;
+			case <%=ActuatorState.COLD%>:
+				hotIcon.src = "images/ios-flame-not-selected.svg";
+				coldIcon.src = "images/ios-snow-primary.svg";
+				break;
+			case <%=ActuatorState.OFF%>:
+				hotIcon.src = "images/ios-flame-not-selected.svg";
+				coldIcon.src = "images/ios-snow-not-selected.svg";
+				break;
+			}
+			
+			if(<%=DBClass.isWeekendMode()%>){
+				weekendIcon.src = "images/ios-car-primary.svg";
+			}
+			else{
+				weekendIcon.src = "images/ios-car-white.svg";
+			}
+			
+		}
 		
 	
     	//clearInterval(timerID); // The setInterval it cleared and doesn't run anymore.
