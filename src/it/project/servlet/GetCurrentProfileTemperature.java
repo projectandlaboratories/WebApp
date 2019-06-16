@@ -36,7 +36,7 @@ public class GetCurrentProfileTemperature extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String roomId = request.getParameter("roomId");
-		Room room=((Map<String,Room>) request.getSession(false).getAttribute("roomMap")).get(roomId);
+		Room room=DBClass.getRoomByName(roomId);
 		response.setContentType("text/html");
 		String temperature = ProfileUtil.getCurrentTemperature(room); 
 		response.getWriter().write(temperature);

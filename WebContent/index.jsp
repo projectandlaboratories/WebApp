@@ -101,51 +101,12 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
                      </button> 
                 </h1>
 
-                <c:set var="isWeekendMode" scope="page" value="true"/> <!-- TODO valore da prendere da db-->
-                <c:choose>
-					<c:when test="${isWeekendMode eq true}">
-						<c:set var="inputDisable" scope="page" value="disabled"/>
-						<c:set var="popupText" scope="page" value="YOU ARE IN WEEKEND MODE UNTIL"/>
-						<c:set var="submitBtnText" scope="page" value="Stop weekend mode"/>
-						<c:set var="submitValueText" scope="page" value="removeWeekendMode"/>
-					</c:when>
-					<c:otherwise>
-						<c:set var="inputDisable" scope="page" value=""/>
-						<c:set var="popupText" scope="page" value="WHEN WILL YOU COME BACK?"/>
-						<c:set var="submitBtnText" scope="page" value="Save changes"/>	
-						<c:set var="submitValueText" scope="page" value="setWeekendMode"/>					
-					</c:otherwise>
-				</c:choose>
         
                 <!-- Weekend mode Popup -->
 				<div class="modal fade" id="exampleModalCenter" tabindex="-1"
 					role="dialog" aria-labelledby="exampleModalCenterTitle"
 					aria-hidden="true">
-					<div class="modal-dialog modal-dialog-centered" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="exampleModalLongTitle">
-									${popupText}
-								</h5>
-								<button type="button" class="close" data-dismiss="modal"
-									aria-label="Close">
-									<span aria-hidden="true">&times;</span>
-								</button>
-							</div>
-							<form action="<%=request.getContextPath() + "/UpdateMode"%>" method="POST">
-								<div class="modal-body">
-										<input type="datetime-local" name="date" ${inputDisable}
-											value="<%=dateFormat.format(date)%>"
-											style="width: 70%; margin-bottom: 2%; height: 60px; margin-left: 15%; text-align: center;"></input>					
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary"
-										data-dismiss="modal">Close</button>
-									<button type="submit" name="ACTION" value="${submitValueText}" class="btn btn-primary">${submitBtnText}</button>
-								</div>
-							</form>
-						</div>
-					</div>
+					
 				</div>
 
 				<div class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px ">
@@ -390,7 +351,8 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					if (xmlHttpRequest.status == 200) {
 						var weekendIcon = document.getElementById("weekendIcon")
 						isWeekendMode = xmlHttpRequest.responseText
-						if(isWeekendMode){
+						setWeekendModePopupHtml(isWeekendMode)
+						if(isWeekendMode == "true"){
 							weekendIcon.src = "images/ios-car-primary.svg";
 						}
 						else{
@@ -407,8 +369,6 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 			xmlHttpRequest.send(null);
 		}
 		
-			
-		}
 		
 		function updateIcons(state){
 			
@@ -474,6 +434,47 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 			xmlHttpRequest.setRequestHeader("Content-Type",
 					"application/x-www-form-urlencoded");
 			xmlHttpRequest.send(null);
+		}
+		
+		function setWeekendModePopupHtml(isWeekendMode){
+			
+			if(isWeekendMode == "true"){
+				var inputDisable = "disabled"
+				var submitBtnText = "Stop weekend mode"
+				var submitValueText = "removeWeekendMode"
+			    var popupText = "YOU ARE IN WEEKEND MODE UNTIL"	
+			}
+			else{
+				var inputDisable = ""
+				var submitBtnText = "Save changes"
+				var submitValueText = "setWeekendMode"
+				var popupText = "WHEN WILL YOU COME BACK?"
+			}
+			
+			var formUrl = "<%=request.getContextPath() + "/UpdateMode"%>"
+			var date = "<%=dateFormat.format(date)%>"
+			
+			document.getElementById("exampleModalCenter").innerHTML = 
+			"<div class='modal-dialog modal-dialog-centered' role='document'>" +
+			"<div class='modal-content'>" +
+				"<div class='modal-header'>" +
+					"<h5 class='modal-title' id='exampleModalLongTitle'>" +
+						popupText +
+					"</h5>" +
+					"<button type='button' class='close' data-dismiss='modal' aria-label='Close'> <span aria-hidden='true'>&times;</span> </button>" +
+				"</div>" +
+				"<form action=' " + formUrl + "' method='POST'>" +
+					"<div class='modal-body'>" +
+							"<input type='datetime-local' name='date'" + inputDisable + " value='" + date + "' style='width: 70%; margin-bottom: 2%; height: 60px; margin-left: 15%; text-align: center;''></input>" +		
+					"</div>" +
+					"<div class='modal-footer'>" +
+						"<button type='button' class='btn btn-secondary'" +
+							"data-dismiss='modal'>Close</button>" +
+						"<button type='submit' name='ACTION' value=" + submitValueText + " class='btn btn-primary'> " + submitBtnText + "</button>" +
+					"</div>" +
+				"</form>" +
+			"</div>" +
+		"</div>";
 		}
 	
     	//clearInterval(timerID); // The setInterval it cleared and doesn't run anymore.

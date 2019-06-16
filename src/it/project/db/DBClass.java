@@ -323,6 +323,37 @@ public class DBClass {
 			return false;
 		}
 	}
+	
+	public static Room getRoomByName(String roomId) {
+		Statement statement;
+		Room room = null;
+		try {
+			statement = conn.createStatement();
+			String query = "SELECT * from rooms where ID_ROOM = '" + roomId + "'";
+			ResultSet result = statement.executeQuery(query);
+			while (result.next()) {
+				String idRoom = result.getString("ID_ROOM");
+				String roomName = result.getString("ROOM_NAME");
+				int idAirCond = result.getInt("ID_AIR_COND");
+				boolean connState = result.getBoolean("CONN_STATE");
+				String summerProfileName = result.getString("ID_PROFILE_SUMMER");
+				String winterProfileName = result.getString("ID_PROFILE_WINTER");
+				Mode mode = Mode.valueOf(result.getString("MODE"));
+				double manualTemp = result.getDouble("MANUAL_TEMP");
+				SystemType manualSystem = SystemType.valueOf(result.getString("MANUAL_SYSTEM"));
+				
+				Program summerProfile = getProfileByName(summerProfileName);
+				Program winterProfile = getProfileByName(winterProfileName);
+				
+				room = new Room(idRoom,roomName,idAirCond,connState, winterProfile,summerProfile,mode, manualTemp, manualSystem);
+			}
+			
+			return room;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	
 }
