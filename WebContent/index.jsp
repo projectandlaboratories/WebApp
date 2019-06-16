@@ -101,7 +101,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
                      </button> 
                 </h1>
 
-                <c:set var="isWeekendMode" scope="page" value="true"/> <!-- TODO valore da prendere da db, probabilmente da mettere nell'iframe che si aggiorna-->
+                <c:set var="isWeekendMode" scope="page" value="true"/> <!-- TODO valore da prendere da db-->
                 <c:choose>
 					<c:when test="${isWeekendMode eq true}">
 						<c:set var="inputDisable" scope="page" value="disabled"/>
@@ -227,21 +227,23 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 	var timerID = setInterval(function() {
 		setDate();
 		setTemperature();
-		updateIcons();
+		getActuatorState();
+		updateWeekendModeIcon();
 		if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
 			setProfileTemperature();
 		}
 		
-	}, 60 * 1000); 
+	}, 10 * 1000); 
     
 
     	function initializeParameters(){
     		mode.value="<%=mode%>"
     		act.value="<%=act%>"
     	    updateModeButton();
-    		updateIcons();
+    		getActuatorState();
+    		updateWeekendModeIcon();
     		setTemperature();
-    		targetTemp.value="<%=targetTemp%>"
+    		targetTemp.value="<%=targetTemp%>°"
     		targetTempShown.innerHTML ="<%=targetTemp%>"
     		   		
     		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  		
@@ -347,47 +349,132 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     	}
     	
 		function setProfileTemperature(){
-			targetTemp.value="<%=ProfileUtil.getCurrentTemperature(currentRoom)%>";	
+			var xmlHttpRequest = getXMLHttpRequest();
+			xmlHttpRequest.onreadystatechange = function() {
+				if (xmlHttpRequest.readyState == 4) {
+					if (xmlHttpRequest.status == 200) {
+						targetTemp.value= xmlHttpRequest.responseText + "°"
+					} else {
+						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+					}
+				}
+			};
+			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getCurrentProfileTemperature?roomId=<%=currentRoom.getRoom()%>", true);
+			xmlHttpRequest.setRequestHeader("Content-Type",
+					"application/x-www-form-urlencoded");
+			xmlHttpRequest.send(null);
     	}
 		
 		function setTemperature(){
-			currentTemp.innerHTML = "<%=DBClass.getRoomLastTemp(currentRoom.getRoom())%>°"
+			var xmlHttpRequest = getXMLHttpRequest();
+			xmlHttpRequest.onreadystatechange = function() {
+				if (xmlHttpRequest.readyState == 4) {
+					if (xmlHttpRequest.status == 200) {
+						currentTemp.innerHTML = xmlHttpRequest.responseText + "°"
+					} else {
+						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+					}
+				}
+			};
+			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getCurrentRoomTemperature?roomId=<%=currentRoom.getRoom()%>", true);
+			xmlHttpRequest.setRequestHeader("Content-Type",
+					"application/x-www-form-urlencoded");
+			xmlHttpRequest.send(null);
+			
 		}
 		
-		function updateIcons(){
+		function updateWeekendModeIcon(isWeekendMode){
+			var xmlHttpRequest = getXMLHttpRequest();
+			xmlHttpRequest.onreadystatechange = function() {
+				if (xmlHttpRequest.readyState == 4) {
+					if (xmlHttpRequest.status == 200) {
+						var weekendIcon = document.getElementById("weekendIcon")
+						isWeekendMode = xmlHttpRequest.responseText
+						if(isWeekendMode){
+							weekendIcon.src = "images/ios-car-primary.svg";
+						}
+						else{
+							weekendIcon.src = "images/ios-car-white.svg";
+						}
+					} else {
+						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+					}
+				}
+			};
+			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/isWeekendMode", true);
+			xmlHttpRequest.setRequestHeader("Content-Type",
+					"application/x-www-form-urlencoded");
+			xmlHttpRequest.send(null);
+		}
+		
+			
+		}
+		
+		function updateIcons(state){
 			
 			var hotIcon = document.getElementById("hotIcon")
 			var coldIcon = document.getElementById("coldIcon")
 			var antifreezeIcon = document.getElementById("antifreezeIcon")
 			var fanIcon = document.getElementById("fanIcon")
-			var weekendIcon = document.getElementById("weekendIcon")
-			
-			var state = <%=DBClass.getActuatorState(currentRoom.getRoom())%>
 			
 			switch(state){
-			case <%=ActuatorState.HOT%>:
+			case "<%=ActuatorState.HOT%>":
 				hotIcon.src = "images/ios-flame-primary.svg";
 				coldIcon.src = "images/ios-snow-not-selected.svg";
 				break;
-			case <%=ActuatorState.COLD%>:
+			case "<%=ActuatorState.COLD%>":
 				hotIcon.src = "images/ios-flame-not-selected.svg";
 				coldIcon.src = "images/ios-snow-primary.svg";
 				break;
-			case <%=ActuatorState.OFF%>:
+			case "<%=ActuatorState.OFF%>":
 				hotIcon.src = "images/ios-flame-not-selected.svg";
 				coldIcon.src = "images/ios-snow-not-selected.svg";
 				break;
 			}
-			
-			if(<%=DBClass.isWeekendMode()%>){
-				weekendIcon.src = "images/ios-car-primary.svg";
-			}
-			else{
-				weekendIcon.src = "images/ios-car-white.svg";
-			}
-			
+					
 		}
 		
+		function getXMLHttpRequest() {
+			var xmlHttpReq = false;
+			// to create XMLHttpRequest object in non-Microsoft browsers
+			if (window.XMLHttpRequest) {
+				xmlHttpReq = new XMLHttpRequest();
+			} else if (window.ActiveXObject) {
+				try {
+					// to create XMLHttpRequest object in later versions
+					// of Internet Explorer
+					xmlHttpReq = new ActiveXObject("Msxml2.XMLHTTP");
+				} catch (exp1) {
+					try {
+						// to create XMLHttpRequest object in older versions
+						// of Internet Explorer
+						xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
+					} catch (exp2) {
+						xmlHttpReq = false;
+					}
+				}
+			}
+			return xmlHttpReq;
+		}
+		/*
+		 * AJAX call starts with this function
+		 */
+		function getActuatorState() {
+			var xmlHttpRequest = getXMLHttpRequest();
+			xmlHttpRequest.onreadystatechange = function() {
+				if (xmlHttpRequest.readyState == 4) {
+					if (xmlHttpRequest.status == 200) {
+						updateIcons(xmlHttpRequest.responseText)
+					} else {
+						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+					}
+				}
+			};
+			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getActuatorState?roomId=<%=currentRoom.getRoom()%>", true);
+			xmlHttpRequest.setRequestHeader("Content-Type",
+					"application/x-www-form-urlencoded");
+			xmlHttpRequest.send(null);
+		}
 	
     	//clearInterval(timerID); // The setInterval it cleared and doesn't run anymore.
     	
