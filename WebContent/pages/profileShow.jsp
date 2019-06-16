@@ -17,6 +17,17 @@
    <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
 
 </head>
+<%String alertCode=request.getParameter("alert");
+%>
+
+<script type="text/javascript">
+var alertCode="<%=alertCode%>"
+if(alertCode==='assigned'){
+	alert("Current profile is assigned to at least one room!")
+}
+
+</script>
+
 
 <c:set var="currentProfile" scope="session" value="${profileMap[param.profile]}"/> 
 

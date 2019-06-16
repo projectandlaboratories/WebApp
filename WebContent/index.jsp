@@ -85,7 +85,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
             <ul class="sidebar-nav">
                 <li class="sidebar-brand" style="height: 70px;"> </li>
                 <li> <a class="text-light" href="index.jsp" style="font-size: 20px;">Home</a></li>
-                <li> <a class="text-light" href="pages/weekendMode.jsp" style="font-size: 20px;">Temperature Profile</a></li>
+                <li> <a class="text-light" href="pages/profileList.jsp" style="font-size: 20px;">Temperature Profile</a></li>
                 <li> <a class="text-light" href="pages/roomManagement.jsp" style="font-size: 20px;">Room Management</a></li>
                 <li> <a class="text-light" href="pages/networkSettings.jsp" style="font-size: 20px;">Network</a></li>
             </ul>
@@ -353,7 +353,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 						isWeekendMode = xmlHttpRequest.responseText
 						setWeekendModePopupHtml(isWeekendMode)
 						if(isWeekendMode == "true"){
-							weekendIcon.src = "images/ios-car-primary.svg";
+							weekendIcon.src = "images/ios-car-selected.svg";
 						}
 						else{
 							weekendIcon.src = "images/ios-car-white.svg";
