@@ -38,7 +38,7 @@
 #left, #middle, #right {display: inline-block; *display: inline; zoom: 1; vertical-align: top; font-size: 12px;}
 #left { background: auto; width:50%; text-align:center;}
 #middle {background: green;}
-#right {background: auto; position:absolute; right: 0px;width:50%;height:100%; text-align:center;}
+#right {background: auto; border-left:1px solid black; border-top:1px solid black; position:absolute; right: 0px;width:50%;height:100%; text-align:center;}
 </style>
 
 </head>
@@ -49,7 +49,7 @@
 	try{
 		DBClass.getConnection(user);
 		MQTTDbSync.setConnection(user);
-		//MQTTAppSensori.setConnection(user); TODO decommentare quando testeremo mqtt con AppSensori
+		MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
 	}
 	catch(Exception e){
 %>
@@ -83,7 +83,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 
 
 <body onload=initializeParameters()>
-    <div id="wrapper" class="toggled">
+    <div id="wrapper">
         <div id="sidebar-wrapper" style="background-color: #2C3E50;">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand" style="height: 70px;"> </li>
@@ -197,7 +197,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 			setProfileTemperature();
 		}
 		
-	}, 60 * 1000); 
+	}, 20 * 1000); 
     
 
     	function initializeParameters(){
@@ -359,7 +359,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 						endTime = xmlHttpRequest.responseText
 						setWeekendModePopupHtml(endTime)
 						if(endTime != ""){
-							weekendIcon.src = "images/ios-car-primary.svg";
+							weekendIcon.src = "images/ios-car-selected.svg";
 						}
 						else{
 							weekendIcon.src = "images/ios-car-white.svg";

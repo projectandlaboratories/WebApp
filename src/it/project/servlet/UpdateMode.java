@@ -54,14 +54,16 @@ public class UpdateMode extends HttpServlet {
 				SystemType systemType = SystemType.valueOf(request.getParameter("act"));
 				String currentRoomId = (String) request.getSession().getAttribute("currentRoomId");
 				DBClass.updateRoomMode(currentRoomId, mode, targetTemp, systemType);
-				//MQTTAppSensori.notifyModeChanged(mode, targetTemp, systemType); TODO decommentare quando dobbiamo testare mqtt con appSensori
+				MQTTAppSensori.notifyModeChanged(mode, targetTemp, systemType); //TODO decommentare quando dobbiamo testare mqtt con appSensori
 		 		break;
 		 	case "setWeekendMode":
 					String date = request.getParameter("date").replaceAll("T", " ");
 					DBClass.setWeekendMode(date.toString());
+					MQTTAppSensori.notifyModeChanged(Mode.WEEKEND, 0, null);
 		 		break;
 		 	case "removeWeekendMode":
 				DBClass.stopWeekenMode();
+				MQTTAppSensori.notifyModeChanged(Mode.WEEKEND, 0, null);
 		 		break;
 		}
 		

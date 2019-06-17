@@ -35,7 +35,7 @@ pageContext.setAttribute("holidayIntervals", holidayIntervals);
 <div class="progress beautiful" style="height: 30px;  margin-top: 10px">    	
     	<c:forEach items="${workingIntervals}" var="interval">
 	    	<div class="progress-bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: ${interval.getPercentageOfDay()}%; background-color: ${interval.getColor()};">
-		    	<c:if test = "${interval.getPercentageOfDay() > 20}">
+		    	<c:if test = "${interval.getPercentageOfDay() > 10}">
 		        	<c:out value = "${interval.getIntTemperature()}"/>
 		    	</c:if>    	
 	    	</div>

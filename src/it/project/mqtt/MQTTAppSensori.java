@@ -93,11 +93,11 @@ public class MQTTAppSensori {
     		if(mode.equals(Mode.MANUAL)) {
     	      	json.put("targetTemp", targetTemp);
             	json.put("act", act.name());
-            	
-            	MqttMessage message = new MqttMessage(json.toString().getBytes());
-                message.setQos(qos);
-                client.publish(Topics.MODE.getName(), message);
     		} 
+    		
+    		MqttMessage message = new MqttMessage(json.toString().getBytes());
+            message.setQos(qos);
+            client.publish(Topics.MODE.getName(), message);
     	}
     	catch(Exception e) {
     		e.printStackTrace();
