@@ -39,7 +39,6 @@ public class DBClass {
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
 				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat", "root", "ily2marzo"); //Ilaria
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
@@ -107,6 +106,26 @@ public class DBClass {
 		}
 	} 
 	
+	public static boolean isProfileAssigned(String name) {
+		Statement statement;
+		
+		try {
+			statement = conn.createStatement();
+			String query = "select count(*) as count from rooms where ID_PROFILE_WINTER='"+name+"' or ID_PROFILE_SUMMER='"+name+"'";
+			ResultSet result = statement.executeQuery(query);
+			while(result.next()) {
+				int count = result.getInt("count");
+				if(count>0) {
+					return true;
+				}
+			}
+			return false;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public static boolean existProfile(String name) {
 		Statement statement;
 		try {
@@ -127,7 +146,7 @@ public class DBClass {
 		
 	}
 	
-	public static void deleteProfiles(String name) {
+	public static void deleteProfiles(String name) {//todo controlla che nessuna room ce l'abbia come profilo
 		Statement statement;		
 		try {
 			statement = getStatement();
@@ -137,8 +156,9 @@ public class DBClass {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	} 
+	
+	
 	public static Map<String,Program> getProfileMap(){
 		
 		List<Profile> profiles = new ArrayList<>();
