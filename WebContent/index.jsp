@@ -318,6 +318,9 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 				if (xmlHttpRequest.readyState == 4) {
 					if (xmlHttpRequest.status == 200) {
 						targetTemp.value= xmlHttpRequest.responseText
+						console.log("Aggiorno temperatura"+ targetTemp.value);
+						targetTempShown.innerHTML =targetTemp.value
+				    		
 					} else {
 						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
 					}

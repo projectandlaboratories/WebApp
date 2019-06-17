@@ -38,8 +38,8 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
@@ -95,16 +95,65 @@ public class DBClass {
 				try {
 					statement = getStatement();
 					String query = "INSERT INTO profiles (ID_PROFILE, DAY_OF_WEEK,DAY_TYPE,DAY_MOMENT, START_HOUR, START_MIN,END_HOUR, END_MIN, TEMPERATURE) "+
-									"VALUES ('"+name+"','"+day+"','"+dayType+"','"+interval.getDayMoment()+"',"+
-									interval.getStartHour()+","+interval.getStartMin()+","+interval.getEndHour()+","+interval.getEndMin()+","+interval.getTemperature()+")" ;
+							"VALUES ('"+name+"','"+day+"','"+dayType+"','"+interval.getDayMoment()+"',"+
+							interval.getStartHour()+","+interval.getStartMin()+","+interval.getEndHour()+","+interval.getEndMin()+","+interval.getTemperature()+")" ;
 					statement.executeUpdate(query);
-					MQTTDbSync.sendMessage(query);
+					//MQTTDbSync.sendMessage(query);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
-	} 
+	}
+	
+	public static void updateProfile(String previousProfileName, String newProfileName, Program program) {
+		Statement statement;
+		String fakeProfileName="fake111";
+		try {
+			statement = conn.createStatement();
+			String query;
+			//creo profilo falso
+			query= "INSERT INTO profiles (ID_PROFILE, DAY_OF_WEEK,DAY_TYPE,DAY_MOMENT, START_HOUR, START_MIN,END_HOUR, END_MIN, TEMPERATURE) "+
+					"VALUES ('"+fakeProfileName+"','-','-','-',0,0,0,0,0)";	
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+			
+			//assegno profilo falso alle stanze che hanno previousProfileName
+			query="UPDATE rooms set ID_PROFILE_WINTER = '"+fakeProfileName+"' where ID_PROFILE_WINTER='"+previousProfileName+"'";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+			
+			query="UPDATE rooms set ID_PROFILE_SUMMER = '"+fakeProfileName+"' where ID_PROFILE_SUMMER='"+previousProfileName+"'";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+			
+			//delete Profilo vecchio
+			deleteProfiles(previousProfileName);
+			
+			//creazione profilo nuovo
+			createProfiles(program);
+			
+			//assegno profilo nuovo alle stanze che hanno fakeProfileName
+			query="UPDATE rooms set ID_PROFILE_WINTER = '"+newProfileName+"' where ID_PROFILE_WINTER='"+fakeProfileName+"'";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+			
+			query="UPDATE rooms set ID_PROFILE_SUMMER = '"+newProfileName+"' where ID_PROFILE_SUMMER='"+fakeProfileName+"'";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+			
+			
+			//cancello profilo fake
+			query= "DELETE FROM profiles WHERE ID_PROFILE = '"+fakeProfileName+"'";	
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
 	
 	public static boolean isProfileAssigned(String name) {
 		Statement statement;
@@ -152,7 +201,7 @@ public class DBClass {
 			statement = getStatement();
 			String query = "DELETE from profiles where id_profile='"+name+"'";
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			//MQTTDbSync.sendMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

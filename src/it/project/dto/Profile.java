@@ -1,9 +1,11 @@
 package it.project.dto;
 
+import java.io.Serializable;
+
 import it.project.enums.DayName;
 import it.project.enums.DayType;
 
-public class Profile {
+public class Profile implements Serializable {
 	
 	private String idProfile;
 	private DayName dayOfWeek;

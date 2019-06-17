@@ -35,6 +35,7 @@ public class NewProgramServlet  extends HttpServlet {
 			break;
 		 case "UPDATE": //todo da testare
 			System.out.println(action);
+
 			String previousName=(String)req.getSession(false).getAttribute("previousName");
 			System.out.println(previousName);
 			String currentName=(String)req.getParameter("profile_name");
@@ -49,9 +50,11 @@ public class NewProgramServlet  extends HttpServlet {
 			else if(currentName.compareTo(previousName)!=0 && DBClass.existProfile(req.getParameter("profile_name"))) {
 				resp.sendRedirect("pages/profileSummary.jsp?alert=present");
 			}else {
-				DBClass.deleteProfiles(previousName);
+				
+				//DBClass.deleteProfiles(previousName);
 				program.setName(req.getParameter("profile_name"));
-				DBClass.createProfiles(program);
+				//DBClass.createProfiles(program);
+				DBClass.updateProfile(previousName, currentName, program);
 				resp.sendRedirect("pages/profileList.jsp");
 			}
 			 

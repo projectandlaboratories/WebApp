@@ -26,7 +26,8 @@ String caller=(String)session.getAttribute("caller");
 Program myProgram=((Program) session.getAttribute("currentProfile"));
 Map<DayName,String> checked = ProfileUtil.getDefaultDays();
 
-if(myProgram!=null && myProgram.getDays().size()!=0){
+if(myProgram!=null && myProgram.getDays().size()!=0){//update
+
 	for(DayName day:DayName.values()){
 		if(myProgram.getDays().get(day).equals(DayType.HOLIDAY))
 			checked.put(day,"checked");
