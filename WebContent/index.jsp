@@ -65,7 +65,7 @@ session.setAttribute("currentRoomId", currentRoomId);
 Room currentRoom = roomMap.get(currentRoomId);
 Date date =  new Date();
 Season season;
-DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
+DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
 
 String mode=currentRoom.getMode().toString();

@@ -334,7 +334,7 @@ public class DBClass {
 		String endTime = null;
 		try {
 			statement = getStatement();
-			String query = "SELECT END_TIME from weekend_mode where WMODE = 1 and END_TIME > now();";
+			String query = "SELECT END_TIME from weekend_mode where WMODE = 1;";
 			ResultSet result = statement.executeQuery(query);
 			while (result.next()) {
 				endTime = result.getString("END_TIME");

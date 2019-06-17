@@ -49,7 +49,23 @@ public class IsWeekendMode extends HttpServlet {
 		}
 		String endTime = DBClass.isWeekendMode();
 		if(endTime != null) {
-			endTime = endTime.replaceAll(" ", "T");		
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+			Date endDate;
+			try {
+				endDate = format.parse(endTime);
+				Date now = new Date();
+				if(endDate.compareTo(now) <= 0) { //esco dalla weekend mode
+					DBClass.stopWeekenMode();
+					endTime = "";
+				}
+				else {
+					endTime = endTime.replaceAll(" ", "T");	
+				}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+						
 		}
 		else {
 			endTime = "";

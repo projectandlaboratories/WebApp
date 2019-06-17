@@ -27,7 +27,7 @@ public class MQTTAppSensori {
     private static String send_topic,subscribe_topic;
     private static MqttClient client;
     private static MqttConnectOptions conOpt;
-    private static String endpoint = ""; //TODO da settare
+    private static String endpoint = "192.168.1.44:1883"; //TODO da settare
     private static String username = "";//TODO da settare
     private static String password = "";//TODO da settare
     
@@ -39,8 +39,8 @@ public class MQTTAppSensori {
         		
         		conOpt = new MqttConnectOptions();
         		conOpt.setCleanSession(false);
-        		conOpt.setUserName(username);
-        		conOpt.setPassword(password.toCharArray());
+        		//conOpt.setUserName(username);
+        		//conOpt.setPassword(password.toCharArray());
 
         		client = new MqttClient(host, clientId, new MemoryPersistence());
         		client.connect(conOpt);
