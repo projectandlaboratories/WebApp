@@ -1,9 +1,11 @@
 package it.project.dto;
 
+import java.io.Serializable;
+
 import it.project.enums.DayMoment;
 import it.project.utils.ProfileUtil;
 
-public class Interval implements Comparable<Object>{
+public class Interval implements Comparable<Object>, Serializable{
 	private int startHour;
 	private int startMin;
 	private int endHour;

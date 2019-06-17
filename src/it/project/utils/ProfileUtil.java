@@ -16,6 +16,7 @@ import it.project.dto.Room;
 import it.project.enums.DayMoment;
 import it.project.enums.DayName;
 import it.project.enums.DayType;
+import it.project.enums.Season;
 
 public class ProfileUtil {
 
@@ -137,10 +138,10 @@ public class ProfileUtil {
 		int dayIndex=(cal.get(Calendar.DAY_OF_WEEK)+7-2)%7;
 		DayName day=DayName.values()[dayIndex];
 		DayType dayType = program.getDays().get(day);
-		int now = cal.get(Calendar.HOUR)*60 + cal.get(Calendar.MINUTE);
+		int now = (cal.get(Calendar.HOUR_OF_DAY))*60 + cal.get(Calendar.MINUTE);
 		
 		for(Interval interval:program.getIntervals().get(dayType)){
-			if(interval.getStartHour()*60+interval.getStartMin() <= now && interval.getEndHour()*60+interval.getEndMin() >= now){
+			if(interval.getStartHour()*60+interval.getStartMin() <= now && interval.getEndHour()*60+interval.getEndMin() > now){
 				temperature = Double.toString(interval.getTemperature());
 				break;
 			}

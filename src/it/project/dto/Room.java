@@ -1,9 +1,12 @@
 package it.project.dto;
 
 import it.project.enums.SystemType;
+
+import java.io.Serializable;
+
 import it.project.enums.Mode;
 
-public class Room {
+public class Room implements Serializable{
 	
 	private String room;
 	private String roomName;

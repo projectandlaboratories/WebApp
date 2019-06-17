@@ -1,5 +1,6 @@
 package it.project.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +8,7 @@ import java.util.Map;
 
 import it.project.enums.*;
 
-public class Program {
+public class Program implements Serializable{
 	private String name;
 	private Map<DayName,DayType> days;
 	private Map<DayType, List<Interval>> intervals;
