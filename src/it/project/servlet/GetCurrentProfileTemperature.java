@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import it.project.db.DBClass;
 import it.project.dto.Program;
 import it.project.dto.Room;
+import it.project.utils.DbIdentifiers;
 import it.project.utils.ProfileUtil;
 
 /**
@@ -36,6 +37,13 @@ public class GetCurrentProfileTemperature extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String roomId = request.getParameter("roomId");
+		DbIdentifiers user = DbIdentifiers.valueOf(request.getParameter("user"));
+		try {
+			DBClass.getConnection(user);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Room room=DBClass.getRoomByName(roomId);
 		response.setContentType("text/html");
 		String temperature = ProfileUtil.getCurrentTemperature(room); 

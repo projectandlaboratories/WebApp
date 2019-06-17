@@ -1,3 +1,4 @@
+<%@page import="it.project.mqtt.MQTTAppSensori"%>
 <%@page import="it.project.utils.ProfileUtil"%>
 <%@page import="it.project.enums.*"%>
 <%@page import="it.project.db.MQTTDbSync"%>
@@ -43,10 +44,12 @@
 </head>
 
 <% 
+	DbIdentifiers user = DbIdentifiers.LOCAL;
 	//Setup connection e dbSync
 	try{
-		DBClass.getConnection(DbIdentifiers.LOCAL);
-		MQTTDbSync.setConnection(DbIdentifiers.LOCAL);
+		DBClass.getConnection(user);
+		MQTTDbSync.setConnection(user);
+		//MQTTAppSensori.setConnection(user); TODO decommentare quando testeremo mqtt con AppSensori
 	}
 	catch(Exception e){
 %>
@@ -194,7 +197,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 			setProfileTemperature();
 		}
 		
-	}, 10 * 1000); 
+	}, 60 * 1000); 
     
 
     	function initializeParameters(){
@@ -204,7 +207,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		getActuatorState();
     		updateWeekendModeIcon();
     		setTemperature();
-    		targetTemp.value="<%=targetTemp%>°"
+    		targetTemp.value="<%=targetTemp%>"
     		targetTempShown.innerHTML ="<%=targetTemp%>"
     		   		
     		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  		
@@ -314,13 +317,13 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 			xmlHttpRequest.onreadystatechange = function() {
 				if (xmlHttpRequest.readyState == 4) {
 					if (xmlHttpRequest.status == 200) {
-						targetTemp.value= xmlHttpRequest.responseText + "°"
+						targetTemp.value= xmlHttpRequest.responseText
 					} else {
 						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
 					}
 				}
 			};
-			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getCurrentProfileTemperature?roomId=<%=currentRoom.getRoom()%>", true);
+			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getCurrentProfileTemperature?user=<%=user%>&roomId=<%=currentRoom.getRoom()%>", true);
 			xmlHttpRequest.setRequestHeader("Content-Type",
 					"application/x-www-form-urlencoded");
 			xmlHttpRequest.send(null);
@@ -337,23 +340,23 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					}
 				}
 			};
-			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getCurrentRoomTemperature?roomId=<%=currentRoom.getRoom()%>", true);
+			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getCurrentRoomTemperature?user=<%=user%>&roomId=<%=currentRoom.getRoom()%>", true);
 			xmlHttpRequest.setRequestHeader("Content-Type",
 					"application/x-www-form-urlencoded");
 			xmlHttpRequest.send(null);
 			
 		}
 		
-		function updateWeekendModeIcon(isWeekendMode){
+		function updateWeekendModeIcon(){
 			var xmlHttpRequest = getXMLHttpRequest();
 			xmlHttpRequest.onreadystatechange = function() {
 				if (xmlHttpRequest.readyState == 4) {
 					if (xmlHttpRequest.status == 200) {
 						var weekendIcon = document.getElementById("weekendIcon")
-						isWeekendMode = xmlHttpRequest.responseText
-						setWeekendModePopupHtml(isWeekendMode)
-						if(isWeekendMode == "true"){
-							weekendIcon.src = "images/ios-car-selected.svg";
+						endTime = xmlHttpRequest.responseText
+						setWeekendModePopupHtml(endTime)
+						if(endTime != ""){
+							weekendIcon.src = "images/ios-car-primary.svg";
 						}
 						else{
 							weekendIcon.src = "images/ios-car-white.svg";
@@ -363,7 +366,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					}
 				}
 			};
-			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/isWeekendMode", true);
+			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/isWeekendMode?user=<%=user%>", true);
 			xmlHttpRequest.setRequestHeader("Content-Type",
 					"application/x-www-form-urlencoded");
 			xmlHttpRequest.send(null);
@@ -430,29 +433,31 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					}
 				}
 			};
-			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getActuatorState?roomId=<%=currentRoom.getRoom()%>", true);
+			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getActuatorState?user=<%=user%>&roomId=<%=currentRoom.getRoom()%>", true);
 			xmlHttpRequest.setRequestHeader("Content-Type",
 					"application/x-www-form-urlencoded");
 			xmlHttpRequest.send(null);
 		}
 		
-		function setWeekendModePopupHtml(isWeekendMode){
+		function setWeekendModePopupHtml(endTime){
 			
-			if(isWeekendMode == "true"){
+			if(endTime != ""){
 				var inputDisable = "disabled"
 				var submitBtnText = "Stop weekend mode"
 				var submitValueText = "removeWeekendMode"
-			    var popupText = "YOU ARE IN WEEKEND MODE UNTIL"	
+			    var popupText = "YOU ARE IN WEEKEND MODE UNTIL"
+			    var date = endTime
 			}
 			else{
 				var inputDisable = ""
 				var submitBtnText = "Save changes"
 				var submitValueText = "setWeekendMode"
 				var popupText = "WHEN WILL YOU COME BACK?"
+				var date = "<%=dateFormat.format(date)%>"
 			}
 			
 			var formUrl = "<%=request.getContextPath() + "/UpdateMode"%>"
-			var date = "<%=dateFormat.format(date)%>"
+			
 			
 			document.getElementById("exampleModalCenter").innerHTML = 
 			"<div class='modal-dialog modal-dialog-centered' role='document'>" +

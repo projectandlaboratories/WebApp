@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import it.project.enums.*;
+import it.project.mqtt.MQTTAppSensori;
 import it.project.db.DBClass;
 
 /**
@@ -51,26 +52,20 @@ public class UpdateMode extends HttpServlet {
 		 		Mode mode = Mode.valueOf((String)request.getParameter("mode"));
 				Double targetTemp=Double.parseDouble(request.getParameter("targetTemp"));
 				SystemType systemType = SystemType.valueOf(request.getParameter("act"));
-				//System.out.println(mode+" " + targetTemp+" "+systemType);
 				String currentRoomId = (String) request.getSession().getAttribute("currentRoomId");
 				DBClass.updateRoomMode(currentRoomId, mode, targetTemp, systemType);
-				response.sendRedirect("index.jsp");
+				//MQTTAppSensori.notifyModeChanged(mode, targetTemp, systemType); TODO decommentare quando dobbiamo testare mqtt con appSensori
 		 		break;
-		 	case "setWeekendMode"://todo weekend mode
-		 		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
-		 		Date date;
-				try {
-					date = (Date)formatter.parse(request.getParameter("date"));
-					System.out.println(date);
-					//todo convertire in stringa sql e salvare su db
-					
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} 
-		 		
+		 	case "setWeekendMode":
+					String date = request.getParameter("date").replaceAll("T", " ");
+					DBClass.setWeekendMode(date.toString());
+		 		break;
+		 	case "removeWeekendMode":
+				DBClass.stopWeekenMode();
 		 		break;
 		}
+		
+		response.sendRedirect("index.jsp");
 		
 	}
 
