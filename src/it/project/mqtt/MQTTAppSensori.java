@@ -13,10 +13,11 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-//import org.json.JSONObject;
+import org.json.JSONObject;
 
 import it.project.db.DBClass;
 import it.project.enums.Mode;
+import it.project.enums.SystemType;
 import it.project.enums.Topics;
 import it.project.utils.DbIdentifiers;
 
@@ -31,7 +32,7 @@ public class MQTTAppSensori {
     private static String password = "";//TODO da settare
     
     public static void setConnection(DbIdentifiers user) {
-    	if(client == null || !client.isConnected()) {
+    	if(user.equals(DbIdentifiers.LOCAL) && (client == null || !client.isConnected())) {
     		try {
         		String host = String.format("tcp://%s", endpoint);
         		String clientId = user.name();
@@ -43,39 +44,39 @@ public class MQTTAppSensori {
 
         		client = new MqttClient(host, clientId, new MemoryPersistence());
         		client.connect(conOpt);
-        		client.setCallback(new MqttCallback() {
-					
-					@Override
-					public void messageArrived(String topic, MqttMessage message) throws Exception {
-						Topics receivedTopic = Topics.valueOf(topic);
-						switch(receivedTopic) {
-							case TEMPERATURE:
-//								JSONObject json = new JSONObject(new String(message.getPayload()));
-//								String roomId = json.getString("roomId");
-//								int currentTemp = Integer.parseInt(json.getString("currentTemp"));
-								break;
-							case ACTUATOR_STATUS:
-								break;
-						}
-						
-					}
-					
-					@Override
-					public void deliveryComplete(IMqttDeliveryToken arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void connectionLost(Throwable arg0) {
-						// TODO Auto-generated method stub
-						
-					}
-				});
+//        		client.setCallback(new MqttCallback() {
+//					
+//					@Override
+//					public void messageArrived(String topic, MqttMessage message) throws Exception {
+//						Topics receivedTopic = Topics.valueOf(topic);
+//						switch(receivedTopic) {
+//							case TEMPERATURE:
+////								JSONObject json = new JSONObject(new String(message.getPayload()));
+////								String roomId = json.getString("roomId");
+////								int currentTemp = Integer.parseInt(json.getString("currentTemp"));
+//								break;
+//							case ACTUATOR_STATUS:
+//								break;
+//						}
+//						
+//					}
+//					
+//					@Override
+//					public void deliveryComplete(IMqttDeliveryToken arg0) {
+//						// TODO Auto-generated method stub
+//						
+//					}
+//					
+//					@Override
+//					public void connectionLost(Throwable arg0) {
+//						// TODO Auto-generated method stub
+//						
+//					}
+//				});
+//        		
         		
-        		
-        		client.subscribe(Topics.ACTUATOR_STATUS.getName(), qos);
-        		client.subscribe(Topics.TEMPERATURE.getName(), qos);
+//        		client.subscribe(Topics.ACTUATOR_STATUS.getName(), qos);
+//        		client.subscribe(Topics.TEMPERATURE.getName(), qos);
         		
         	} catch(Exception e) {
             	e.printStackTrace();
@@ -85,10 +86,24 @@ public class MQTTAppSensori {
     }
     
     
-    public static void notifyModeChanged(Mode mode) throws MqttException {
-        MqttMessage message = new MqttMessage(mode.name().getBytes());
-        message.setQos(qos);
-        client.publish(Topics.MODE.getName(), message);
+    public static void notifyModeChanged(Mode mode, double targetTemp, SystemType act) {
+    	JSONObject json = new JSONObject();
+    	try {
+    		json.put("mode", mode.name());
+    		if(mode.equals(Mode.MANUAL)) {
+    	      	json.put("targetTemp", targetTemp);
+            	json.put("act", act.name());
+            	
+            	MqttMessage message = new MqttMessage(json.toString().getBytes());
+                message.setQos(qos);
+                client.publish(Topics.MODE.getName(), message);
+    		} 
+    	}
+    	catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	
+        
     }
 
 }

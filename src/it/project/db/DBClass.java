@@ -23,13 +23,13 @@ import it.project.utils.ProfileUtil;
 public class DBClass {
 
 	private static Connection conn;
-	
+	private static DbIdentifiers dbuser;
 	
 	public DBClass(){
 	}
 	
 	public static Connection getConnection(DbIdentifiers user) throws Exception {
-		
+		dbuser = user;
 		if(conn == null) {
 			if(user.equals(DbIdentifiers.AWS)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
@@ -52,17 +52,18 @@ public class DBClass {
 		
 	}
 	
+
 	//TODO da rimuovere
 	public static int getProva(int id) {
 		Statement statement;
 		int valore = -1;
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			String query = "SELECT value from PROVA where id=" + id;
 			ResultSet result = statement.executeQuery(query);
 			if (result.next())
 				valore = result.getInt("value");
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			
 			e.printStackTrace();
 		}
@@ -74,10 +75,10 @@ public class DBClass {
 		Statement statement;
 		
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			statement.executeUpdate(query);
 						
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -93,7 +94,7 @@ public class DBClass {
 			List<Interval> intervals = program.getIntervals().get(dayType);
 			for(Interval interval:intervals) {
 				try {
-					statement = conn.createStatement();
+					statement = getStatement();
 					String query = "INSERT INTO profiles (ID_PROFILE, DAY_OF_WEEK,DAY_TYPE,DAY_MOMENT, START_HOUR, START_MIN,END_HOUR, END_MIN, TEMPERATURE) "+
 									"VALUES ('"+name+"','"+day+"','"+dayType+"','"+interval.getDayMoment()+"',"+
 									interval.getStartHour()+","+interval.getStartMin()+","+interval.getEndHour()+","+interval.getEndMin()+","+interval.getTemperature()+")" ;
@@ -109,7 +110,7 @@ public class DBClass {
 	public static boolean existProfile(String name) {
 		Statement statement;
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			String query = "SELECT DISTINCT ID_PROFILE FROM profiles";
 			ResultSet result = statement.executeQuery(query);
 			while(result.next()) {
@@ -119,7 +120,7 @@ public class DBClass {
 				}
 			}
 			return false;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return false;
@@ -129,7 +130,7 @@ public class DBClass {
 	public static void deleteProfiles(String name) {
 		Statement statement;		
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			String query = "DELETE from profiles where id_profile='"+name+"'";
 			statement.executeUpdate(query);
 			MQTTDbSync.sendMessage(query);
@@ -143,7 +144,7 @@ public class DBClass {
 		List<Profile> profiles = new ArrayList<>();
 		Statement statement;
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			String query = "SELECT * from profiles";
 			ResultSet result = statement.executeQuery(query);
 			while (result.next()) {
@@ -160,7 +161,7 @@ public class DBClass {
 			
 
 			return programs;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			
 			e.printStackTrace();
 		}
@@ -171,7 +172,7 @@ public class DBClass {
 	public static void updateRoomProfile(String roomId, String profileName, Season season) {
 		Statement statement;
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			String query = "UPDATE rooms SET ID_PROFILE_" + season.name() + "= '" + profileName + "' WHERE ID_ROOM = '" + roomId + "'" ;
 			statement.executeUpdate(query);
 			MQTTDbSync.sendMessage(query);
@@ -184,7 +185,7 @@ public class DBClass {
 	public static void updateRoomMode(String roomId, Mode mode, Double targetTemp, SystemType systemType) {
 		Statement statement;
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			String query = "UPDATE rooms SET MODE= '" + mode + "', MANUAL_TEMP= '" + targetTemp + "', MANUAL_SYSTEM= '" + systemType 
 					+ "' WHERE ID_ROOM = '" + roomId + "'" ;
 			statement.executeUpdate(query);
@@ -202,7 +203,7 @@ public class DBClass {
 		Statement statement;
 		String profileId = null;
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			String query = "SELECT ID_PROFILE_" + season + " from rooms where ID_ROOM = '" + roomId + "'";
 			ResultSet result = statement.executeQuery(query);
 			while (result.next()) {
@@ -210,7 +211,7 @@ public class DBClass {
 			}
 			
 			return profileId;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -221,7 +222,7 @@ public class DBClass {
 		Statement statement;
 		List<Profile> profiles = new ArrayList<>();
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			String query = "SELECT * from profiles where ID_PROFILE = '" + profileName + "'";
 			ResultSet result = statement.executeQuery(query);
 			while (result.next()) {
@@ -230,7 +231,7 @@ public class DBClass {
 			}
 			Program program = ProfileUtil.getProgramFromProfile(profiles);
 			return program;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -242,7 +243,7 @@ public class DBClass {
 		Statement statement;
 		List<Profile> profiles = new ArrayList<>();
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			int temperature = -100;
 			String query = "SELECT TEMPERATURE from temperatures where ID_ROOM = '" + roomId + "' order by timestamp desc limit 1";
 			ResultSet result = statement.executeQuery(query);
@@ -250,7 +251,7 @@ public class DBClass {
 				temperature = result.getInt("TEMPERATURE");
 			}
 			return temperature;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return -100;
 		}
@@ -262,7 +263,7 @@ public class DBClass {
 		Map<String,Room> rooms = new HashMap<>();
 		Statement statement;
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			String query = "SELECT * from rooms";
 			ResultSet result = statement.executeQuery(query);
 			while (result.next()) {
@@ -284,7 +285,7 @@ public class DBClass {
 			}
 			
 			return rooms;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
@@ -293,7 +294,7 @@ public class DBClass {
 	public static ActuatorState getActuatorState(String roomId) {
 		Statement statement;
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			ActuatorState state = null;
 			String query = "SELECT STATE from actuators where ID_ROOM = '" + roomId + "' order by timestamp desc limit 1";
 			ResultSet result = statement.executeQuery(query);
@@ -301,26 +302,27 @@ public class DBClass {
 				state = ActuatorState.valueOf(result.getString("STATE"));
 			}
 			return state;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 	
-	public static boolean isWeekendMode() {
+	public static String isWeekendMode() {
+		//TODO qui andrebbe messo il controllo se now() è maggiore di END_TIME allora bisogna stoppare la weekend mode
 		Statement statement;
-		boolean isWeekendMode = false;
+		String endTime = null;
 		try {
-			statement = conn.createStatement();
-			String query = "SELECT START_TIME from weekend_mode where WMODE = true and END_TIME > now();";
+			statement = getStatement();
+			String query = "SELECT END_TIME from weekend_mode where WMODE = 1 and END_TIME > now();";
 			ResultSet result = statement.executeQuery(query);
 			while (result.next()) {
-				isWeekendMode = true;
+				endTime = result.getString("END_TIME");
 			}
-			return isWeekendMode;
-		} catch (SQLException e) {
+			return endTime;
+		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
+			return null;
 		}
 	}
 	
@@ -328,7 +330,7 @@ public class DBClass {
 		Statement statement;
 		Room room = null;
 		try {
-			statement = conn.createStatement();
+			statement = getStatement();
 			String query = "SELECT * from rooms where ID_ROOM = '" + roomId + "'";
 			ResultSet result = statement.executeQuery(query);
 			while (result.next()) {
@@ -349,10 +351,54 @@ public class DBClass {
 			}
 			
 			return room;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public static void setWeekendMode(String date) {
+		Statement statement;
+		int id = -1;
+		try {
+			statement = getStatement();
+			String getIdQuery = "SELECT max(id) as lastid from weekend_mode";
+			ResultSet result = statement.executeQuery(getIdQuery);
+			while (result.next()) {
+				id = result.getInt("lastid") + 1;
+			}
+			
+			if(id != -1) {
+				String query = "insert into weekend_mode(ID,WMODE,START_TIME,END_TIME)"
+						+ "VALUES(" + id + ",true,now(),'" + date + "');";
+				statement.executeUpdate(query);
+				MQTTDbSync.sendMessage(query);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void stopWeekenMode() {
+		Statement statement;
+		try {
+			statement = getStatement();
+			String query = "update weekend_mode set WMODE = 0 where WMODE = 1";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	private static Statement getStatement() throws Exception {
+		if(conn == null)
+			conn = getConnection(dbuser);
+			
+		return conn.createStatement();
 	}
 
 	

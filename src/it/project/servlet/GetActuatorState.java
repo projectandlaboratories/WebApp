@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import it.project.db.DBClass;
+import it.project.utils.DbIdentifiers;
 
 /**
  * Servlet implementation class GetActuatorState
@@ -34,6 +35,13 @@ public class GetActuatorState extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String roomId = request.getParameter("roomId");
+		DbIdentifiers user = DbIdentifiers.valueOf(request.getParameter("user"));
+		try {
+			DBClass.getConnection(user);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		response.setContentType("text/html");
 		String actuatorState = DBClass.getActuatorState(roomId).name();
 		response.getWriter().write(actuatorState);
