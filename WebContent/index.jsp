@@ -36,9 +36,9 @@
 * {margin: 0; padding: 0;}
 #container {height: 100%; width:100%; font-size: 0;}
 #left, #middle, #right {display: inline-block; *display: inline; zoom: 1; vertical-align: top; font-size: 12px;}
-#left { background: auto; width:50%; text-align:center;}
+#left { background: auto; width:50%; text-align:center; padding-top: 12px;}
 #middle {background: green;}
-#right {background: auto; border-left:1px solid black; border-top:1px solid black; position:absolute; right: 0px;width:50%;height:100%; text-align:center;}
+#right {background: auto; width:50%;height:100%; text-align:center;padding-top: 12px;border-top-left-radius: 10px; border-left:1px solid #2C3E50; border-top:1px solid #2C3E50; position:absolute; right: 0px; }
 </style>
 
 </head>
@@ -60,20 +60,27 @@
 <c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
 <%
 Map<String,Room> roomMap = (Map<String,Room>) session.getAttribute("roomMap");
-String currentRoomId = "id1";  //TODO prendere da DB
-session.setAttribute("currentRoomId", currentRoomId);
+
+String mainRoomId="id1";  //TODO prendere da DB stanza principale -> valutare se cambiare nome alla variabile
+
+String currentRoomId = (String)session.getAttribute("currentRoomId"); 
+if(currentRoomId==null){
+	currentRoomId=mainRoomId;
+	session.setAttribute("currentRoomId", currentRoomId);	
+}
+
 Room currentRoom = roomMap.get(currentRoomId);
 Date date =  new Date();
 Season season;
 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-
 
 String mode=currentRoom.getMode().toString();
 String targetTemp="0";
 String act;
 if(currentRoom.getMode().equals(Mode.MANUAL)){	
 	targetTemp=Double.toString(currentRoom.getManualTemp());	
-	act = SystemType.HOT.toString();
+	act = currentRoom.getManualSystem().toString();
+	
 }else{
 	targetTemp = ProfileUtil.getCurrentTemperature(currentRoom);	
 	act = SystemType.HOT.toString(); //non è visualizzato
@@ -115,34 +122,43 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 				<div class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px ">
                    
                    <div style="height:100%; display: inline-grid">
-                    	<img id="hotIcon" style="margin-left:8px; margin-right:8px; margin-top:12px; margin-bottom:16px; height:30px;" src="images/ios-flame-primary.svg">
-                    	<img id="coldIcon" style="margin-left:8px; margin-right:8px; margin-top:12px; margin-bottom:16px; height:30px;" src="images/ios-snow-primary.svg">
-                    	<img id="antifreezeIcon" style="margin-left:8px; margin-right:8px; margin-top:12px; margin-bottom:16px; height:30px;" src="images/ios-thermometer-not-selected.svg">
-                    	<img id="fanIcon" style="margin-left:8px; margin-right:8px; margin-top:12px; margin-bottom:16px; height:30px;" src="images/ios-flower-not-selected.svg">
+                    	<img id="hotIcon" style="margin-left:8px; margin-right:8px; margin-top:2%; margin-bottom:3%; height:30px;" src="images/ios-flame-primary.svg">
+                    	<img id="coldIcon" style="margin-left:8px; margin-right:8px; margin-top:3%; margin-bottom:3%; height:30px;" src="images/ios-snow-primary.svg">
+                    	<img id="antifreezeIcon" style="margin-left:8px; margin-right:8px; margin-top:3%; margin-bottom:3%; height:30px;" src="images/ios-thermometer-not-selected.svg">
+                    	<img id="fanIcon" style="margin-left:8px; margin-right:8px; margin-top:3%; margin-bottom:2%; height:30px;" src="images/ios-flower-not-selected.svg">
                     </div>
                    
                     <div style="position:absolute; width:100%; height:100%; margin-left: 64px;">
                			
-             			<div id="left" style="font-size:900%; color: #2C3E50;"><span id="currentTemp"></span></div>				    	
+             			<div id="left" style="color: #2C3E50;">
+             			
+             			<span style="font-size:16px; ">Room Temperature</span><br>
+             			<span id="currentTemp" style="font-size:900%;"></span></div>				    	
 				    	 
-				    	<div id="right">
+				    	<div id="right" style="color: #2C3E50;" >
 					    	<form action="<%=request.getContextPath()+"/UpdateMode"%>" method="POST">
 					    	
-					    		
+					    		<span id="targetTempText" style="font-size:16px;margin-right:20%;"></span><br>
 					    		<input type="hidden" id="mode" name="mode" value=<%=mode%>>   
 					    		<input type="hidden" id="targetTemp" name="targetTemp" value=<%=targetTemp%>>  
 					    		<input type="hidden" id="act" name="act" value=<%=act%>>
 					    		          
-					    		<span id="targetTempShown" style="font-size:600%; color: #2C3E50; position:absolute; right: 100px; top:25px;"></span>
+					    		<span id="targetTempShown" style="font-size:600%; color: #2C3E50; margin-right:20%; "></span>
 					    	
-						    	<div style="position:absolute; bottom: 0px; right:0px; height: 80px;font-size: 60px;">
-				              		<button id=<%=SystemType.HOT%> onclick="onHotSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white; "><img id="hotImage" src="images/ios-flame-primary.svg"></button>
-				              		<button id=<%=SystemType.COLD%> onclick="onColdSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img id="coldImage" src="images/ios-snow-primary.svg"></button>
-				              		<button onclick="onModeClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img id="manualImage" src="images/md-hand-primary.svg" ></button>
-		                			<button type="submit" name="ACTION" value="changeManualProgrammableMode" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white;"><img src="images/ios-checkmark-primary.svg"></button>
-		                		</div>
 					    		
-					    		 <div class="btn-group btn-group-vertical" role="group" style="right: 8px;position: absolute;width: 65px; top:10px;">
+		                		<div id="manualSection" style="display:none; background-color: auto; width: 50%; margin-left:15%; margin-right: 35%; position:absolute; bottom: 8px; font-size: 60px; border:1px solid #2C3E50;  border-radius: 10px;">
+		    						<div style="height: 65px; ">
+			    						<button id=<%=SystemType.HOT%> onclick="onHotSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white; vertical-align: top; "><img id="hotImage" src="images/ios-flame-primary.svg"></button>
+					              		<button id=<%=SystemType.COLD%> onclick="onColdSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white; vertical-align: top;"><img id="coldImage" src="images/ios-snow-primary.svg"></button>	
+		    						</div>
+		    						<button class="btn btn-primary" type="submit" name="ACTION" value="changeManualProgrammableMode" style="width: 90%; margin-bottom: 4px; margin-top: 4px;">SAVE</button>
+				              		
+				               	</div>
+				             
+				             	<button onclick="disableManualMode()" id="manualButton" type="submit" name="ACTION" value="changeManualProgrammableMode"  class="btn btn-light btn-lg text-center text-primary border-white" type="button" style=" position:absolute; bottom: 8px; right:8px;font-size: 50px;width: 70px;height: 70px;background-color: white;"><img src="images/md-hand-primary.svg" ></button>
+		                		<button onclick="enableManualMode()" id="programButton" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style=" position:absolute; bottom: 8px; right:8px;font-size: 50px;width: 70px;height: 70px;background-color: white;"><img src="images/md-hand-not-selected.svg" ></button>
+		                		
+					    		 <div class="btn-group btn-group-vertical" role="group" style="right: 8px;position: absolute;width: 65px; top:32px;"><!-- width: 25%; -->
 				                    <button id="increase" onclick="onIncreaseClick()" class="btn btn-primary" type="button" style="margin-bottom: 16px;align-self: end;padding-right: 8px;padding-left: 8px;">
 				                    	<img src="images/ios-add-white.svg" ></img>
 				                    </button>
@@ -210,7 +226,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		targetTemp.value="<%=targetTemp%>"
     		targetTempShown.innerHTML ="<%=targetTemp%>"
     		   		
-    		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  		
+    		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
     		
     		setDate();
     		if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
@@ -255,13 +271,19 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     	
     	function enableManualMode(){
     		console.log("enable Manual!");
-    		document.getElementById("manualImage").setAttribute('src','images/md-hand-primary.svg');
+    		document.getElementById("manualButton").style.display = "block";
+    		document.getElementById("programButton").style.display = "none";
+    		
+    		//document.getElementById("manualImage").setAttribute('src','images/md-hand-primary.svg');
     		mode.value="<%=Mode.MANUAL%>"
     		increaseButton.disabled = false;
     		decreaseButton.disabled = false;
-    		hotSystemButton.style.display = "-webkit-inline-box";
-    		coldSystemButton.style.display = "-webkit-inline-box";  
+    		//hotSystemButton.style.display = "-webkit-inline-box";
+    		//coldSystemButton.style.display = "-webkit-inline-box";
+    		document.getElementById("manualSection").style.display = "block";
     		updateActButtons();
+
+    		document.getElementById("targetTempText").innerHTML="Manual Temperature";
     		//console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
     	}
     	
@@ -269,12 +291,18 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 
     	function disableManualMode(){
     		console.log("Disable Manual!");
-    		document.getElementById("manualImage").setAttribute('src','images/md-hand-not-selected.svg');
+    		document.getElementById("manualButton").style.display = "none";
+    		document.getElementById("programButton").style.display = "block";
+    		
+    		//document.getElementById("manualImage").setAttribute('src','images/md-hand-not-selected.svg');
     		mode.value="<%=Mode.PROGRAMMABLE%>"	
     		increaseButton.disabled = true;
     		decreaseButton.disabled = true;
-    		hotSystemButton.style.display = "none";
-    		coldSystemButton.style.display = "none";   		
+    		//hotSystemButton.style.display = "none";
+    		//coldSystemButton.style.display = "none";
+    		document.getElementById("manualSection").style.display = "none";
+    		
+    		document.getElementById("targetTempText").innerHTML="Profile Temperature";
 
     		//console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
     	}

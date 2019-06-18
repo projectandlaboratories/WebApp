@@ -24,7 +24,6 @@
 <c:set var="currentProfileWinter" scope="page" value="${roomMap[roomId].winterProfile}"/>
 <c:set var="currentProfileSummer" scope="page" value="${roomMap[roomId].summerProfile}"/>
 
-
 <%session.setAttribute("caller", "roomManagementItem.jsp"); //todo aggiungere eventuale parametro ?nome=cucina%>
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">

@@ -32,7 +32,7 @@
    		</a>
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
         	<br>ROOM MANAGEMENT<br><br></a>
-        <a class="btn btn-light text-center text-primary d-lg-flex justify-content-lg-center align-items-lg-center action-button" href="#" style="height: 55px;font-size: 20px;margin-right: 8px;position:absolute; right: 2px; top:8px; font-family: Roboto, sans-serif;">Add room</a>
+        <a class="btn btn-light text-center text-primary d-lg-flex justify-content-lg-center align-items-lg-center action-button" href="addRoom.jsp" style="height: 55px;font-size: 20px;margin-right: 8px;position:absolute; right: 2px; top:8px; font-family: Roboto, sans-serif;">Add room</a>
         </h1>
 	<ul class="list-group">
 		<c:forEach items="${roomMap}" var="roomItem">
@@ -46,7 +46,7 @@
 				<span class="d-inline-flex" style="font-size: 24px; margin-right: 8px; position: absolute; right: 50px">${roomTemp}°</span>
 				<!-- connstate = ${roomItem.value.connState} -->
 				<c:if test="${roomItem.value.connState eq false}">
-					<img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px;">
+					<img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px;position: absolute; right: 8px">
 				</c:if>
 			</li>
 		</c:forEach>

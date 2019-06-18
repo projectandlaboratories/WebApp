@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+<%@page import="it.project.dto.Program"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,6 +32,13 @@ if(alertCode==='assigned'){
 
 <c:set var="currentProfile" scope="session" value="${profileMap[param.profile]}"/> 
 
+<%Program p = (Program)session.getAttribute("currentProfile");
+String deleteDisplay;
+if(p.getName().compareTo("Default Profile")==0){
+	deleteDisplay="none";
+}else deleteDisplay="block";
+%>
+
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	<a class="btn btn-primary text-center d-lg-flex" href="profileList.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
@@ -49,7 +57,7 @@ if(alertCode==='assigned'){
   
 	    <div style="display: inline-flex; text-align: center; margin-top:50px">
 	     <form action="<%=request.getContextPath()+"/newProgramServlet"%>" method="POST">  
-           	<button type='submit' name="ACTION" value="DELETE" class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px;">DELETE</button>
+           	<button type='submit' name="ACTION" value="DELETE" class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px; display: <%=deleteDisplay%>;">DELETE</button>
        	</form> 
         	<button class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;padding-right: 16px;padding-left: 16px;">EDIT</button>
         </div>
