@@ -49,7 +49,7 @@
 	try{
 		DBClass.getConnection(user);
 		MQTTDbSync.setConnection(user);
-		MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
+		//MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
 	}
 	catch(Exception e){
 %>
