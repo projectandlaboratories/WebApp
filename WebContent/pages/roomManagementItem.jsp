@@ -33,10 +33,15 @@ String mainRoomId="id1";  //TODO prendere da DB stanza principale -> valutare se
 
 String roomId = (String) session.getAttribute("roomId");
 String deleteDisplay;
+String disabled;
 
 if(roomId.compareTo(mainRoomId)==0){
 	deleteDisplay="none";
-}else deleteDisplay="block";
+	disabled = "disabled";
+}else{
+	deleteDisplay="";
+	disabled = "";
+}
 %>
 
 <body>
@@ -46,8 +51,8 @@ if(roomId.compareTo(mainRoomId)==0){
  		</a>
     <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
       	<br>${roomMap[roomId].roomName}<br><br></a>
-    <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button"  style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 62px; top: 0px; ">
-		<img id="deleteIcon" src="../images/md-trash-white.svg"  style="width:100%;" ></img> <!-- display: < %=deleteDisplay%> -->
+    <button <%=disabled%> class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#deleteRoomPopup"  style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 62px; top: 0px; ">
+		<img id="deleteIcon" src="../images/md-trash-white.svg"  style="display:<%=deleteDisplay%>;width:100%;" ></img>
     </button>
     <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#editRoomPopup" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px; top: 0px; ">
 		<img id="editIcon" src="../images/md-create-white.svg"  style="width:100%;" ></img>
@@ -55,7 +60,7 @@ if(roomId.compareTo(mainRoomId)==0){
 </h1>
 
 
-<!-- Popup -->
+<!-- Popup edit room-->
 	<div class="modal fade" id="editRoomPopup" tabindex="-1"
 		role="dialog" aria-labelledby="exampleModalCenterTitle"
 		aria-hidden="true">
@@ -92,6 +97,35 @@ if(roomId.compareTo(mainRoomId)==0){
 							data-dismiss='modal'>Close</button>
 						<button type='submit' id="editRoomSubmit" name='airCondModel' value="${roomMap[roomId].idAirCond}"
 							class='btn btn-primary'>Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Popup delete room-->
+	<div class="modal fade" id="deleteRoomPopup" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class='modal-dialog modal-dialog-centered' role='document'>
+			<div class='modal-content'>
+				<div class='modal-header'>
+					<h5 class='modal-title' id='exampleModalLongTitle'>DELETE ROOM</h5>
+					<button type='button' class='close' data-dismiss='modal'
+						aria-label='Close'>
+						<span aria-hidden='true'>&times;</span>
+					</button>
+				</div>
+				
+				<form action="<%=request.getContextPath()%>/deleteRoom?room=${roomId}" method='POST'>
+						<div class='modal-body'>
+							ARE YOU SURE YOU WANT TO DELETE THIS ROOM?
+						</div>
+						<div class='modal-footer'>
+						<button type='button' class='btn btn-secondary'
+							data-dismiss='modal'>NO</button>
+						<button type='submit' id="editRoomSubmit"
+							class='btn btn-primary'>YES</button>
 					</div>
 				</form>
 			</div>

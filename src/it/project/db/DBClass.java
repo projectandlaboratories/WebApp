@@ -515,6 +515,21 @@ public class DBClass {
 			
 		return conn.createStatement();
 	}
+	
+	public static void deleteRoom(String roomId) {
+		Statement statement;
+		
+		try {
+			statement = conn.createStatement();
+			String query = "DELETE FROM rooms WHERE ID_ROOM='" + roomId +  "'";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 	
 }

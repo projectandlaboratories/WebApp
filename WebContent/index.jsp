@@ -50,7 +50,6 @@
 		DBClass.getConnection(user);
 		MQTTDbSync.setConnection(user);
 		//MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
-		DBClass.saveCurrentTemperature("id1", 12);
 	}
 	catch(Exception e){
 %>
