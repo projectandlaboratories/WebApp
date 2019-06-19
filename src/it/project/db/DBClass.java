@@ -98,11 +98,24 @@ public class DBClass {
 							"VALUES ('"+name+"','"+day+"','"+dayType+"','"+interval.getDayMoment()+"',"+
 							interval.getStartHour()+","+interval.getStartMin()+","+interval.getEndHour()+","+interval.getEndMin()+","+interval.getTemperature()+")" ;
 					statement.executeUpdate(query);
-					//MQTTDbSync.sendMessage(query);
+					MQTTDbSync.sendMessage(query);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
+		}
+	}
+	
+	public static void saveCurrentTemperature(String roomId, int currentTemp) {
+		Statement statement;
+		try {
+			statement = getStatement();
+			java.sql.Timestamp now = new java.sql.Timestamp(new java.util.Date().getTime());
+			String query = "INSERT INTO temperatures(ID_ROOM,TIMESTAMP,TEMPERATURE) values('" + roomId + "','" + now + "'," + currentTemp + ");" ;
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -201,7 +214,7 @@ public class DBClass {
 			statement = getStatement();
 			String query = "DELETE from profiles where id_profile='"+name+"'";
 			statement.executeUpdate(query);
-			//MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -378,7 +391,6 @@ public class DBClass {
 	}
 	
 	public static String isWeekendMode() {
-		//TODO qui andrebbe messo il controllo se now() è maggiore di END_TIME allora bisogna stoppare la weekend mode
 		Statement statement;
 		String endTime = null;
 		try {
@@ -438,8 +450,9 @@ public class DBClass {
 			}
 			
 			if(id != -1) {
+				java.sql.Timestamp now = new java.sql.Timestamp(new java.util.Date().getTime());
 				String query = "insert into weekend_mode(ID,WMODE,START_TIME,END_TIME)"
-						+ "VALUES(" + id + ",true,now(),'" + date + "');";
+						+ "VALUES(" + id + ",true,'"+ now + "','" + date + "');";
 				statement.executeUpdate(query);
 				MQTTDbSync.sendMessage(query);
 			}
@@ -487,9 +500,10 @@ public class DBClass {
 		
 		try {
 			statement = conn.createStatement();
-			statement.executeUpdate("UPDATE rooms SET ID_AIR_COND = " + airCondModelId + ",ROOM_NAME = '" + roomName +  "' where ID_ROOM = '" + roomId + "';");
-			
-		} catch (SQLException e) {
+			String query = "UPDATE rooms SET ID_AIR_COND = " + airCondModelId + ",ROOM_NAME = '" + roomName +  "' where ID_ROOM = '" + roomId + "';";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

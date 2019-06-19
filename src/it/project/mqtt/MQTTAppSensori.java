@@ -44,39 +44,40 @@ public class MQTTAppSensori {
 
         		client = new MqttClient(host, clientId, new MemoryPersistence());
         		client.connect(conOpt);
-//        		client.setCallback(new MqttCallback() {
-//					
-//					@Override
-//					public void messageArrived(String topic, MqttMessage message) throws Exception {
-//						Topics receivedTopic = Topics.valueOf(topic);
-//						switch(receivedTopic) {
-//							case TEMPERATURE:
-////								JSONObject json = new JSONObject(new String(message.getPayload()));
-////								String roomId = json.getString("roomId");
-////								int currentTemp = Integer.parseInt(json.getString("currentTemp"));
-//								break;
-//							case ACTUATOR_STATUS:
-//								break;
-//						}
-//						
-//					}
-//					
-//					@Override
-//					public void deliveryComplete(IMqttDeliveryToken arg0) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//					
-//					@Override
-//					public void connectionLost(Throwable arg0) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//				});
-//        		
+        		client.setCallback(new MqttCallback() {
+					
+					@Override
+					public void messageArrived(String topic, MqttMessage message) throws Exception {
+						Topics receivedTopic = Topics.valueOf(topic);
+						switch(receivedTopic) {
+							case TEMPERATURE:
+								JSONObject json = new JSONObject(new String(message.getPayload()));
+								String roomId = json.getString("roomId");
+								int currentTemp = Integer.parseInt(json.getString("currentTemp"));
+								DBClass.saveCurrentTemperature(roomId,currentTemp);
+								break;
+							case ACTUATOR_STATUS:
+								break;
+						}
+						
+					}
+					
+					@Override
+					public void deliveryComplete(IMqttDeliveryToken arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void connectionLost(Throwable arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
         		
-//        		client.subscribe(Topics.ACTUATOR_STATUS.getName(), qos);
-//        		client.subscribe(Topics.TEMPERATURE.getName(), qos);
+        		
+        		client.subscribe(Topics.ACTUATOR_STATUS.getName(), qos);
+        		client.subscribe(Topics.TEMPERATURE.getName(), qos);
         		
         	} catch(Exception e) {
             	e.printStackTrace();
