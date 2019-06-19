@@ -32,12 +32,55 @@
  		</a>
     <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
       	<br>${roomMap[roomId].roomName}<br><br></a>
-    <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#exampleModalCenter" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px; top: 0px; ">
+    <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#editRoomPopup" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px; top: 0px; ">
 		<img id="editIcon" src="../images/md-create-white.svg"  style="width:100%;" ></img>
     </button>
 </h1>
-        
-        
+
+
+<!-- Popup -->
+	<div class="modal fade" id="editRoomPopup" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class='modal-dialog modal-dialog-centered' role='document'>
+			<div class='modal-content'>
+				<div class='modal-header'>
+					<h5 class='modal-title' id='exampleModalLongTitle'>EDIT ROOM</h5>
+					<button type='button' class='close' data-dismiss='modal'
+						aria-label='Close'>
+						<span aria-hidden='true'>&times;</span>
+					</button>
+				</div>
+				
+				<c:set var="airCondMap" value="<%=DBClass.getAirCondList()%>"/>
+				<form action="<%=request.getContextPath()%>/editRoom?room=${roomId}" method='POST'>
+					<div class='modal-body'>
+					<input type="text" name="room_name" value="${roomMap[roomId].roomName}" style="width:100%">
+						<div style="display: inline-flex">
+							<div class="dropdown d-inline-flex">
+								<button type="button" class="btn btn-primary dropdown-toggle" id="modelDropDown"
+									data-toggle="dropdown" aria-expanded="false"
+									style="font-size: 15px;margin-top: 10px;">${airCondMap[roomMap[roomId].idAirCond]}</button>
+								<div class="dropdown-menu" role="menu" style="width: 100%">
+									<c:forEach items="${airCondMap}" var="airCondItem">
+										<a class="dropdown-item" onclick="changeModelValue('${airCondItem.key}','${airCondItem.value}')" role="presentation">${airCondItem.value}</a>
+									</c:forEach>
+									
+								</div>
+							</div>
+						</div>
+						</div>
+						<div class='modal-footer'>
+						<button type='button' class='btn btn-secondary'
+							data-dismiss='modal'>Close</button>
+						<button type='submit' id="editRoomSubmit" name='airCondModel' value="${roomMap[roomId].idAirCond}"
+							class='btn btn-primary'>Save</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
 	<div>
         <div>
             <ul class="nav nav-tabs">
@@ -71,7 +114,15 @@
     
    
     
-   
+   <script type="text/javascript">
+
+	function changeModelValue(id,name){
+		var buttonModel = document.getElementById("modelDropDown");
+		var buttonSubmit = document.getElementById("editRoomSubmit");
+		buttonSubmit.value = id
+		buttonModel.innerText = name
+	}
+	</script>
 
     
     <script><%@include file="../assets/js/jquery.min.js"%></script> 

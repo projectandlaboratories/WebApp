@@ -38,8 +38,8 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
@@ -462,6 +462,38 @@ public class DBClass {
 		}
 	}
 	
+	public static Map<Integer,String> getAirCondList(){
+		Statement statement;
+		Map<Integer,String> airCondMap = new HashMap<>();
+		try {
+			statement = getStatement();
+			String query = "SELECT * from air_cond";
+			ResultSet result = statement.executeQuery(query);
+			while (result.next()) {
+				int id = result.getInt("ID_AIR_COND");
+				String modelName = result.getString("MODEL_NAME");
+				airCondMap.put(id, modelName);
+			}
+			return airCondMap;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static void editRoom(String roomId, String roomName, String airCondModelId) {
+		
+		Statement statement;
+		
+		try {
+			statement = conn.createStatement();
+			statement.executeUpdate("UPDATE rooms SET ID_AIR_COND = " + airCondModelId + ",ROOM_NAME = '" + roomName +  "' where ID_ROOM = '" + roomId + "';");
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	private static Statement getStatement() throws Exception {
 		if(conn == null)
