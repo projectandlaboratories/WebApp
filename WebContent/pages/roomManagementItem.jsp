@@ -3,6 +3,8 @@
     <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
      <%@ page import="it.project.enums.*" %>
      <%@ page import="it.project.db.DBClass" %>
+     <%@page import="it.project.dto.Room"%>
+     <%@page import="java.util.*"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,10 +23,22 @@
 </head>
 
 <c:set var="roomId" scope="session" value="${param.roomId}"/>
+
 <c:set var="currentProfileWinter" scope="page" value="${roomMap[roomId].winterProfile}"/>
 <c:set var="currentProfileSummer" scope="page" value="${roomMap[roomId].summerProfile}"/>
 
 <%session.setAttribute("caller", "roomManagementItem.jsp"); //todo aggiungere eventuale parametro ?nome=cucina%>
+<%
+String mainRoomId="id1";  //TODO prendere da DB stanza principale -> valutare se cambiare nome alla variabile
+
+String roomId = (String) session.getAttribute("roomId");
+String deleteDisplay;
+
+if(roomId.compareTo(mainRoomId)==0){
+	deleteDisplay="none";
+}else deleteDisplay="block";
+%>
+
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
   	<a class="btn btn-primary text-center d-lg-flex" href="roomManagement.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
@@ -32,6 +46,9 @@
  		</a>
     <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
       	<br>${roomMap[roomId].roomName}<br><br></a>
+    <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button"  style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 62px; top: 0px; ">
+		<img id="deleteIcon" src="../images/md-trash-white.svg"  style="width:100%;" ></img> <!-- display: < %=deleteDisplay%> -->
+    </button>
     <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#editRoomPopup" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px; top: 0px; ">
 		<img id="editIcon" src="../images/md-create-white.svg"  style="width:100%;" ></img>
     </button>
