@@ -48,7 +48,7 @@ if(myProgram!=null && myProgram.getDays().size()!=0){//update
         
 <form action="profileTimeWorkingDays.jsp" method="POST">       
     <div style="transform: scale(1.2); position: absolute; left: 100px;  top: 100px;" >
-	    <div class="btn-group btn-group" data-toggle="buttons" >
+	    <div>
 		    <label class="btn active"> <input type="checkbox" name='<%=DayName.MON%>' <%=checked.get(DayName.MON)%>> <%=DayName.MON%></label>
 		    <label class="btn active"> <input type="checkbox" name='<%=DayName.TUE%>' <%=checked.get(DayName.TUE)%>> <%=DayName.TUE%> </label>
 		    <label class="btn active"> <input type="checkbox" name='<%=DayName.WED%>' <%=checked.get(DayName.WED)%>> <%=DayName.WED%> </label>

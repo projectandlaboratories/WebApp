@@ -43,8 +43,8 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
@@ -541,6 +541,21 @@ public class DBClass {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
+	}
+	
+	public static void createRoom(String roomName, String airCondModelId, String roomId) {
+		Statement statement;
+		try {
+			statement = getStatement();
+			String defaultProfile = DBClass.getConfigValue("defaultProfile");
+			String query = "insert into rooms(ID_ROOM, ROOM_NAME, ID_AIR_COND, CONN_STATE, ID_PROFILE_WINTER, ID_PROFILE_SUMMER, MODE, MANUAL_TEMP, MANUAL_SYSTEM)"+
+							"values('"+roomId+"','"+roomName+"',"+airCondModelId+",true,'"+defaultProfile+"','"+defaultProfile+"','"+Mode.PROGRAMMABLE.toString()+"',0,'" + SystemType.HOT.toString()+"')";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public static String getConfigValue(String config_key) {

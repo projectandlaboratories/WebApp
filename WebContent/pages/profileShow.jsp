@@ -33,7 +33,9 @@ if(alertCode==='assigned'){
 
 <c:set var="currentProfile" scope="session" value="${profileMap[param.profile]}"/> 
 
-<%Program p = (Program)session.getAttribute("currentProfile");
+<%
+Program p = (Program)session.getAttribute("currentProfile");
+session.setAttribute("caller", "profileShow.jsp?profile="+p.getName());
 String deleteDisplay;
 String defaultProfile = DBClass.getConfigValue("defaultProfile");
 if(p.getName().compareTo(defaultProfile)==0){
