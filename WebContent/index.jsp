@@ -81,7 +81,7 @@ Date date =  new Date();
 Season season;
 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
-String mode=currentRoom.getMode().toString();
+String mode=currentRoom.getMode().name();
 String targetTemp="0";
 String act;
 if(currentRoom.getMode().equals(Mode.MANUAL)){	
