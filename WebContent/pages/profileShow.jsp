@@ -2,6 +2,7 @@
     pageEncoding="ISO-8859-1"%>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <%@page import="it.project.dto.Program"%>
+<%@page import="it.project.db.DBClass"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,7 +35,8 @@ if(alertCode==='assigned'){
 
 <%Program p = (Program)session.getAttribute("currentProfile");
 String deleteDisplay;
-if(p.getName().compareTo("Default Profile")==0){
+String defaultProfile = DBClass.getConfigValue("defaultProfile");
+if(p.getName().compareTo(defaultProfile)==0){
 	deleteDisplay="none";
 }else deleteDisplay="block";
 %>
