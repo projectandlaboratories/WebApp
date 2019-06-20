@@ -59,15 +59,22 @@
 %>
 <c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
 <%
-Map<String,Room> roomMap = (Map<String,Room>) session.getAttribute("roomMap");
+NavigableMap<String,Room> roomMap = (NavigableMap<String,Room>) session.getAttribute("roomMap");
 
-String mainRoomId="id1";  //TODO prendere da DB stanza principale -> valutare se cambiare nome alla variabile
-
-String currentRoomId = (String)session.getAttribute("currentRoomId"); 
+String mainRoomId=DBClass.getMainRoomId();
+String currentRoomId = request.getParameter("currentRoom");//(String)session.getAttribute("currentRoomId"); 
 if(currentRoomId==null){
 	currentRoomId=mainRoomId;
-	session.setAttribute("currentRoomId", currentRoomId);	
 }
+session.setAttribute("currentRoomId", currentRoomId);	
+
+String nextKey = roomMap.higherKey(currentRoomId);
+if(nextKey==null)
+	nextKey=roomMap.firstKey();
+
+String prevKey = roomMap.lowerKey(currentRoomId);
+if(prevKey==null)
+	prevKey=roomMap.lastKey();
 
 Room currentRoom = roomMap.get(currentRoomId);
 Date date =  new Date();
@@ -175,15 +182,14 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
                 </div>
 
                <footer class="d-flex d-md-flex d-lg-flex align-items-center align-items-md-center align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle;">
-                	<button class="btn btn-light text-center bg-light border-light d-lg-flex" type="button" style="height: 60px;padding-top: 6px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);">
-                		<!-- i class="icon ion-android-arrow-back d-lg-flex justify-content-lg-center align-items-lg-center" style="font-size: 47px;width: auto;height: auto;font-family: Roboto, sans-serif;color: #2C3E50;"></i> -->
-                		<img src="images/ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">
-                		</button>
-                    <a
-                        class="navbar-brand text-center text-primary flex-fill" href="#" style="margin-right:64px; padding-top: 5px;font-size: 40px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">HALL</a>
-                        <button class="btn btn-primary text-center bg-light border-light d-lg-flex justify-content-lg-center align-items-lg-center" type="button" style="height: 60px;padding-top: 6px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 8px;">
-                        <img src="images/ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">
-                        </button></footer>
+                	<button class="btn btn-light text-center bg-light border-light d-lg-flex" onclick="prevPage()" type="button"  style="height: 60px;padding-top: 6px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);">
+                		<img src="images/ios-arrow-round-back-primary.svg" style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">
+                	</button>
+                    <a class="navbar-brand text-center text-primary flex-fill" href="#" style="margin-right:64px; padding-top: 5px;font-size: 40px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;"><%=currentRoom.getRoomName() %></a>
+                    <button class="btn btn-primary text-center bg-light border-light d-lg-flex justify-content-lg-center align-items-lg-center" onclick="nextPage()" type="button" style="height: 60px;padding-top: 6px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 8px;">
+                   		<img src="images/ios-arrow-round-forward-primary.svg" style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">
+                   	</button>
+               </footer>
             </div>
         </div>
     </div>
@@ -512,7 +518,15 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 			"</div>" +
 		"</div>";
 		}
-	
+		
+		function nextPage(){
+			window.open("./index.jsp?currentRoom=<%=nextKey%>","_self")
+		}
+
+		function prevPage(){
+			window.open("./index.jsp?currentRoom=<%=prevKey%>","_self")
+		}
+
     	//clearInterval(timerID); // The setInterval it cleared and doesn't run anymore.
     	
     </script>

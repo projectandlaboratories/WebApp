@@ -29,8 +29,7 @@
 
 <%session.setAttribute("caller", "roomManagementItem.jsp"); //todo aggiungere eventuale parametro ?nome=cucina%>
 <%
-String mainRoomId="id1";  //TODO prendere da DB stanza principale -> valutare se cambiare nome alla variabile
-
+String mainRoomId=DBClass.getMainRoomId();
 String roomId = (String) session.getAttribute("roomId");
 String deleteDisplay;
 String disabled;

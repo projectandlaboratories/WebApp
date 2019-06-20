@@ -33,17 +33,15 @@ public class NewProgramServlet  extends HttpServlet {
 				resp.sendRedirect("pages/profileList.jsp");
 			}
 			break;
-		 case "UPDATE": //todo da testare
-			System.out.println(action);
+		 case "UPDATE":
+			System.out.println(action + " Profile");
 
 			String previousName=(String)req.getSession(false).getAttribute("previousName");
-			System.out.println(previousName);
+			//System.out.println(previousName);
 			String currentName=(String)req.getParameter("profile_name");
 			
 			req.getSession(false).removeAttribute("previousName");		
-			//if(currentName.compareTo(previousName)!=0) {
-				
-			//}
+
 			if(req.getParameter("profile_name").equals("")) {
 				resp.sendRedirect("pages/profileSummary.jsp?alert=empty");
 			}
@@ -55,16 +53,17 @@ public class NewProgramServlet  extends HttpServlet {
 				program.setName(req.getParameter("profile_name"));
 				//DBClass.createProfiles(program);
 				DBClass.updateProfile(previousName, currentName, program);
+				String defaultProfile = DBClass.getConfigValue("defaultProfile");
+				if(previousName.compareTo(defaultProfile)==0) {
+					DBClass.updateConfigValue("defaultProfile",currentName);
+				}
 				resp.sendRedirect("pages/profileList.jsp");
 			}
-			 
-			  
-			 //req.getSession(false).removeAttribute("currentProfile");	
 			break;
+		 
 		 case "DELETE":
 			System.out.println(action);
 			boolean assigned = DBClass.isProfileAssigned(program.getName());
-			 //req.getSession(false).removeAttribute("currentProfile");
 			if(!assigned) {
 				DBClass.deleteProfiles(program.getName());			 
 				resp.sendRedirect("pages/profileList.jsp");

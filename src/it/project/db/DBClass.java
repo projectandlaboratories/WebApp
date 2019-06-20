@@ -11,6 +11,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import it.project.dto.Interval;
 import it.project.dto.Profile;
@@ -24,6 +27,8 @@ public class DBClass {
 
 	private static Connection conn;
 	private static DbIdentifiers dbuser;
+	private static String mainRoomId; //MAC del raspberry
+	
 	
 	public DBClass(){
 	}
@@ -38,8 +43,8 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
@@ -51,6 +56,12 @@ public class DBClass {
 		
 	}
 	
+	public static String getMainRoomId() {
+		if(mainRoomId==null) {
+			mainRoomId=getConfigValue("mainRoomId");
+		}
+		return mainRoomId;
+	}
 
 	//TODO da rimuovere
 	public static int getProva(int id) {
@@ -70,7 +81,8 @@ public class DBClass {
 		return valore;
 	}
 	
-	public static void executeQuery(String query){
+	
+		public static void executeQuery(String query){
 		Statement statement;
 		
 		try {
@@ -342,7 +354,8 @@ public class DBClass {
 	
 	public static Map<String,Room> getRooms(){
 		
-		Map<String,Room> rooms = new HashMap<>();
+		//Map<String,Room> rooms = new HashMap<String, Room>();
+		NavigableMap<String, Room> rooms = new TreeMap<>();
 		Statement statement;
 		try {
 			statement = getStatement();
@@ -527,9 +540,52 @@ public class DBClass {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}	
+	}
+	
+	public static void createRoom(String roomName, String airCondModelId, String roomId) {
+		Statement statement;
+		try {
+			statement = getStatement();
+			String defaultProfile = DBClass.getConfigValue("defaultProfile");
+			String query = "insert into rooms(ID_ROOM, ROOM_NAME, ID_AIR_COND, CONN_STATE, ID_PROFILE_WINTER, ID_PROFILE_SUMMER, MODE, MANUAL_TEMP, MANUAL_SYSTEM)"+
+							"values('"+roomId+"','"+roomName+"',"+airCondModelId+",true,'"+defaultProfile+"','"+defaultProfile+"','"+Mode.PROGRAMMABLE.toString()+"',0,'" + SystemType.HOT.toString()+"')";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 	}
+	
+	public static String getConfigValue(String config_key) {
+		Statement statement;
+		String retval="";
+		try {
+			statement = getStatement();
+			String query = "SELECT value from system_config where config_key='"+config_key+"'";
+			ResultSet result = statement.executeQuery(query);
+			if (result.next())
+				retval = result.getString("value");
+		} catch (Exception e) {			
+			e.printStackTrace();
+		}		
+		return retval;
+	}
+	
+	public static void updateConfigValue (String config_key, String value) {
+		Statement statement;
+		try {
+			statement = getStatement();
+			String query = "UPDATE system_config SET value = '" + value + "' where config_key = '" + config_key + "';";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendMessage(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
 
 	
 }
