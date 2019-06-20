@@ -551,7 +551,7 @@ public class DBClass {
 			String query = "insert into rooms(ID_ROOM, ROOM_NAME, ID_AIR_COND, CONN_STATE, ID_PROFILE_WINTER, ID_PROFILE_SUMMER, MODE, MANUAL_TEMP, MANUAL_SYSTEM)"+
 							"values('"+roomId+"','"+roomName+"',"+airCondModelId+",true,'"+defaultProfile+"','"+defaultProfile+"','"+Mode.PROGRAMMABLE.toString()+"',0,'" + SystemType.HOT.toString()+"')";
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -579,7 +579,7 @@ public class DBClass {
 			statement = getStatement();
 			String query = "UPDATE system_config SET value = '" + value + "' where config_key = '" + config_key + "';";
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
