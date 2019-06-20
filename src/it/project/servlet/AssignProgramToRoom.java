@@ -19,6 +19,7 @@ import it.project.db.DBClass;
 import it.project.dto.Program;
 import it.project.dto.Room;
 import it.project.enums.Season;
+import it.project.mqtt.MQTTAppSensori;
 
 /**
  * Servlet implementation class AssignProgramToRoom
@@ -47,6 +48,7 @@ public class AssignProgramToRoom extends HttpServlet {
 		Program profile = ((Map<String, Program>) request.getSession(false).getAttribute("profileMap")).get(profileName);
 		
 		DBClass.updateRoomProfile(roomId, profileName, season);
+		//MQTTAppSensori.notifyProfileChanged(roomId, season, profile); TODO decommentare quando si testa mqtt AppSensori
 		if(season.equals(Season.WINTER))
 			((Map<String, Room>) request.getSession(false).getAttribute("roomMap")).get(roomId).setWinterProfile(profile);
 		if(season.equals(Season.SUMMER))

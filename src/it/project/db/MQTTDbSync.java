@@ -2,7 +2,10 @@ package it.project.db;
 
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.json.JSONObject;
 
+import it.project.enums.Topics;
+import it.project.mqtt.MQTTAppSensori;
 import it.project.utils.DbIdentifiers;
 
 import java.net.URI;
@@ -28,12 +31,12 @@ public class MQTTDbSync{
         		String host = String.format("tcp://%s", endpoint);
         		String clientId = user.name();
         		if(user.equals(DbIdentifiers.LOCAL)) {
-        			send_topic = "new_query_for_aws";
-        			subscribe_topic = "new_query_for_local";
+        			send_topic = Topics.LOCAL_NEWQUERY_SEND.getName();
+        			subscribe_topic = Topics.LOCAL_NEWQUERY_SUBSCRIBE.getName();
         		}
         		if(user.equals(DbIdentifiers.AWS)) {
-        			send_topic = "new_query_for_local";
-        			subscribe_topic = "new_query_for_aws";
+        			send_topic = Topics.AWS_NEWQUERY_SEND.getName();
+        			subscribe_topic = Topics.AWS_NEWQUERY_SUBSCRIBE.getName();
         		}
         		
         		conn = DBClass.getConnection(user);
@@ -49,7 +52,20 @@ public class MQTTDbSync{
 					
 					@Override
 					public void messageArrived(String topic, MqttMessage message) throws Exception {
-						DBClass.executeQuery(new String(message.getPayload()));
+						if(topic.equals(Topics.MQTT_APP_SENSORI.getName())) {
+							JSONObject inputJson = new JSONObject(message.getPayload());
+							String operation = inputJson.getString("operation");
+							JSONObject inputMessage = inputJson.getJSONObject("message");
+							if(operation.equals("modechange"))
+								MQTTAppSensori.notifyModeChanged(inputMessage);
+							else {
+								MQTTAppSensori.notifyProfileChanged(inputMessage);
+							}
+						}
+						else {
+							DBClass.executeQuery(new String(message.getPayload()));
+						}
+						
 						
 					}
 					
@@ -69,6 +85,9 @@ public class MQTTDbSync{
         		
         		client.subscribe(subscribe_topic, qos);
         		
+        		if(user.equals(DbIdentifiers.LOCAL))
+        			client.subscribe(Topics.MQTT_APP_SENSORI.getName());
+        		
         	} catch(Exception e) {
             	e.printStackTrace();
             }
@@ -77,10 +96,16 @@ public class MQTTDbSync{
     }
     
     
-    public static void sendMessage(String payload) throws MqttException {
+    public static void sendQueryMessage(String payload) throws MqttException {
         MqttMessage message = new MqttMessage(payload.getBytes());
         message.setQos(qos);
         client.publish(send_topic, message);
+    }
+    
+    public static void sendMQTTMessage(String payload) throws Exception {
+    	MqttMessage message = new MqttMessage(payload.getBytes());
+        message.setQos(qos);
+        client.publish(Topics.MQTT_APP_SENSORI.getName(), message);
     }
 
 }

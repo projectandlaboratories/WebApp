@@ -98,7 +98,7 @@ public class DBClass {
 							"VALUES ('"+name+"','"+day+"','"+dayType+"','"+interval.getDayMoment()+"',"+
 							interval.getStartHour()+","+interval.getStartMin()+","+interval.getEndHour()+","+interval.getEndMin()+","+interval.getTemperature()+")" ;
 					statement.executeUpdate(query);
-					MQTTDbSync.sendMessage(query);
+					MQTTDbSync.sendQueryMessage(query);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -113,7 +113,7 @@ public class DBClass {
 			java.sql.Timestamp now = new java.sql.Timestamp(new java.util.Date().getTime());
 			String query = "INSERT INTO temperatures(ID_ROOM,TIMESTAMP,TEMPERATURE) values('" + roomId + "','" + now + "'," + currentTemp + ");" ;
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -129,16 +129,16 @@ public class DBClass {
 			query= "INSERT INTO profiles (ID_PROFILE, DAY_OF_WEEK,DAY_TYPE,DAY_MOMENT, START_HOUR, START_MIN,END_HOUR, END_MIN, TEMPERATURE) "+
 					"VALUES ('"+fakeProfileName+"','-','-','-',0,0,0,0,0)";	
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 			
 			//assegno profilo falso alle stanze che hanno previousProfileName
 			query="UPDATE rooms set ID_PROFILE_WINTER = '"+fakeProfileName+"' where ID_PROFILE_WINTER='"+previousProfileName+"'";
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 			
 			query="UPDATE rooms set ID_PROFILE_SUMMER = '"+fakeProfileName+"' where ID_PROFILE_SUMMER='"+previousProfileName+"'";
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 			
 			//delete Profilo vecchio
 			deleteProfiles(previousProfileName);
@@ -149,17 +149,17 @@ public class DBClass {
 			//assegno profilo nuovo alle stanze che hanno fakeProfileName
 			query="UPDATE rooms set ID_PROFILE_WINTER = '"+newProfileName+"' where ID_PROFILE_WINTER='"+fakeProfileName+"'";
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 			
 			query="UPDATE rooms set ID_PROFILE_SUMMER = '"+newProfileName+"' where ID_PROFILE_SUMMER='"+fakeProfileName+"'";
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 			
 			
 			//cancello profilo fake
 			query= "DELETE FROM profiles WHERE ID_PROFILE = '"+fakeProfileName+"'";	
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -214,7 +214,7 @@ public class DBClass {
 			statement = getStatement();
 			String query = "DELETE from profiles where id_profile='"+name+"'";
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -257,7 +257,7 @@ public class DBClass {
 			statement = getStatement();
 			String query = "UPDATE rooms SET ID_PROFILE_" + season.name() + "= '" + profileName + "' WHERE ID_ROOM = '" + roomId + "'" ;
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -271,7 +271,7 @@ public class DBClass {
 			String query = "UPDATE rooms SET MODE= '" + mode + "', MANUAL_TEMP= '" + targetTemp + "', MANUAL_SYSTEM= '" + systemType 
 					+ "' WHERE ID_ROOM = '" + roomId + "'" ;
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -454,7 +454,7 @@ public class DBClass {
 				String query = "insert into weekend_mode(ID,WMODE,START_TIME,END_TIME)"
 						+ "VALUES(" + id + ",true,'"+ now + "','" + date + "');";
 				statement.executeUpdate(query);
-				MQTTDbSync.sendMessage(query);
+				MQTTDbSync.sendQueryMessage(query);
 			}
 			
 		} catch (Exception e) {
@@ -468,7 +468,7 @@ public class DBClass {
 			statement = getStatement();
 			String query = "update weekend_mode set WMODE = 0 where WMODE = 1";
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -502,7 +502,7 @@ public class DBClass {
 			statement = conn.createStatement();
 			String query = "UPDATE rooms SET ID_AIR_COND = " + airCondModelId + ",ROOM_NAME = '" + roomName +  "' where ID_ROOM = '" + roomId + "';";
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -523,7 +523,7 @@ public class DBClass {
 			statement = conn.createStatement();
 			String query = "DELETE FROM rooms WHERE ID_ROOM='" + roomId +  "'";
 			statement.executeUpdate(query);
-			MQTTDbSync.sendMessage(query);
+			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

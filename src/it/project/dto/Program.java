@@ -301,4 +301,13 @@ public class Program implements Serializable{
 		return intervals;
 	}
 	
+	
+	public Map<Object,Object> toMap(){
+		Map<Object,Object> map = new HashMap<>();
+		map.put("name", name);
+		map.put("days", days);
+		map.put("intervals", intervals);
+		return map;
+	}
+	
 }
