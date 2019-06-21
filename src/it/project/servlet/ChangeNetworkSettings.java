@@ -1,6 +1,8 @@
 package it.project.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -32,9 +34,9 @@ public class ChangeNetworkSettings extends HttpServlet {
 		String ssid = request.getParameter("ssid");
 		String password = request.getParameter("password");
 		
-		//Process connectWifi= new ProcessBuilder("/home/pi/script/connect_wifi.sh",ssid,password).start();
+		Process connectWifi= new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/connect_wifi.sh"),ssid,password).redirectErrorStream(true).start();
 		
-		response.sendRedirect("pages/networkSettings.jsp");
+		response.sendRedirect("pages/networkSettings.jsp?");
 	}
 
 }

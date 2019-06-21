@@ -20,20 +20,20 @@
 </head>
 
 <%
-List<String> ssidList = new ArrayList<>();
-ssidList.add("ssid1");
-ssidList.add("ssid2");
-/* Process listSsid = new ProcessBuilder("/home/pi/script/list_ssid.sh").start();
-String line;
-BufferedReader input = new BufferedReader(new InputStreamReader(listSsid.getInputStream()));  
-while ((line = input.readLine()) != null) { 
-	String ssid = line.split(":")[1];
-    ssidList.add(ssid);  
-}  
-input.close();   */
-
+	Set<String> ssidList = new HashSet<>();
+		Process listSsid = new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/list_ssid.sh")).redirectErrorStream(true).start();
+		String line;
+		BufferedReader input = new BufferedReader(new InputStreamReader(listSsid.getInputStream()));
+		while ((line = input.readLine()) != null) {
+			String ssid = line.split(":")[1];
+			ssid = ssid.replace("\"", "");
+			if(!ssid.equals(""))
+				ssidList.add(ssid);
+		}
+		input.close(); 
 %>
 <body>
+	
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	<a class="btn btn-primary text-center d-lg-flex" href="../index.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
    			<img src="../images/ios-arrow-round-back-white.svg" style="position:absolute; left: 0px; top: 0px; height: 60px; width: 60px;">
