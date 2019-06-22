@@ -20,20 +20,36 @@
 </head>
 
 <%
+	String ssid = request.getParameter("ssid");
+	String password = request.getParameter("password");
+	String ssidListString = request.getParameter("ssidListString");	
 	Set<String> ssidList = new HashSet<>();
+	
+	if(ssid != null && password != null && ssidListString != null){
+		Process connectWifi= new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/connect_wifi.sh"),ssid,password).redirectErrorStream(true).start();
+		String[] fields = ssidListString.split(";");
+		for(String field : fields){
+			if(!field.equals(""))
+				ssidList.add(field);
+		}
+	}
+	else{
 		Process listSsid = new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/list_ssid.sh")).redirectErrorStream(true).start();
 		String line;
 		BufferedReader input = new BufferedReader(new InputStreamReader(listSsid.getInputStream()));
 		while ((line = input.readLine()) != null) {
-			String ssid = line.split(":")[1];
-			ssid = ssid.replace("\"", "");
-			if(!ssid.equals(""))
-				ssidList.add(ssid);
+			String ssidName = line.split(":")[1];
+			ssidName = ssidName.replace("\"", "");
+			if(!ssidName.equals(""))
+				ssidList.add(ssidName);
 		}
-		input.close(); 
+		input.close();
+	}
+	 
 %>
 <body>
 	
+	<c:set var="ssidListString" value=""/>
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	<a class="btn btn-primary text-center d-lg-flex" href="../index.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
    			<img src="../images/ios-arrow-round-back-white.svg" style="position:absolute; left: 0px; top: 0px; height: 60px; width: 60px;">
@@ -42,16 +58,18 @@
         	<br>NETWORK SETTINGS<br><br></a>
         </h1>
     <div style="width: device-width;position: absolute;bottom:0px;top: 40%;left:25%;right:0px;display: inline-block;vertical-align: middle;flex-direction:column;display:flex;">
-        <form action="<%=request.getContextPath()%>/changeNetworkSettings" method='POST'>
+        <form action="<%=request.getContextPath()%>/pages/networkSettings.jsp" method='POST'>
 	        <div class="dropdown" style="width: 70%;margin-bottom: 2%;height: 60px;">
 	        	<button id="SsidDropDown" class="btn btn-primary dropdown-toggle d-md-flex justify-content-md-end" data-toggle="dropdown" aria-expanded="false" type="button" style="width: 100%;height: 100%;">Available networks</button>
 	            <div class="dropdown-menu" role="menu" style="width: 100%;">
 	            	<c:forEach items="<%=ssidList%>" var="ssid">
 						<a class="dropdown-item" onclick="changeSsidValue('${ssid}')" role="presentation" href="#">${ssid}</a>
+						<c:set var="ssidListString" value="${ssidListString};${ssid}"/>
 					</c:forEach>
 	           	</div>
 	        </div>
 	        <input type="password" name="password" placeholder="enter Password" style="width: 70%;height: 60px;">
+	        <input type="hidden" name="ssidListString" value="${ssidListString}"/>
 	        <button class="btn btn-primary" id="submitBtn" name="ssid" value="" type="submit" style="margin-top: 2%;width:25%;margin-left: 22.5%;">Connect</button>
         </form>
     </div>

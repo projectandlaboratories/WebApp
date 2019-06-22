@@ -15,5 +15,5 @@ network={
 	key_mgmt=WPA-PSK
 }' > /etc/wpa_supplicant/wpa_supplicant.conf" 
 
-
+sleep 3
 eval "sudo systemctl restart dhcpcd"
