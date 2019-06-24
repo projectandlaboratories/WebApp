@@ -33,13 +33,16 @@ String mainRoomId=DBClass.getMainRoomId();
 String roomId = (String) session.getAttribute("roomId");
 String deleteDisplay;
 String disabled;
+String editAirCond;
 
 if(roomId.compareTo(mainRoomId)==0){
 	deleteDisplay="none";
 	disabled = "disabled";
+	editAirCond="none";
 }else{
 	deleteDisplay="";
 	disabled = "";
+	editAirCond = "inline-flex";
 }
 %>
 
@@ -76,8 +79,9 @@ if(roomId.compareTo(mainRoomId)==0){
 				<c:set var="airCondMap" value="<%=DBClass.getAirCondList()%>"/>
 				<form action="<%=request.getContextPath()%>/editRoom?room=${roomId}" method='POST'>
 					<div class='modal-body'>
-					<input type="text" name="room_name" value="${roomMap[roomId].roomName}" style="width:100%">
-						<div style="display: inline-flex">
+						<input type="text" name="room_name" value="${roomMap[roomId].roomName}" style="width:100%">
+						
+						<div style="display: <%=editAirCond%>">
 							<div class="dropdown d-inline-flex">
 								<button type="button" class="btn btn-primary dropdown-toggle" id="modelDropDown"
 									data-toggle="dropdown" aria-expanded="false"
@@ -90,8 +94,8 @@ if(roomId.compareTo(mainRoomId)==0){
 								</div>
 							</div>
 						</div>
-						</div>
-						<div class='modal-footer'>
+					</div>
+					<div class='modal-footer'>
 						<button type='button' class='btn btn-secondary'
 							data-dismiss='modal'>Close</button>
 						<button type='submit' id="editRoomSubmit" name='airCondModel' value="${roomMap[roomId].idAirCond}"
