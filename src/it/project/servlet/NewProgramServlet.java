@@ -1,7 +1,7 @@
 package it.project.servlet;
 
 import java.io.IOException;
-
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +11,8 @@ import javax.swing.JOptionPane;
 
 import it.project.db.DBClass;
 import it.project.dto.Program;
+import it.project.enums.Season;
+import it.project.mqtt.MQTTAppSensori;
 
 public class NewProgramServlet  extends HttpServlet {
 	@Override
@@ -56,6 +58,14 @@ public class NewProgramServlet  extends HttpServlet {
 				String defaultProfile = DBClass.getConfigValue("defaultProfile");
 				if(previousName.compareTo(defaultProfile)==0) {
 					DBClass.updateConfigValue("defaultProfile",currentName);
+				}
+				
+				//update appSensori profile info through MQTT
+				List<String> rooms = DBClass.getRoomIdsAndSeasonByProfile(currentName);
+				for(String roomSeason : rooms) {
+					String roomId = roomSeason.split(";")[0];
+					Season season = Season.valueOf(roomSeason.split(";")[1]);
+					MQTTAppSensori.notifyProfileChanged(roomId, season, program);
 				}
 				resp.sendRedirect("pages/profileList.jsp");
 			}

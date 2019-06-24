@@ -43,11 +43,11 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
-				conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
 				conn.setAutoCommit(true);
 			}
 		}
@@ -74,6 +74,31 @@ public class DBClass {
 			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public static List<String> getRoomIdsAndSeasonByProfile(String profileName){
+		List<String> rooms = new ArrayList<>();
+		Statement statement;
+		
+		try {
+			statement = conn.createStatement();
+			String query = "select ID_ROOM from rooms where ID_PROFILE_WINTER='"+profileName+"'";
+			ResultSet result = statement.executeQuery(query);
+			while(result.next()) {
+				String roomId = result.getString("ID_ROOM");
+				rooms.add(roomId+";" + Season.WINTER.name());
+			}
+			query = "select ID_ROOM from rooms where ID_PROFILE_SUMMER='"+profileName+"'";
+			result = statement.executeQuery(query);
+			while(result.next()) {
+				String roomId = result.getString("ID_ROOM");
+				rooms.add(roomId+";" + Season.SUMMER.name());
+			}
+			return rooms;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 	

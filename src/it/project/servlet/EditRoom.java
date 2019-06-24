@@ -1,6 +1,7 @@
 package it.project.servlet;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import it.project.db.DBClass;
 import it.project.dto.Program;
 import it.project.dto.Room;
+import it.project.enums.Season;
 
 /**
  * Servlet implementation class EditRoom
@@ -27,7 +29,7 @@ public class EditRoom extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-
+    
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -41,6 +43,7 @@ public class EditRoom extends HttpServlet {
 		
 		DBClass.editRoom(roomId,roomName,airCondModelId);
 		response.sendRedirect("pages/roomManagementItem.jsp?roomId=" + roomId);
+			
 	}
 
 }
