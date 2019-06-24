@@ -26,8 +26,7 @@
     <url-pattern>/assignProgramToRoom</url-pattern>
   </servlet-mapping>
   
-  
-  <servlet>
+   <servlet>
         <servlet-name>cgi</servlet-name>
         <servlet-class>org.apache.catalina.servlets.CGIServlet</servlet-class>
         <init-param>

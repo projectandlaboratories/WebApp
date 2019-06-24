@@ -31,6 +31,7 @@
     <style type="text/css"><%@include file="/assets/css/Sidebar-Menu-1.css"%></style>
     <style type="text/css"><%@include file="/assets/css/Sidebar-Menu.css"%></style>
     <style type="text/css"><%@include file="/assets/css/styles.css"%></style>
+    <style type="text/css"><%@include file="/assets/css/mystyle.css"%></style>
 
 <style type="text/css">
 * {margin: 0; padding: 0;}
@@ -97,6 +98,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 
 
 <body onload=initializeParameters()>
+
     <div id="wrapper">
         <div id="sidebar-wrapper" style="background-color: #2C3E50;">
             <ul class="sidebar-nav">
@@ -199,6 +201,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     <script><%@include file="/assets/js/Sidebar-Menu.js"%></script> 
        
     <script type="text/javascript">
+    
     
     var hotSystemButton = document.getElementById("<%=SystemType.HOT%>");
     var coldSystemButton = document.getElementById("<%=SystemType.COLD%>");
