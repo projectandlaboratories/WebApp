@@ -538,13 +538,15 @@ public class DBClass {
 		}	
 	}
 	
-	public static void createRoom(String roomName, String airCondModelId, String roomId) {
+	public static void createRoom(Room room) {
+		//TODO modificare
 		Statement statement;
 		try {
+			//Integer.toString(room.getIdAirCond())
 			statement = getStatement();
 			String defaultProfile = DBClass.getConfigValue("defaultProfile");
 			String query = "insert into rooms(ID_ROOM, ROOM_NAME, ID_AIR_COND, CONN_STATE, ID_PROFILE_WINTER, ID_PROFILE_SUMMER, MODE, MANUAL_TEMP, MANUAL_SYSTEM)"+
-							"values('"+roomId+"','"+roomName+"',"+airCondModelId+",true,'"+defaultProfile+"','"+defaultProfile+"','"+Mode.PROGRAMMABLE.toString()+"',0,'" + SystemType.HOT.toString()+"')";
+							"values('"+room.getRoom()+"','"+room.getRoomName()+"',"+room.getIdAirCond()+",true,'"+defaultProfile+"','"+defaultProfile+"','"+Mode.PROGRAMMABLE.toString()+"',0,'" + SystemType.HOT.toString()+"')";
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
