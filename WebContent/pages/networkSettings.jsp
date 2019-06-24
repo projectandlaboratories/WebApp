@@ -26,14 +26,50 @@
 	Set<String> ssidList = new HashSet<>();
 	
 	if(ssid != null && password != null && ssidListString != null){
+		pageContext.setAttribute("connectWifi", true);
 		Process connectWifi= new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/connect_wifi.sh"),ssid,password).redirectErrorStream(true).start();
 		String[] fields = ssidListString.split(";");
 		for(String field : fields){
 			if(!field.equals(""))
 				ssidList.add(field);
 		}
+		String line;
+		BufferedReader input = new BufferedReader(new InputStreamReader(connectWifi.getInputStream()));
+		String connectedSsid = "";
+		while ((line = input.readLine()) != null) {
+			String[] outputSplitted = line.split(":");
+			if(outputSplitted.length > 0){
+				connectedSsid = line.split(":")[1];
+				connectedSsid = connectedSsid.replace("\"", "");
+			}			
+			if(connectedSsid.equals(ssid)){
+				pageContext.setAttribute("isConnected", true);
+			}
+			else{
+				pageContext.setAttribute("isConnected", false);
+			}			
+		}
+		input.close();
+		
+		/* Thread.sleep(6000);
+		Process checkWifi= new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/check_connection.sh"),ssid,password).redirectErrorStream(true).start();
+		String line;
+		BufferedReader input = new BufferedReader(new InputStreamReader(checkWifi.getInputStream()));
+		while ((line = input.readLine()) != null) {
+			String connectedSsid = line.split(":")[1];
+			connectedSsid = connectedSsid.replace("\"", "");
+			if(connectedSsid.equals(ssid)){
+				pageContext.setAttribute("isConnected", true);
+			}
+			else{
+				pageContext.setAttribute("isConnected", false);
+			}
+				
+		}
+		input.close(); */
 	}
 	else{
+		pageContext.setAttribute("connectWifi", false);
 		Process listSsid = new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/list_ssid.sh")).redirectErrorStream(true).start();
 		String line;
 		BufferedReader input = new BufferedReader(new InputStreamReader(listSsid.getInputStream()));
@@ -48,7 +84,17 @@
 	 
 %>
 <body>
+	<c:if test="${connectWifi eq true}">
+		<c:choose>
+			<c:when test="${isConnected eq true}">
+				<h2>CONNECTED</h2>
+			</c:when>
+			<c:otherwise>
+				<h2>NOT CONNECTED</h2>
+			</c:otherwise>
+		</c:choose>
 	
+	</c:if>
 	<c:set var="ssidListString" value=""/>
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	<a class="btn btn-primary text-center d-lg-flex" href="../index.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
