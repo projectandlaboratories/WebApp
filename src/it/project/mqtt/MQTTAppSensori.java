@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import it.project.db.DBClass;
 import it.project.db.MQTTDbSync;
 import it.project.dto.Program;
+import it.project.enums.ActuatorState;
 import it.project.enums.Mode;
 import it.project.enums.Season;
 import it.project.enums.SystemType;
@@ -89,17 +90,19 @@ public class MQTTAppSensori {
     
     public static void topicReceived(String topic,MqttMessage message) throws Exception {
     	Topics receivedTopic = Topics.valueOf(topic);
+    	String roomId = "";
 		switch(receivedTopic) {
 			case TEMPERATURE:
 				JSONObject tempJson = new JSONObject(new String(message.getPayload()));
-				String roomId = tempJson.getString("roomId");
+				roomId = tempJson.getString("roomId");
 				int currentTemp = Integer.parseInt(tempJson.getString("currentTemp"));
 				DBClass.saveCurrentTemperature(roomId,currentTemp);
 				break;
 			case ACTUATOR_STATUS:
 				JSONObject actJson = new JSONObject(new String(message.getPayload()));
-//				String roomId = actJson.getString("roomId");
-//				int currentTemp = Integer.parseInt(actJson.getString("currentTemp"));
+				roomId = actJson.getString("roomId");
+				ActuatorState actStatus = ActuatorState.valueOf(actJson.getString("status"));
+				DBClass.saveActuatorStatus(roomId,actStatus);
 				break;
 		}
     }
