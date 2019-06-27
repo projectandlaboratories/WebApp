@@ -217,6 +217,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 		setDate();
 		setTemperature();
 		getActuatorState();
+		getAntifreezeState();
 		updateWeekendModeIcon();
 		if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
 			setProfileTemperature();
@@ -230,6 +231,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		act.value="<%=act%>"
     	    updateModeButton();
     		getActuatorState();
+    		getAntifreezeState();
     		updateWeekendModeIcon();
     		setTemperature();
     		targetTemp.value="<%=targetTemp%>"
@@ -418,7 +420,6 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 			var hotIcon = document.getElementById("hotIcon")
 			var coldIcon = document.getElementById("coldIcon")
 			var antifreezeIcon = document.getElementById("antifreezeIcon")
-			var fanIcon = document.getElementById("fanIcon")
 			
 			switch(state){
 			case "<%=ActuatorState.HOT%>":
@@ -474,6 +475,30 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 				}
 			};
 			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getActuatorState?user=<%=user%>&roomId=<%=currentRoom.getRoom()%>", true);
+			xmlHttpRequest.setRequestHeader("Content-Type",
+					"application/x-www-form-urlencoded");
+			xmlHttpRequest.send(null);
+		}
+		
+		function getAntifreezeState(){
+			var antifreezeIcon = document.getElementById("antifreezeIcon");
+			var xmlHttpRequest = getXMLHttpRequest();
+			xmlHttpRequest.onreadystatechange = function() {
+				if (xmlHttpRequest.readyState == 4) {
+					if (xmlHttpRequest.status == 200) {
+						if(xmlHttpRequest.responseText == 'true'){
+							antifreezeIcon.src = "images/ios-thermometer-primary.svg";
+						}
+						else{
+							antifreezeIcon.src = "images/ios-thermometer-not-selected.svg";
+						}
+											
+					} else {
+						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+					}
+				}
+			};
+			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getAntifreezeState?user=<%=user%>", true);
 			xmlHttpRequest.setRequestHeader("Content-Type",
 					"application/x-www-form-urlencoded");
 			xmlHttpRequest.send(null);

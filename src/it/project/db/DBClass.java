@@ -77,6 +77,58 @@ public class DBClass {
 		}
 	}
 	
+	public static String getAntifreezeState() {
+		Statement statement;
+		String isActive = "false";
+		try {
+			statement = getStatement();
+			String query = "SELECT END_TIME from antifreeze where ACTIVE = 1;";
+			ResultSet result = statement.executeQuery(query);
+			while (result.next()) {
+				isActive = "true";
+			}
+			return isActive;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public static void enableAntifreeze(java.sql.Timestamp timestamp) {
+		Statement statement;
+		try {
+			statement = getStatement();
+			String query = "select MAX(ID) as max from antifreeze";
+			ResultSet result = statement.executeQuery(query);
+			int id=-1;
+			while(result.next()) {
+				id = result.getInt("max") +1;
+			}
+			
+			if(id!=-1) {	
+				query = "INSERT INTO antifreeze(ID,ACTIVE,START_TIME,END_TIME) values(" + id + ",1,'" + timestamp + "',null);" ;
+				statement.executeUpdate(query);
+				MQTTDbSync.sendQueryMessage(query);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void disableAntiFreeze(java.sql.Timestamp timestamp) {
+		Statement statement;
+		try {
+			statement = getStatement();
+			String query = "UPDATE antifreeze SET ACTIVE = 0, END_TIME = '" + timestamp + "' WHERE ACTIVE = 1" ;
+			statement.executeUpdate(query);
+			MQTTDbSync.sendQueryMessage(query);
+	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static List<String> getRoomIdsAndSeasonByProfile(String profileName){
 		List<String> rooms = new ArrayList<>();
 		Statement statement;
@@ -499,7 +551,8 @@ public class DBClass {
 		Statement statement;
 		try {
 			statement = getStatement();
-			String query = "update weekend_mode set WMODE = 0 where WMODE = 1";
+			java.sql.Timestamp now = new java.sql.Timestamp(new java.util.Date().getTime());
+			String query = "update weekend_mode set WMODE = 0,END_TIME = '" + now + "' where WMODE = 1";
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
 			

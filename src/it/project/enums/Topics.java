@@ -7,6 +7,7 @@ public enum Topics {
 	TEMPERATURE("Temperature"),
 	ACTUATOR_STATUS("Acutator-status"),
 	PROFILE_CHANGE("ProfileChange"),
+	ANTIFREEZE("Antifreeze"),
 	MQTT_APP_SENSORI("MqttAppSensori"),
 	LOCAL_NEWQUERY_SEND("new_query_for_aws"),
 	LOCAL_NEWQUERY_SUBSCRIBE("new_query_for_local"),

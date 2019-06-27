@@ -25,18 +25,17 @@
     <servlet-name>assignProgramToRoom</servlet-name>
     <url-pattern>/assignProgramToRoom</url-pattern>
   </servlet-mapping>
-  
-   <servlet>
-        <servlet-name>cgi</servlet-name>
-        <servlet-class>org.apache.catalina.servlets.CGIServlet</servlet-class>
-        <init-param>
-          <param-name>cgiPathPrefix</param-name>
-          <param-value>WEB-INF/cgi</param-value>
-        </init-param>
-        <load-on-startup>5</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>cgi</servlet-name>
-        <url-pattern>/cgi-bin/*</url-pattern>
-    </servlet-mapping>
+  <servlet>
+    <servlet-name>cgi</servlet-name>
+    <servlet-class>org.apache.catalina.servlets.CGIServlet</servlet-class>
+    <init-param>
+      <param-name>cgiPathPrefix</param-name>
+      <param-value>WEB-INF/cgi</param-value>
+    </init-param>
+    <load-on-startup>5</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>cgi</servlet-name>
+    <url-pattern>/cgi-bin/*</url-pattern>
+  </servlet-mapping>
 </web-app>

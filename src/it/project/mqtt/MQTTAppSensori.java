@@ -2,6 +2,8 @@ package it.project.mqtt;
 
 import java.sql.Connection;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,6 +82,7 @@ public class MQTTAppSensori {
         		
         		client.subscribe(Topics.ACTUATOR_STATUS.getName(), qos);
         		client.subscribe(Topics.TEMPERATURE.getName(), qos);
+        		client.subscribe(Topics.ANTIFREEZE.getName(),qos);
         		
         	} catch(Exception e) {
             	e.printStackTrace();
@@ -104,6 +107,17 @@ public class MQTTAppSensori {
 				ActuatorState actStatus = ActuatorState.valueOf(actJson.getString("status"));
 				DBClass.saveActuatorStatus(roomId,actStatus);
 				break;
+			case ANTIFREEZE:
+				JSONObject antifreezeJson = new JSONObject(new String(message.getPayload()));
+				int status = antifreezeJson.getInt("status");
+				long timestampMillisecond = antifreezeJson.getLong("timestamp");
+				GregorianCalendar cal = new GregorianCalendar();
+				cal.setTimeInMillis(timestampMillisecond);
+				java.sql.Timestamp timestamp = new java.sql.Timestamp(cal.getTime().getTime());
+				if(status == 1)
+					DBClass.enableAntifreeze(timestamp);
+				else
+					DBClass.disableAntiFreeze(timestamp);
 		}
     }
     
