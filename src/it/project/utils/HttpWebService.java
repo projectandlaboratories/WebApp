@@ -1,0 +1,134 @@
+package it.project.utils;
+
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import it.project.enums.HttpAction;
+
+public class HttpWebService {
+	private static final String baseUrl =  "http://ec2-34-220-162-82.us-west-2.compute.amazonaws.com:5002";
+	private static String username = "PL19-20";
+	private static String password = "projectpwd"; //?? //"PL19-20-xh";//
+	private static String token = null;//TODO
+	
+	public static void sendGet(HttpAction action) {
+		try {
+			String url = baseUrl + action.getName();
+			HttpClient client = HttpClientBuilder.create().build();
+			HttpGet request = new HttpGet(url);
+			
+			// add request header
+			//request.addHeader("User-Agent", USER_AGENT);
+			HttpResponse response = client.execute(request);
+			
+			System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
+			
+			
+			switch(action) {
+				case GROUP:
+					break;
+				case DEVICE:
+					break;
+				case LOG:
+					break;
+				default:
+					break;	
+			}
+			BufferedReader rd = new BufferedReader(
+					new InputStreamReader(response.getEntity().getContent()));
+
+				StringBuffer result = new StringBuffer();
+				String line = "";
+				while ((line = rd.readLine()) != null) {
+					System.out.println(line);
+					result.append(line);
+				}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public static String getAuthenticationToken() {
+		
+		JSONObject json = new JSONObject();
+		try {
+			json.put("username", username);
+			json.put("password", password);
+			sendPost(HttpAction.AUTH, json);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return token;
+	}
+	
+	public static void updateGroupInfo(String groupInfo) {
+		JSONObject json = new JSONObject();
+		try {
+			json.put("group_id", username);
+			json.put("group info", groupInfo);
+			sendPost(HttpAction.GROUP, json);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void sendPost(HttpAction action, JSONObject json) {
+		String url = baseUrl + action.getName();
+		HttpClient client = HttpClientBuilder.create().build();
+		
+		HttpPost request = new HttpPost(url);
+		
+		request.setHeader(HttpHeaders.CONTENT_TYPE,"application/json");
+
+		if(action.equals(HttpAction.GROUP) || action.equals(HttpAction.DEVICE)) {
+			if(token==null) {
+				token = getAuthenticationToken();
+			}
+			request.setHeader(HttpHeaders.AUTHORIZATION,"JWT "+token);
+		}
+		
+		try {			
+			StringEntity requestEntity = new StringEntity(json.toString());
+			request.setEntity(requestEntity);
+			HttpResponse response = client.execute(request);
+			HttpEntity responseEnitity = response.getEntity();
+			String retSrc = EntityUtils.toString(responseEnitity); 
+	        JSONObject result = new JSONObject(retSrc); //Convert String to JSON Object
+			
+	        System.out.println("case "+action.toString());
+			System.out.println(json.toString());
+			System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
+			
+			if(action.equals(HttpAction.AUTH)){
+				token = result.getString("access_token");
+		        System.out.println(token);	
+			}	
+	        
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
