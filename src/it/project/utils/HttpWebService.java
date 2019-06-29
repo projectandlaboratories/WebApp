@@ -31,20 +31,65 @@ public class HttpWebService {
 	private static String password = "projectpwd"; //?? //"PL19-20-xh";//
 	private static String token = null;//TODO
 	
-	public static void sendGet(HttpAction action) {
+	
+	public static JSONObject getGroupInfo() {
+		//{”group info”: group info, ”group id”: group id}
+		return sendGet(HttpAction.GROUP);
+	}
+	public static JSONObject getDeviceInfo() {
+		//{”status”: status, ”data”: {”configuration”: configuration, ”nickname”:
+		//nickname, ”device status”: device status, ”device mac”: device mac}}
+		return sendGet(HttpAction.DEVICE);
+	}
+	public static JSONObject getLogs() {
+		/*{”status”: status, 
+		 * ”data”: 
+		 * 		[{”event id”: event id, ”timestamp dev”: timestamp dev, ”timestamp srv”: timestamp srv, 
+		 * 			”event”: ”{”message”: message, ”sequence”: sequenceg”, ”device id”: device id},
+		 * 		 ...]}”
+		 */
+		return sendGet(HttpAction.LOG);
+	}
+	private static JSONObject sendGet(HttpAction action) {
 		try {
+			System.out.println("entering GET "+action.toString());
+			
 			String url = baseUrl + action.getName();
 			HttpClient client = HttpClientBuilder.create().build();
 			HttpGet request = new HttpGet(url);
 			
-			// add request header
-			//request.addHeader("User-Agent", USER_AGENT);
-			HttpResponse response = client.execute(request);
+			if(token==null) {
+				token = getAuthenticationToken();
+			}
+			System.out.println("GET "+action.toString());
 			
+			request.setHeader(HttpHeaders.AUTHORIZATION,"JWT "+token);
+			
+			HttpResponse response = client.execute(request);		
 			System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
 			
+			HttpEntity responseEnitity = response.getEntity();
+			String retSrc = EntityUtils.toString(responseEnitity);
+			System.out.println("BASE --> " + retSrc);
 			
 			switch(action) {
+				case GROUP:
+					retSrc=retSrc.substring(1,retSrc.length()-2).replace("\\", "");
+					break;
+				case DEVICE:
+					retSrc=retSrc.substring(1,retSrc.length()-2).replace("\"{", "{").replace("}\\\"", "}").replace("\\", "");
+					break;
+				case LOG:
+					retSrc=retSrc.substring(1,retSrc.length()-2).replace("\\", "");
+					break;
+			
+			}
+			
+			System.out.println(retSrc);
+	        JSONObject result = new JSONObject(retSrc); //Convert String to JSON Object
+			
+	        return result; //CAPIRE DOVE USARLO!!
+			/*switch(action) {
 				case GROUP:
 					break;
 				case DEVICE:
@@ -53,21 +98,13 @@ public class HttpWebService {
 					break;
 				default:
 					break;	
-			}
-			BufferedReader rd = new BufferedReader(
-					new InputStreamReader(response.getEntity().getContent()));
-
-				StringBuffer result = new StringBuffer();
-				String line = "";
-				while ((line = rd.readLine()) != null) {
-					System.out.println(line);
-					result.append(line);
-				}
+			}*/
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
 	public static String getAuthenticationToken() {
@@ -95,6 +132,18 @@ public class HttpWebService {
 		}
 	}
 	
+	public static void updateDeviceInfo(String deviceMac, String nickname, String configuration) {
+		JSONObject json = new JSONObject();
+		try {
+			json.put("device mac", deviceMac);
+			json.put("nickname", nickname);
+			json.put("configuration", configuration);
+			sendPost(HttpAction.DEVICE, json);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private static void sendPost(HttpAction action, JSONObject json) {
 		String url = baseUrl + action.getName();
 		HttpClient client = HttpClientBuilder.create().build();
@@ -114,15 +163,15 @@ public class HttpWebService {
 			StringEntity requestEntity = new StringEntity(json.toString());
 			request.setEntity(requestEntity);
 			HttpResponse response = client.execute(request);
-			HttpEntity responseEnitity = response.getEntity();
-			String retSrc = EntityUtils.toString(responseEnitity); 
-	        JSONObject result = new JSONObject(retSrc); //Convert String to JSON Object
 			
-	        System.out.println("case "+action.toString());
+	        System.out.println("POST "+action.toString());
 			System.out.println(json.toString());
 			System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
 			
 			if(action.equals(HttpAction.AUTH)){
+				HttpEntity responseEnitity = response.getEntity();
+				String retSrc = EntityUtils.toString(responseEnitity); 
+		        JSONObject result = new JSONObject(retSrc); //Convert String to JSON Object
 				token = result.getString("access_token");
 		        System.out.println(token);	
 			}	
