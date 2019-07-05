@@ -43,8 +43,8 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
@@ -64,12 +64,12 @@ public class DBClass {
 	}
 
 	
-	public static void saveActuatorStatus(String roomId, ActuatorState actStatus) {
+	public static void saveActuatorStatus(String roomId, ActuatorState actStatus,long timestampMs) {
 		Statement statement;
 		try {
 			statement = getStatement();
-			java.sql.Timestamp now = new java.sql.Timestamp(new java.util.Date().getTime());
-			String query = "INSERT INTO actuators(ID_ROOM,TIMESTAMP,STATE) values('" + roomId + "','" + now + "'," + actStatus.name() + ");" ;
+			java.sql.Timestamp timestamp = new java.sql.Timestamp(timestampMs);
+			String query = "INSERT INTO actuators(ID_ROOM,TIMESTAMP,STATE) values('" + roomId + "','" + timestamp + "'," + actStatus.name() + ");" ;
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
@@ -190,12 +190,12 @@ public class DBClass {
 		}
 	}
 	
-	public static void saveCurrentTemperature(String roomId, int currentTemp) {
+	public static void saveCurrentTemperature(String roomId, int currentTemp, long timestampMs) {
 		Statement statement;
 		try {
 			statement = getStatement();
-			java.sql.Timestamp now = new java.sql.Timestamp(new java.util.Date().getTime());
-			String query = "INSERT INTO temperatures(ID_ROOM,TIMESTAMP,TEMPERATURE) values('" + roomId + "','" + now + "'," + currentTemp + ");" ;
+			java.sql.Timestamp timestamp = new java.sql.Timestamp(timestampMs);
+			String query = "INSERT INTO temperatures(ID_ROOM,TIMESTAMP,TEMPERATURE) values('" + roomId + "','" + timestamp + "'," + currentTemp + ");" ;
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
@@ -537,7 +537,7 @@ public class DBClass {
 			if(id != -1) {
 				java.sql.Timestamp now = new java.sql.Timestamp(new java.util.Date().getTime());
 				String query = "insert into weekend_mode(ID,WMODE,START_TIME,END_TIME)"
-						+ "VALUES(" + id + ",true,'"+ now + "','" + date + "');";
+						+ "VALUES(" + id + ",1,'"+ now + "','" + date + "');";
 				statement.executeUpdate(query);
 				MQTTDbSync.sendQueryMessage(query);
 			}

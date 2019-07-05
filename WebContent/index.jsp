@@ -86,6 +86,7 @@ Room currentRoom = roomMap.get(currentRoomId);
 Date date =  new Date();
 Season season;
 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+dateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
 
 String mode=currentRoom.getMode().name();
 String targetTemp="0";

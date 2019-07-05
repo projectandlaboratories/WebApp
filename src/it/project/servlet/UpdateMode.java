@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -53,18 +54,25 @@ public class UpdateMode extends HttpServlet {
 				SystemType systemType = SystemType.valueOf(request.getParameter("act"));
 				String currentRoomId = (String) request.getSession().getAttribute("currentRoomId");
 				DBClass.updateRoomMode(currentRoomId, mode, targetTemp, systemType);
-				//MQTTAppSensori.notifyModeChanged(mode, currentRoomId, targetTemp, systemType); //TODO decommentare quando dobbiamo testare mqtt con appSensori
+				//MQTTAppSensori.notifyModeChanged(mode, currentRoomId, targetTemp, systemType,0); //TODO decommentare quando dobbiamo testare mqtt con appSensori
 		 		break;
-		 	case "setWeekendMode":
-					String date = request.getParameter("date").replaceAll("T", " ");
-					DBClass.setWeekendMode(date.toString());
-					//TODO for all rooms you need to notify weekend mode enabled
-					//MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null);
+		 	case "setWeekendMode":				
+		 		try {
+		 			String date = request.getParameter("date").replaceAll("T", " ");
+		 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+		 			Date endTimestamp = format.parse(date);
+		 			DBClass.setWeekendMode(date.toString());
+		 			//MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,endTimestamp.getTime());
+		 		} catch (ParseException e) {
+		 			// TODO Auto-generated catch block
+		 			e.printStackTrace();
+		 		}
+
 		 		break;
 		 	case "removeWeekendMode":
 				DBClass.stopWeekenMode();
-				//TODO for all rooms you need to notify weekend mode disabled and enable programmable mode
-				//MQTTAppSensori.notifyModeChanged(Mode.PROGRAMMABLE,null, 0, null);
+				Date now = new Date();
+				//MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,now.getTime());
 		 		break;
 		}
 		

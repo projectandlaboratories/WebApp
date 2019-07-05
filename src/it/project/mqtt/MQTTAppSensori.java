@@ -1,10 +1,13 @@
 package it.project.mqtt;
 
 import java.sql.Connection;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.ws.rs.client.Client;
@@ -99,13 +102,15 @@ public class MQTTAppSensori {
 				JSONObject tempJson = new JSONObject(new String(message.getPayload()));
 				roomId = tempJson.getString("roomId");
 				int currentTemp = Integer.parseInt(tempJson.getString("currentTemp"));
-				DBClass.saveCurrentTemperature(roomId,currentTemp);
+				long tempTimestamp = tempJson.getLong("timestamp");
+				DBClass.saveCurrentTemperature(roomId,currentTemp,tempTimestamp);
 				break;
 			case ACTUATOR_STATUS:
 				JSONObject actJson = new JSONObject(new String(message.getPayload()));
 				roomId = actJson.getString("roomId");
 				ActuatorState actStatus = ActuatorState.valueOf(actJson.getString("status"));
-				DBClass.saveActuatorStatus(roomId,actStatus);
+				long actTimestamp = actJson.getLong("timestamp");
+				DBClass.saveActuatorStatus(roomId,actStatus,actTimestamp);
 				break;
 			case ANTIFREEZE:
 				JSONObject antifreezeJson = new JSONObject(new String(message.getPayload()));
@@ -122,16 +127,21 @@ public class MQTTAppSensori {
     }
     
     
-    public static void notifyModeChanged(Mode mode, String roomId, double targetTemp, SystemType act) {
+    public static void notifyModeChanged(Mode mode, String roomId, double targetTemp, SystemType act, long endTimestampMs) {
 
     	JSONObject json = new JSONObject();
     	try {
     		json.put("mode", mode.name());
+    		
     		if(mode.equals(Mode.MANUAL)) {
     			json.put("roomId", roomId);
     			json.put("targetTemp", targetTemp);
     			json.put("act", act.name());
-    		} 
+    		}
+    		if(mode.equals(Mode.WEEKEND)) {
+    			json.put("endTimestamp", endTimestampMs);
+    		}
+    		    		
     		if(user.equals(DbIdentifiers.LOCAL)) {
     			publish(json.toString(),qos,Topics.MODE.getName());
     		}
@@ -183,9 +193,10 @@ public class MQTTAppSensori {
     }
     
     public static void publish(String stringMessage, int qos, String topic) throws Exception {
-    	MqttMessage message = new MqttMessage(stringMessage.getBytes());
-        message.setQos(qos);
-        client.publish(topic, message);
+    	//TODO decommentare quando si testa con appSensori
+//    	MqttMessage message = new MqttMessage(stringMessage.getBytes());
+//        message.setQos(qos);
+//        client.publish(topic, message);
     }
     	
 }
