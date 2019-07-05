@@ -58,11 +58,13 @@ public class UpdateMode extends HttpServlet {
 		 	case "setWeekendMode":
 					String date = request.getParameter("date").replaceAll("T", " ");
 					DBClass.setWeekendMode(date.toString());
+					//TODO for all rooms you need to notify weekend mode enabled
 					//MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null);
 		 		break;
 		 	case "removeWeekendMode":
 				DBClass.stopWeekenMode();
-				//MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null);
+				//TODO for all rooms you need to notify weekend mode disabled and enable programmable mode
+				//MQTTAppSensori.notifyModeChanged(Mode.PROGRAMMABLE,null, 0, null);
 		 		break;
 		}
 		
