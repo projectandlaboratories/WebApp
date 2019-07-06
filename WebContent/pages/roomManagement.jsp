@@ -47,13 +47,12 @@
 						<c:set var="roomTemp" value="N/A"/>
 					</c:if>
 					<span class="d-inline-flex" style="font-size: 24px; margin-right: 8px; position: absolute; right: 50px">${roomTemp}°</span>
+					<img src="../images/ios-checkmark-circle-green.svg" style="height: 40px; width: 40px;position: absolute; right: 8px">
 				</c:if>
 				
 				<!-- connstate = ${roomItem.value.connState} -->
 				<c:if test="${roomItem.value.connState eq false}">
-					
-						<button type="submit" class="btn btn-primary" style="height: 40px; position: absolute; right: 56px">CONNECT</button>
-					
+					<button type="submit" class="btn btn-primary" style="height: 40px; position: absolute; right: 56px">CONNECT</button>			
 					<img src="../images/ios-alert-red.svg" style="height: 40px; width: 40px;position: absolute; right: 8px">
 				</c:if>
 			</li>

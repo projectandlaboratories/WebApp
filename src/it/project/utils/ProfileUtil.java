@@ -121,6 +121,19 @@ public class ProfileUtil {
 		return new String(hour+":"+min);	
 	}
 	
+	public static Season getCurrentSeason() {
+		Date today = new Date(); 
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(today); 
+		int month=cal.get(Calendar.MONTH);
+		
+		if(month<3 ||month>9){		
+			return Season.WINTER;
+		}else{		
+			return Season.SUMMER;
+		}
+	}
+	
 	public static String getCurrentTemperature(Room currentRoom) {
 		String temperature = "0";
 		Program program;
