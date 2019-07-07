@@ -41,6 +41,7 @@ myProgram.setWorkingHours(wakeupTimeW, bedTimeW, leaveTime, backTime);
 
 
 //Setto i parametri della pagina corrente
+String action = request.getParameter("action");
 String wakeupTime="09:00";
 String bedTime = "23:00";
 if(myProgram.getWakeupTimeH()!=null){//vengo dalla pagina precedente
@@ -72,7 +73,7 @@ if(myProgram.getWakeupTimeH()!=null){//vengo dalla pagina precedente
 
 <body>
 <body>
-<form action="profileSetTemperature.jsp" method="POST">          
+<form action="profileSetTemperature.jsp?action=<%=action%>" method="POST">          
  
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	
@@ -96,7 +97,7 @@ if(myProgram.getWakeupTimeH()!=null){//vengo dalla pagina precedente
     
     
     <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">
-     	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" href="profileTimeWorkingDays.jsp" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
+     	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" href="profileTimeWorkingDays.jsp?action=<%=action%>" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
      		<img src="../images/ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
      	</a>
      	<button type="submit" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center"  style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">

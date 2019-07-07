@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+    <%@page import="java.util.*"%>
+   <%@page import="it.project.dto.Program"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -8,7 +10,16 @@
 <title>Insert title here</title>
 </head>
 
-<c:set var="currentProfile" scope="session" value="${profileMap[param.profile]}"/>
+<c:choose>
+	<c:when test="${param.season eq 'WINTER'}">
+		<c:set var="currentProfileWinter" scope="session" value="${profileMap[param.profile]}"/>
+		<c:set var="profileParam" value="currentProfileWinter"/>
+	</c:when>
+	<c:otherwise>
+		<c:set var="currentProfileSummer" scope="session" value="${profileMap[param.profile]}"/>
+		<c:set var="profileParam" value="currentProfileSummer"/>
+	</c:otherwise>
+</c:choose>
 
 <body>
 
@@ -26,10 +37,10 @@
 
 		<div style="display: inline-flex; position: absolute; right: 16px;">
 			<button class="btn btn-primary d-lg-flex justify-content-lg-start"
-				type="button"
+				onclick="location.href = 'profileDays.jsp?action=update&profileParam=${profileParam}'" type="button"
 				style="font-size: 20px; margin-left: 8px; margin-right: 0px; padding-right: 16px; padding-left: 18px;">Edit</button>
 			<button class="btn btn-primary d-lg-flex justify-content-lg-start"
-				onclick="location.href = 'profileDays.jsp'" type="button"
+				onclick="location.href = 'profileDays.jsp?action=add'" type="button"
 				style="font-size: 20px; margin-left: 8px; padding-right: 16px; padding-left: 16px;">New</button>
 		</div>
 	</div>
@@ -37,7 +48,7 @@
 
 	<div
 		style="margin-right: 10%; margin-left: 10%; width: 80%; text-align: center; margin-top: 5%">
-		<jsp:include page="profileBars.jsp" />
+		<jsp:include page="profileBars.jsp?profileParam=${profileParam}" />
 	</div>
 
 </body>

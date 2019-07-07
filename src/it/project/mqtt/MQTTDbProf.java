@@ -1,7 +1,5 @@
 package it.project.mqtt;
 
-import java.util.GregorianCalendar;
-
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -10,11 +8,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONObject;
 
-import it.project.db.DBClass;
-import it.project.db.MQTTDbSync;
-import it.project.enums.ActuatorState;
-import it.project.enums.Mode;
-import it.project.enums.Topics;
 import it.project.utils.DbIdentifiers;
 
 public class MQTTDbProf {

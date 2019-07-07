@@ -27,10 +27,10 @@
 <c:set var="currentProfileWinter" scope="page" value="${roomMap[roomId].winterProfile}"/>
 <c:set var="currentProfileSummer" scope="page" value="${roomMap[roomId].summerProfile}"/>
 
-<%session.setAttribute("caller", "roomManagementItem.jsp"); //todo aggiungere eventuale parametro ?nome=cucina%>
 <%
 String mainRoomId=DBClass.getMainRoomId();
 String roomId = (String) session.getAttribute("roomId");
+session.setAttribute("caller", "roomManagementItem.jsp?roomId="+roomId);
 String deleteDisplay;
 String disabled;
 String editAirCond;
@@ -146,14 +146,14 @@ if(roomId.compareTo(mainRoomId)==0){
                 <div class="tab-pane active" role="tabpanel" id="tab-1" style="margin: 16px;">            
 	                <jsp:include page="roomManagementTabView.jsp">
 	                	<jsp:param name="profile" value="${currentProfileWinter.name}"/>
-	                	<jsp:param name="season" value="<%=Season.WINTER%>"/>
+	                	<jsp:param name="season" value="<%=Season.WINTER.name()%>"/>
 	                </jsp:include>			 
                	</div>
                	 
            		<div class="tab-pane" role="tabpanel" id="tab-2" style="margin: 16px;">
                  	<jsp:include page="roomManagementTabView.jsp">
 	                	<jsp:param name="profile" value="${currentProfileSummer.name}"/>
-	                	<jsp:param name="season" value="<%=Season.SUMMER%>"/>
+	                	<jsp:param name="season" value="<%=Season.SUMMER.name()%>"/>
 	                </jsp:include>	
                	</div>
             </div>

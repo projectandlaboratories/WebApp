@@ -22,19 +22,32 @@
 <%
 
 String caller=(String)session.getAttribute("caller");
+String action = request.getParameter("action");
+String profileParam = request.getParameter("profileParam");
+if(profileParam == null){
+	profileParam="currentProfile";
+}
+//Program myProgram2=((Program) session.getAttribute("currentProfile"));
+//System.out.println(myProgram2);
+Program myProgram=((Program) session.getAttribute(profileParam));
+if(profileParam.compareTo("currentProfile")!=0){
+	session.setAttribute("currentProfile", myProgram);
+}
+System.out.println(action);
 
-Program myProgram=((Program) session.getAttribute("currentProfile"));
 Map<DayName,String> checked = ProfileUtil.getDefaultDays();
+if(action.compareTo("update")==0){
+	if(myProgram!=null && myProgram.getDays().size()!=0){//update
 
-if(myProgram!=null && myProgram.getDays().size()!=0){//update
-
-	for(DayName day:DayName.values()){
-		if(myProgram.getDays().get(day).equals(DayType.HOLIDAY))
-			checked.put(day,"checked");
-		else
-			checked.put(day,"");
+		for(DayName day:DayName.values()){
+			if(myProgram.getDays().get(day).equals(DayType.HOLIDAY))
+				checked.put(day,"checked");
+			else
+				checked.put(day,"");
+		}
 	}
 }
+
 %>
 <body>
 
@@ -46,7 +59,7 @@ if(myProgram!=null && myProgram.getDays().size()!=0){//update
         	<br>WHAT DAYS ARE YOU AT HOME?<br><br></a>
         </h1>
         
-<form action="profileTimeWorkingDays.jsp" method="POST">       
+<form action="profileTimeWorkingDays.jsp?action=<%=action%>" method="POST">       
     <div style="transform: scale(1.2); position: absolute; left: 100px;  top: 100px;" >
 	    <div>
 		    <label class="btn active"> <input type="checkbox" name='<%=DayName.MON%>' <%=checked.get(DayName.MON)%>> <%=DayName.MON%></label>

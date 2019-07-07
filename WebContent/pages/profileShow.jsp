@@ -61,9 +61,9 @@ if(p.getName().compareTo(defaultProfile)==0){
   
 	    <div style="display: inline-flex; text-align: center; margin-top:50px">
 	     <form action="<%=request.getContextPath()+"/newProgramServlet"%>" method="POST">  
-           	<button type='submit' name="ACTION" value="DELETE" class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px; display: <%=deleteDisplay%>;">DELETE</button>
+           	<button type='submit' name="ACTION" value="DELETE" class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px; display: <%=deleteDisplay%>;">DELETE</button>
        	</form> 
-        	<button class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;padding-right: 16px;padding-left: 16px;">EDIT</button>
+        	<button class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp?action=update'" type="button" style="font-size: 20px;margin-left: 16px;padding-right: 16px;padding-left: 16px;">EDIT</button>
         </div>
 	  
     </div>

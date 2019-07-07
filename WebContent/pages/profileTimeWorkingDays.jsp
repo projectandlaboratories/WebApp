@@ -25,7 +25,7 @@
 
 
 <%
-Program myProgram=((Program) session.getAttribute("currentProfile"));
+Program myProgram=((Program) session.getAttribute("currentProfile"));//se non esiste la crea
 //prendo parametri dalla pagina precedente
 if(request.getParameter("caller") != null && request.getParameter("caller").compareTo("profileDays")==0){
 	for(DayName dayName:DayName.values()){
@@ -39,10 +39,13 @@ if(request.getParameter("caller") != null && request.getParameter("caller").comp
 }
 
 //Setto i parametri della pagina corrente
+String action = request.getParameter("action");
+
 String wakeupTime="07:00";
 String bedTime = "23:00";
 String leaveTime = "08:00";
 String backTime = "18:00";
+
 if(myProgram.getWakeupTimeW()!=null){//vengo dalla pagina precedente
 	wakeupTime=myProgram.getWakeupTimeW();
 	bedTime=myProgram.getBedTimeW();
@@ -85,6 +88,8 @@ if(myProgram.getWakeupTimeW()!=null){//vengo dalla pagina precedente
 }
 
 
+
+
 %>
 
 <body>
@@ -93,7 +98,7 @@ if(myProgram.getWakeupTimeW()!=null){//vengo dalla pagina precedente
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
         	<br>SET WORKING DAY TIME<br><br></a>
         </h1>
- <form action="profileTimeHolidays.jsp" method="POST">          
+ <form action="profileTimeHolidays.jsp?action=<%=action%>" method="POST">          
     <div>
 	    <div style="position:absolute; width:50%; height:50%; left:0; padding:2%; text-align:center;">
 	    What time do you wake up?<br><br>	    
@@ -119,7 +124,7 @@ if(myProgram.getWakeupTimeW()!=null){//vengo dalla pagina precedente
     
     
     <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">
-     	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" href="profileDays.jsp" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
+     	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" href="profileDays.jsp?action=<%=action%>" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
      		<img src="../images/ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
      	</a>
      	<button type="submit" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center"  style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">

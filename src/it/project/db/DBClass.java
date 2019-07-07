@@ -636,7 +636,7 @@ public class DBClass {
 	
 	public static String getConfigValue(String config_key) {
 		Statement statement;
-		String retval="";
+		String retval=null;
 		try {
 			statement = getStatement();
 			String query = "SELECT value from system_config where config_key='"+config_key+"'";
@@ -660,6 +660,21 @@ public class DBClass {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void insertConfigValue (String config_key, String value) {
+		Statement statement;
+		try {
+			statement = getStatement();
+			String query = "INSERT INTO system_config(config_key,value) values('" + config_key + "', '" + value + "');";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendQueryMessage(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 
 
 
