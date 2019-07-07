@@ -51,6 +51,9 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 
 <% 
 	DbIdentifiers user = DbIdentifiers.LOCAL;
+	session.setAttribute("user", user.name());
+	session.setAttribute("localUser", DbIdentifiers.LOCAL.name());
+	session.setAttribute("awsUser", DbIdentifiers.AWS.name());
 	//Setup connection e dbSync
 	try{
 		DBClass.getConnection(user);
@@ -116,7 +119,10 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
                 <li> <a class="text-light" href="index.jsp" style="font-size: 20px;">Home</a></li>
                 <li> <a class="text-light" href="pages/profileList.jsp" style="font-size: 20px;">Temperature Profiles</a></li>
                 <li> <a class="text-light" href="pages/roomManagement.jsp" style="font-size: 20px;">Room Management</a></li>
-                <li> <a class="text-light" href="pages/networkSettings.jsp" style="font-size: 20px;">Network</a></li>
+                <li> <a class="text-light" href="pages/statistics.jsp?chart=1&room=<%=currentRoomId%>" style="font-size: 20px;">Statistics</a></li>
+                <c:if test="${user eq localUser}">
+                	 <li> <a class="text-light" href="pages/networkSettings.jsp" style="font-size: 20px;">Network</a></li>
+                </c:if>          
             </ul>
         </div>
         <div>
