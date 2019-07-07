@@ -26,7 +26,7 @@ public class GetCurrentRoomTemperature extends HttpServlet {
      */
     public GetCurrentRoomTemperature() {
         super();
-        // TODO Auto-generated constructor stub
+        
     }
 
 	/**
@@ -38,7 +38,7 @@ public class GetCurrentRoomTemperature extends HttpServlet {
 		try {
 			DBClass.getConnection(user);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		response.setContentType("text/html");

@@ -22,6 +22,19 @@
     <!-- per la keyboard virtuale -->
      <style type="text/css"><%@include file="../assets/css/keyboard.css"%></style>
      <style type="text/css"><%@include file="../assets/css/jquery-ui.min.css"%></style>
+     
+     <style type="text/css">
+	#load{
+	    width:100%;
+	    height:100%;
+	    position:fixed;
+	    z-index:9999;
+	    background:url("<%=request.getContextPath() + "/images/loading-icon.gif"%>") no-repeat center center rgba(0,0,0,0.25)
+	}
+	.hide{
+		display:none;
+	}
+</style>
 
 </head>
 <jsp:useBean id="currentProfile" class="it.project.dto.Program" scope="session">  </jsp:useBean>
@@ -61,8 +74,13 @@ else if(alertCode == 'empty'){
 	alert("Profile name can't be empty!")
 }
 
+function showLoadingIcon(){
+	document.getElementById("load").classList.remove("hide")
+}
+
 </script>
 <body>
+<div id="load" class="hide"></div>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
@@ -78,7 +96,7 @@ else if(alertCode == 'empty'){
 	   
    
 	    <div style="display: inline-flex; text-align: center; margin-top:2%">
-           	<button type='submit' name="ACTION" value="<%=action %>" class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" style="font-size: 20px;margin-left: 8px;margin-right: 0px;padding-right: 16px;padding-left: 18px;">SAVE</button>
+           	<button type='submit' onclick="showLoadingIcon()" name="ACTION" value="<%=action %>" class="btn btn-primary d-lg-flex justify-content-lg-start" type="button" style="font-size: 20px;margin-left: 8px;margin-right: 0px;padding-right: 16px;padding-left: 18px;">SAVE</button>
       	
         </div>
 	

@@ -28,14 +28,14 @@ public class UpdateMode extends HttpServlet {
      */
     public UpdateMode() {
         super();
-        // TODO Auto-generated constructor stub
+        
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -43,7 +43,7 @@ public class UpdateMode extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		
 		String action = request.getParameter("ACTION");
 		String currentRoomId = (String) request.getSession().getAttribute("currentRoomId");
@@ -54,7 +54,7 @@ public class UpdateMode extends HttpServlet {
 				Double targetTemp=Double.parseDouble(request.getParameter("targetTemp"));
 				SystemType systemType = SystemType.valueOf(request.getParameter("act"));
 				DBClass.updateRoomMode(currentRoomId, mode, targetTemp, systemType);
-				//MQTTAppSensori.notifyModeChanged(mode, currentRoomId, targetTemp, systemType,0); //TODO decommentare quando dobbiamo testare mqtt con appSensori
+				MQTTAppSensori.notifyModeChanged(mode, currentRoomId, targetTemp, systemType,0); //TODO decommentare quando dobbiamo testare mqtt con appSensori
 		 		break;
 		 	case "setWeekendMode":				
 		 		try {
@@ -62,9 +62,9 @@ public class UpdateMode extends HttpServlet {
 		 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
 		 			Date endTimestamp = format.parse(date);
 		 			DBClass.setWeekendMode(date.toString());
-		 			//MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,endTimestamp.getTime());
+		 			MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,endTimestamp.getTime());
 		 		} catch (ParseException e) {
-		 			// TODO Auto-generated catch block
+		 			
 		 			e.printStackTrace();
 		 		}
 
@@ -72,7 +72,7 @@ public class UpdateMode extends HttpServlet {
 		 	case "removeWeekendMode":
 				DBClass.stopWeekenMode();
 				Date now = new Date();
-				//MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,now.getTime());
+				MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,now.getTime());
 		 		break;
 		}
 		

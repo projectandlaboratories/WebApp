@@ -19,17 +19,6 @@
    <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
 
 </head>
-<%String alertCode=request.getParameter("alert");
-%>
-
-<script type="text/javascript">
-var alertCode="<%=alertCode%>"
-if(alertCode==='assigned'){
-	alert("Current profile is assigned to at least one room!")
-}
-
-</script>
-
 
 <c:set var="currentProfile" scope="session" value="${profileMap[param.profile]}"/> 
 
@@ -41,7 +30,10 @@ String defaultProfile = DBClass.getConfigValue("defaultProfile");
 if(p.getName().compareTo(defaultProfile)==0){
 	deleteDisplay="none";
 }else deleteDisplay="block";
+
 %>
+
+<c:set var="assigned" value="<%=DBClass.isProfileAssigned(p.getName())%>"/>
 
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
@@ -60,14 +52,46 @@ if(p.getName().compareTo(defaultProfile)==0){
     		   
   
 	    <div style="display: inline-flex; text-align: center; margin-top:50px">
-	     <form action="<%=request.getContextPath()+"/newProgramServlet"%>" method="POST">  
-           	<button type='submit' name="ACTION" value="DELETE" class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px; display: <%=deleteDisplay%>;">DELETE</button>
+	     <form action="<%=request.getContextPath()+"/newProgramServlet"%>" method="POST">
+	     	<c:choose>
+	     		<c:when test="${assigned eq true}">
+	     				<button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#deleteProfilePopup"  style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px; display: <%=deleteDisplay%>;">DELETE</button>
+	     		</c:when>
+	     		<c:otherwise>
+	     				<button type='submit' name="ACTION" value="DELETE" class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px; display: <%=deleteDisplay%>;">DELETE</button>
+	     		</c:otherwise>
+	     	</c:choose>  
+           
        	</form> 
         	<button class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;padding-right: 16px;padding-left: 16px;">EDIT</button>
         </div>
 	  
     </div>
 
+	
+		<!-- Popup error delete profile -->
+	<div class="modal fade" id="deleteProfilePopup" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class='modal-dialog modal-dialog-centered' role='document'>
+			<div class='modal-content'>
+				<div class='modal-header'>
+					<h5 class='modal-title' id='exampleModalLongTitle'>ERROR</h5>
+					<button type='button' class='close' data-dismiss='modal'
+						aria-label='Close'>
+						<span aria-hidden='true'>&times;</span>
+					</button>
+				</div>
+						<div class='modal-body'>
+							You can't delete this profile. Current profile is assigned to at least one room!
+						</div>
+						<div class='modal-footer'>
+						<button type='button' class='btn btn-primary'
+							data-dismiss='modal'>Close</button>
+					</div>
+			</div>
+		</div>
+	</div>
 
     
     <script><%@include file="../assets/js/jquery.min.js"%></script> 

@@ -30,7 +30,7 @@ public class IsWeekendMode extends HttpServlet {
      */
     public IsWeekendMode() {
         super();
-        // TODO Auto-generated constructor stub
+        
     }
 
 
@@ -38,13 +38,13 @@ public class IsWeekendMode extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		response.setContentType("text/html");
 		DbIdentifiers user = DbIdentifiers.valueOf(request.getParameter("user"));
 		try {
 			DBClass.getConnection(user);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		String endTime = DBClass.isWeekendMode();
@@ -62,7 +62,7 @@ public class IsWeekendMode extends HttpServlet {
 					endTime = endTime.replaceAll(" ", "T");	
 				}
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 						

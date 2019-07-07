@@ -24,7 +24,7 @@ public class DeleteRoom extends HttpServlet {
      */
     public DeleteRoom() {
         super();
-        // TODO Auto-generated constructor stub
+        
     }
 
 

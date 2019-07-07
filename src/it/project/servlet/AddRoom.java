@@ -27,7 +27,7 @@ public class AddRoom extends HttpServlet {
      */
     public AddRoom() {
         super();
-        // TODO Auto-generated constructor stub
+        
     }
 
 	/**

@@ -33,14 +33,14 @@ public class AssignProgramToRoom extends HttpServlet {
      */
     public AssignProgramToRoom() {
         super();
-        // TODO Auto-generated constructor stub
+       
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		String profileName = request.getParameter("profile");
 		String roomId = request.getParameter("room");
 		Season season = Season.valueOf(request.getParameter("season"));
@@ -48,7 +48,7 @@ public class AssignProgramToRoom extends HttpServlet {
 		Program profile = ((Map<String, Program>) request.getSession(false).getAttribute("profileMap")).get(profileName);
 		
 		DBClass.updateRoomProfile(roomId, profileName, season);
-		//MQTTAppSensori.notifyProfileChanged(roomId, season, profile); TODO decommentare quando si testa mqtt AppSensori
+		MQTTAppSensori.notifyProfileChanged(roomId, season, profile); //TODO decommentare quando si testa mqtt AppSensori
 		if(season.equals(Season.WINTER))
 			((Map<String, Room>) request.getSession(false).getAttribute("roomMap")).get(roomId).setWinterProfile(profile);
 		if(season.equals(Season.SUMMER))
@@ -61,7 +61,7 @@ public class AssignProgramToRoom extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		doGet(request, response);
 	}
 

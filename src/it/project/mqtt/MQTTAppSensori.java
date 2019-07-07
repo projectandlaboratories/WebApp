@@ -71,13 +71,13 @@ public class MQTTAppSensori {
 					
 					@Override
 					public void deliveryComplete(IMqttDeliveryToken arg0) {
-						// TODO Auto-generated method stub
+						
 						
 					}
 					
 					@Override
 					public void connectionLost(Throwable arg0) {
-						// TODO Auto-generated method stub
+						
 						
 					}
 				});
@@ -194,9 +194,9 @@ public class MQTTAppSensori {
     
     public static void publish(String stringMessage, int qos, String topic) throws Exception {
     	//TODO decommentare quando si testa con appSensori
-//    	MqttMessage message = new MqttMessage(stringMessage.getBytes());
-//        message.setQos(qos);
-//        client.publish(topic, message);
+    	MqttMessage message = new MqttMessage(stringMessage.getBytes());
+        message.setQos(qos);
+        client.publish(topic, message);
     }
     	
 }

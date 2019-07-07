@@ -44,10 +44,10 @@ public class DBClass {
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
+				conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
 				conn.setAutoCommit(true);
 			}
 		}
@@ -187,7 +187,6 @@ public class DBClass {
 			statement.executeUpdate(query);
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -317,7 +316,7 @@ public class DBClass {
 		
 	}
 	
-	public static void deleteProfiles(String name) {//todo controlla che nessuna room ce l'abbia come profilo
+	public static void deleteProfiles(String name) {
 		Statement statement;		
 		try {
 			statement = getStatement();
@@ -616,7 +615,6 @@ public class DBClass {
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -637,13 +635,11 @@ public class DBClass {
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 	}
 	
 	public static void createRoom(Room room) {
-		//TODO modificare
 		Statement statement;
 		try {
 			//Integer.toString(room.getIdAirCond())

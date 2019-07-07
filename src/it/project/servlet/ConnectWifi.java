@@ -26,7 +26,7 @@ public class ConnectWifi extends HttpServlet {
      */
     public ConnectWifi() {
         super();
-        // TODO Auto-generated constructor stub
+        
     }
 
 
