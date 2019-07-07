@@ -19,12 +19,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <% //HttpWebService.getAuthenticationToken();
-System.out.println("1");
+/*System.out.println("1");
 System.out.println(HttpWebService.getGroupInfo()+"\n\n");
 System.out.println("2");
 System.out.println(HttpWebService.getDeviceInfo()+"\n\n");
 System.out.println("3");
-System.out.println(HttpWebService.getLogs()+"\n\n");%>
+System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -87,20 +87,22 @@ if(prevKey==null)
 
 Room currentRoom = roomMap.get(currentRoomId);
 Date date =  new Date();
-Season season;
+
 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 dateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
 
 String mode=currentRoom.getMode().name();
 String targetTemp="0";
-String act;
+
+String act = SystemType.HOT.toString();
+if(ProfileUtil.getCurrentSeason().equals(Season.SUMMER)){
+	act = SystemType.COLD.toString();
+}
+
 if(currentRoom.getMode().equals(Mode.MANUAL)){	
 	targetTemp=Double.toString(currentRoom.getManualTemp());	
-	act = currentRoom.getManualSystem().toString();
-	
 }else{
 	targetTemp = ProfileUtil.getCurrentTemperature(currentRoom);	
-	act = SystemType.HOT.toString(); //non è visualizzato
 }
 
 %>
@@ -113,7 +115,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
             <ul class="sidebar-nav">
                 <li class="sidebar-brand" style="height: 70px;"> </li>
                 <li> <a class="text-light" href="index.jsp" style="font-size: 20px;">Home</a></li>
-                <li> <a class="text-light" href="pages/profileList.jsp" style="font-size: 20px;">Temperature Profile</a></li>
+                <li> <a class="text-light" href="pages/profileList.jsp" style="font-size: 20px;">Temperature Profiles</a></li>
                 <li> <a class="text-light" href="pages/roomManagement.jsp" style="font-size: 20px;">Room Management</a></li>
                 <li> <a class="text-light" href="pages/statistics.jsp?chart=1&room=<%=currentRoomId%>" style="font-size: 20px;">Statistics</a></li>
                 <c:if test="${user eq localUser}">
@@ -141,7 +143,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 				</div>
 
 				<div class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px ">
-                   
+                    <!-- Icons -->
                    <div style="height:100%; display: inline-grid">
                     	<img id="hotIcon" style="margin-left:8px; margin-right:8px; margin-top:2%; margin-bottom:3%; height:30px;" src="images/ios-flame-primary.svg">
                     	<img id="coldIcon" style="margin-left:8px; margin-right:8px; margin-top:3%; margin-bottom:3%; height:30px;" src="images/ios-snow-primary.svg">
@@ -172,7 +174,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 			    						<button id=<%=SystemType.HOT%> onclick="onHotSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white; vertical-align: top; "><img id="hotImage" src="images/ios-flame-primary.svg"></button>
 					              		<button id=<%=SystemType.COLD%> onclick="onColdSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white; vertical-align: top;"><img id="coldImage" src="images/ios-snow-primary.svg"></button>	
 		    						</div>
-		    						<button class="btn btn-primary" type="submit" name="ACTION" value="changeManualProgrammableMode" style="width: 90%; margin-bottom: 4px; margin-top: 4px;">SAVE</button>
+		    						<button id="saveButton" class="btn btn-primary" type="submit" name="ACTION" value="changeManualProgrammableMode" style="width: 90%; margin-bottom: 4px; margin-top: 4px;">SAVE</button>
 				              		
 				               	</div>
 				             
@@ -225,12 +227,15 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     var targetTemp = document.getElementById("targetTemp");
     var currentTemp = document.getElementById("currentTemp");
     var act = document.getElementById("act");
+    var saveButton = document.getElementById("saveButton");
 	var timerID = setInterval(function() {
 		setDate();
 		setTemperature();
 		getActuatorState();
 		getAntifreezeState();
+		
 		updateWeekendModeIcon();
+		getMode();
 		if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
 			setProfileTemperature();
 		}
@@ -240,8 +245,12 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 
     	function initializeParameters(){
     		mode.value="<%=mode%>"
+   			
     		act.value="<%=act%>"
     	    updateModeButton();
+    		if(mode.value=="<%=Mode.MANUAL%>"){
+   				saveButton.disabled = true;
+   			}
     		getActuatorState();
     		getAntifreezeState();
     		updateWeekendModeIcon();
@@ -259,6 +268,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     	
     	
     	function onHotSystemClick(){
+    		saveButton.disabled = false;
     		act.value="<%=SystemType.HOT%>"
     		//seleziona hot
     		document.getElementById("hotImage").setAttribute('src','images/ios-flame-primary.svg');
@@ -268,6 +278,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     	}
     	
     	function onColdSystemClick(){
+    		saveButton.disabled = false;
     		act.value="<%=SystemType.COLD%>"
     		//seleziona cold
     		document.getElementById("coldImage").setAttribute('src','images/ios-snow-primary.svg');
@@ -287,9 +298,10 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     	function updateModeButton(){
     		if(mode.value=="<%=Mode.MANUAL%>"){
     			enableManualMode();
-    		}else{
+    		}else if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
     			disableManualMode();
     		}
+    		
     	}
     	
     	function enableManualMode(){
@@ -301,8 +313,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		mode.value="<%=Mode.MANUAL%>"
     		increaseButton.disabled = false;
     		decreaseButton.disabled = false;
-    		//hotSystemButton.style.display = "-webkit-inline-box";
-    		//coldSystemButton.style.display = "-webkit-inline-box";
+    		//saveButton.disabled = true;
     		document.getElementById("manualSection").style.display = "block";
     		updateActButtons();
 
@@ -321,21 +332,10 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		mode.value="<%=Mode.PROGRAMMABLE%>"	
     		increaseButton.disabled = true;
     		decreaseButton.disabled = true;
-    		//hotSystemButton.style.display = "none";
-    		//coldSystemButton.style.display = "none";
     		document.getElementById("manualSection").style.display = "none";
-    		
     		document.getElementById("targetTempText").innerHTML="Profile Temperature";
-
+    		//saveButton.disabled = false;
     		//console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
-    	}
-    	
-    	function onModeClick(){
-    		if(mode.value=="<%=Mode.MANUAL%>"){
-    			disableManualMode();
-    		}else{
-    			enableManualMode();
-    		}
     	}
     	
     	function onIncreaseClick(){
@@ -344,6 +344,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     			return;
     		targetTemp.value=Number(currentTemp + 0.1).toFixed(1);
         	targetTempShown.innerHTML = targetTemp.value;
+        	saveButton.disabled = false;
     	}
     
     	function onDecreaseClick(){
@@ -353,6 +354,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		}
     		targetTemp.value=Number(currentTemp - 0.1).toFixed(1);
     		targetTempShown.innerHTML = targetTemp.value;
+    		saveButton.disabled = false;
     	}
     	
 
@@ -511,6 +513,37 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 				}
 			};
 			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getAntifreezeState?user=<%=user%>", true);
+			xmlHttpRequest.setRequestHeader("Content-Type",
+					"application/x-www-form-urlencoded");
+			xmlHttpRequest.send(null);
+		}
+		
+		function getMode() {
+			var xmlHttpRequest = getXMLHttpRequest();
+			xmlHttpRequest.onreadystatechange = function() {
+				if (xmlHttpRequest.readyState == 4) {
+					if (xmlHttpRequest.status == 200) {
+						var state = xmlHttpRequest.responseText
+						var res = state.split("-")
+						
+						mode.value = res[0]
+						targetTemp.value=res[1]
+						targetTempShown.innerHTML =targetTemp.value
+						if(mode.value=="<%=Mode.MANUAL%>"){
+							act.value=res[2];
+			    			enableManualMode();
+			    		}else if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
+			    			disableManualMode();
+			    		}
+						
+						console.log("getMode: " + mode.value+" "+targetTemp.value+" "+ act.value);  	
+						//updateIcons(xmlHttpRequest.responseText)
+					} else {
+						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+					}
+				}
+			};
+			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/GetCurrentRoomMode?user=<%=user%>&roomId=<%=currentRoom.getRoom()%>", true);
 			xmlHttpRequest.setRequestHeader("Content-Type",
 					"application/x-www-form-urlencoded");
 			xmlHttpRequest.send(null);

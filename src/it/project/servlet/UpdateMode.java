@@ -46,13 +46,13 @@ public class UpdateMode extends HttpServlet {
 		// TODO Auto-generated method stub
 		
 		String action = request.getParameter("ACTION");
+		String currentRoomId = (String) request.getSession().getAttribute("currentRoomId");
 		
 		switch(action) {
 		 	case "changeManualProgrammableMode":
 		 		Mode mode = Mode.valueOf((String)request.getParameter("mode"));
 				Double targetTemp=Double.parseDouble(request.getParameter("targetTemp"));
 				SystemType systemType = SystemType.valueOf(request.getParameter("act"));
-				String currentRoomId = (String) request.getSession().getAttribute("currentRoomId");
 				DBClass.updateRoomMode(currentRoomId, mode, targetTemp, systemType);
 				//MQTTAppSensori.notifyModeChanged(mode, currentRoomId, targetTemp, systemType,0); //TODO decommentare quando dobbiamo testare mqtt con appSensori
 		 		break;
@@ -76,7 +76,7 @@ public class UpdateMode extends HttpServlet {
 		 		break;
 		}
 		
-		response.sendRedirect("index.jsp");
+		response.sendRedirect("index.jsp?currentRoom="+currentRoomId);
 		
 	}
 

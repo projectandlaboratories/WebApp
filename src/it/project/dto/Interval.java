@@ -83,4 +83,26 @@ public class Interval implements Comparable<Object>, Serializable{
 	public String getColor() {
 		return ProfileUtil.getDayMomentColors().get(this.dayMoment);
 	}
+	
+	public String getStartTime() {
+		return getStringTime(startHour,startMin);
+	}
+	
+	public String getEndTime() {
+		return getStringTime(endHour,endMin);
+	}
+	
+	public String getStringTime(int hour, int min) {
+		String stringHour = Integer.toString(hour);
+		String stringMin = Integer.toString(min);
+		
+		if(min<10) {
+			stringMin= "0"+stringMin;
+		}
+		return stringHour+":"+stringMin;
+	}
+	
+	public String getStringTemperature() {
+		return Integer.toString((int)temperature) + " °C";
+	}
 }
