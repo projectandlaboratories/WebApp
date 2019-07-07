@@ -68,6 +68,8 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 %>
 <c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
 <%
+//HttpWebService.getAuthenticationToken();
+
 NavigableMap<String,Room> roomMap = (NavigableMap<String,Room>) session.getAttribute("roomMap");
 
 String mainRoomId=DBClass.getMainRoomId();
@@ -91,7 +93,7 @@ Date date =  new Date();
 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 dateFormat.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
 
-String mode=currentRoom.getMode().name();
+String currentMode=currentRoom.getMode().name();
 String targetTemp="0";
 
 String act = SystemType.HOT.toString();
@@ -162,7 +164,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					    	<form action="<%=request.getContextPath()+"/UpdateMode"%>" method="POST">
 					    	
 					    		<span id="targetTempText" style="font-size:16px;margin-right:20%;"></span><br>
-					    		<input type="hidden" id="mode" name="mode" value=<%=mode%>>   
+					    		<input type="hidden" id="mode" name="mode" value=<%=currentMode%>>   
 					    		<input type="hidden" id="targetTemp" name="targetTemp" value=<%=targetTemp%>>  
 					    		<input type="hidden" id="act" name="act" value=<%=act%>>
 					    		          
@@ -244,7 +246,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     
 
     	function initializeParameters(){
-    		mode.value="<%=mode%>"
+    		mode.value="<%=currentMode%>"
    			
     		act.value="<%=act%>"
     	    updateModeButton();

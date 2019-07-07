@@ -4,7 +4,11 @@ package it.project.utils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,13 +27,15 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import it.project.db.DBClass;
 import it.project.enums.HttpAction;
 
 public class HttpWebService {
 	private static final String baseUrl =  "http://ec2-34-220-162-82.us-west-2.compute.amazonaws.com:5002";
 	private static String username = "PL19-20";
-	private static String password = "projectpwd"; //?? //"PL19-20-xh";//
+	private static String password = "projectpwd"; 
 	private static String token = null;//TODO
+	
 	
 	
 	public static JSONObject getGroupInfo() {
@@ -58,9 +64,10 @@ public class HttpWebService {
 			HttpClient client = HttpClientBuilder.create().build();
 			HttpGet request = new HttpGet(url);
 			
-			if(token==null) {
-				token = getAuthenticationToken();
-			}
+
+
+			token = getAuthenticationToken();
+			
 			System.out.println("GET "+action.toString());
 			
 			request.setHeader(HttpHeaders.AUTHORIZATION,"JWT "+token);
@@ -107,7 +114,28 @@ public class HttpWebService {
 		return null;
 	}
 	
+	
 	public static String getAuthenticationToken() {
+		String tokenDate = DBClass.getConfigValue("mqtt.tokenDate");
+		if(tokenDate!=null) {
+			//controllo se il token è più vecchio di 20 ore
+			Date currentDate = new Date();
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(currentDate);
+			cal.add(Calendar.HOUR, -20);
+			DateFormat mydateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String pastDate = mydateFormat.format(cal.getTime());
+			System.out.println(pastDate);
+			if(tokenDate.compareTo(pastDate)>=0) {//il token è ancora valido
+				token = DBClass.getConfigValue("mqtt.token");
+				System.out.println(tokenDate);
+				System.out.println(token);
+				return token;
+			}
+		}else {
+			DBClass.insertConfigValue("mqtt.tokenDate", "2019-07-06 11:08:15");//inserisco una data vecchia
+			DBClass.insertConfigValue("mqtt.token", "0");//inizializzo per poi fare update
+		}
 		
 		JSONObject json = new JSONObject();
 		try {
@@ -153,9 +181,8 @@ public class HttpWebService {
 		request.setHeader(HttpHeaders.CONTENT_TYPE,"application/json");
 
 		if(action.equals(HttpAction.GROUP) || action.equals(HttpAction.DEVICE)) {
-			if(token==null) {
-				token = getAuthenticationToken();
-			}
+			
+			token = getAuthenticationToken();
 			request.setHeader(HttpHeaders.AUTHORIZATION,"JWT "+token);
 		}
 		
@@ -173,7 +200,13 @@ public class HttpWebService {
 				String retSrc = EntityUtils.toString(responseEnitity); 
 		        JSONObject result = new JSONObject(retSrc); //Convert String to JSON Object
 				token = result.getString("access_token");
-		        System.out.println(token);	
+		        System.out.println(token);
+		        //TODO salva token su db
+		        
+		        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String tokenDate = dateFormat.format(new Date());
+				DBClass.updateConfigValue("mqtt.tokenDate", tokenDate);
+				DBClass.updateConfigValue("mqtt.token", token);		        		        
 			}	
 	        
 		}catch(Exception e) {

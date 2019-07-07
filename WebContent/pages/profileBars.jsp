@@ -4,7 +4,13 @@
 <%@ page import="java.util.*" %>
  <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <%
-Program program=(Program)session.getAttribute("currentProfile");
+String profileParam = request.getParameter("profileParam");
+if(profileParam == null){
+	profileParam="currentProfile";
+}
+Program program=(Program)session.getAttribute(profileParam);
+
+
 
 Map<DayName,DayType> days = program.getDays();
 List<String> workingDays=new ArrayList<>();
