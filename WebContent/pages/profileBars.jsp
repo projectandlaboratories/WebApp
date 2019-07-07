@@ -9,9 +9,7 @@ if(profileParam == null){
 	profileParam="currentProfile";
 }
 Program program=(Program)session.getAttribute(profileParam);
-if(profileParam.compareTo("currentProfile")==0){
-	session.setAttribute("currentProfile", program);
-}
+
 
 
 Map<DayName,DayType> days = program.getDays();
