@@ -17,6 +17,9 @@
     <style type="text/css"><%@include file="../assets/fonts/ionicons.min.css"%></style>
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
     <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
+        <!-- per la keyboard virtuale -->
+     <style type="text/css"><%@include file="../assets/css/keyboard.css"%></style>
+     <style type="text/css"><%@include file="../assets/css/jquery-ui.min.css"%></style>
     
 <style type="text/css">
 	#load{
@@ -69,7 +72,7 @@
 					</c:forEach>
 	           	</div>
 	        </div>
-	        <input type="password" id="password" placeholder="enter Password" style="width: 70%;height: 60px;">
+	        <input class="keyboard" type="password" id="password" placeholder="Enter Password" style="width: 70%;height: 60px;background-color:white;color:black;">
 			<div id="responseText"></div>
 			<button class="btn btn-primary" id="submitBtn" onclick="connectWifi()" name="ssid" value="" type="button" style="margin-top: 2%;width:25%;margin-left: 22.5%;">Connect</button>
        
@@ -140,6 +143,19 @@ function getXMLHttpRequest() {
 }
     
 </script>
+
+   <!-- per la keyboard virtuale -->
+    <script><%@include file="../assets/js/jquery.mousewheel.js"%></script> 
+    <script><%@include file="../assets/js/jquery.keyboard.js"%></script>
+    <script><%@include file="../assets/js/jquery-ui-custom.min.js"%></script>  
+    
+    <c:if test="${user eq localUser}">
+	    <script>
+			$(function(){
+				$('.keyboard').keyboard();
+			});
+		</script>
+    </c:if>
 
 </body>
 </html>

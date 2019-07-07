@@ -94,6 +94,31 @@ public class DBClass {
 		}
 	}
 	
+	public static Map<String,Double> getLastMonthTemperature(String roomId){
+		Statement statement;
+		Map<String,Double> temperatureDayMap = new HashMap<>();
+		try {
+			statement = getStatement();
+			String query = "SELECT DATE(TIMESTAMP) AS ForDate, AVG(TEMPERATURE) AS AvgTemp "
+						 + "FROM temperatures "
+						 + "WHERE ID_ROOM = '" + roomId + "'"
+							+ " AND TIMESTAMP BETWEEN SUBDATE(CURDATE(), INTERVAL 1 MONTH) AND NOW() "
+						+ " GROUP BY DATE(timestamp) "
+						 + "ORDER BY ForDate;";
+			
+			ResultSet result = statement.executeQuery(query);
+			while (result.next()) {
+				String date = result.getString("ForDate");
+				double avgTemp = result.getDouble("AvgTemp");
+				temperatureDayMap.put(date, avgTemp);
+			}
+			return temperatureDayMap;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static void enableAntifreeze(java.sql.Timestamp timestamp) {
 		Statement statement;
 		try {

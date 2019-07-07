@@ -17,7 +17,11 @@
     <style type="text/css"><%@include file="../assets/css/Sidebar-Menu-1.css"%></style>
     <style type="text/css"><%@include file="../assets/css/Sidebar-Menu.css"%></style>
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
-     <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
+    <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
+    
+    <!-- per la keyboard virtuale -->
+     <style type="text/css"><%@include file="../assets/css/keyboard.css"%></style>
+     <style type="text/css"><%@include file="../assets/css/jquery-ui.min.css"%></style>
 
 </head>
 <jsp:useBean id="currentProfile" class="it.project.dto.Program" scope="session">  </jsp:useBean>
@@ -68,7 +72,7 @@ else if(alertCode == 'empty'){
         
     <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; margin-top:3%">
     
-    	<div style="margin-bottom: 20px"><input type="text" placeholder="enter profile name" name="profile_name" value="<%=name %>" style="width:100%"></div>	
+    	<div style="margin-bottom: 20px"><input class="keyboard" type="text" placeholder="enter profile name" name="profile_name" value="<%=name %>" style="width:100%;background-color:white;color:black;"></div>	
     	<jsp:include page="profileBars.jsp" /> 
 	   
 	   
@@ -92,7 +96,20 @@ else if(alertCode == 'empty'){
     
     <script><%@include file="../assets/js/jquery.min.js"%></script> 
     <script><%@include file="../assets/bootstrap/js/bootstrap.min.js"%></script> 
-    <script><%@include file="../assets/js/script.min.js"%></script> 
+    <script><%@include file="../assets/js/script.min.js"%></script>
+    
+    <!-- per la keyboard virtuale -->
+    <script><%@include file="../assets/js/jquery.mousewheel.js"%></script> 
+    <script><%@include file="../assets/js/jquery.keyboard.js"%></script>
+    <script><%@include file="../assets/js/jquery-ui-custom.min.js"%></script>  
+    
+    <c:if test="${user eq localUser}">
+	    <script>
+			$(function(){
+				$('.keyboard').keyboard();
+			});
+		</script>
+    </c:if>
     
       
 </body>
