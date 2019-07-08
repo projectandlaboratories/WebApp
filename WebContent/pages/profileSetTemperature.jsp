@@ -54,17 +54,17 @@ if(myProgram.getTemperatureMap()!=null){
     <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; padding-right:3%;">
     	<div>
     		<span style="width: 100px;display: inline-block;padding-top: 30px;">OUT</span> 
-    		<input type="range" class="range" min="16" max="26" value="<%=temperatureMap.get(DayMoment.OUT) %>" name="out_temperature">
+    		<input type="range" class="range" min="18" max="30" value="<%=temperatureMap.get(DayMoment.OUT) %>" name="out_temperature">
     	</div>
 	  
 	  	<div>
     		<span style="width: 100px;display: inline-block;padding-top: 40px;">HOME</span>
-    		<input type="range" class="range" min="16" max="26" value="<%=temperatureMap.get(DayMoment.HOME) %>" name="home_temperature">
+    		<input type="range" class="range" min="18" max="30" value="<%=temperatureMap.get(DayMoment.HOME) %>" name="home_temperature">
     	</div>
     	
     	<div>
     		<span style="width: 100px;display: inline-block;padding-top: 40px;">NIGHT</span>
-    		<input type="range" class="range" min="16" max="26" value="<%=temperatureMap.get(DayMoment.NIGHT) %>" name="night_temperature">
+    		<input type="range" class="range" min="18" max="30" value="<%=temperatureMap.get(DayMoment.NIGHT) %>" name="night_temperature">
     	</div>	   
     </div>
  

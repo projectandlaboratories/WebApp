@@ -1,3 +1,4 @@
+<%@page import="it.project.mqtt.MQTTDbProf"%>
 <%@page import="it.project.mqtt.MQTTAppSensori"%>
 <%@page import="it.project.utils.*"%>
 <%@page import="it.project.enums.*"%>
@@ -54,10 +55,16 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 	session.setAttribute("user", user.name());
 	session.setAttribute("localUser", DbIdentifiers.LOCAL.name());
 	session.setAttribute("awsUser", DbIdentifiers.AWS.name());
+	
+	String rootCApath = getServletContext().getRealPath("/Certificates_x509/root-CA.crt");
+    String certificatePath = getServletContext().getRealPath("/Certificates_x509/PL-student.cert.pem");
+    String privateKeyPath = getServletContext().getRealPath("/Certificates_x509/PL-student.private.key");
+    
 	//Setup connection e dbSync
 	try{
 		DBClass.getConnection(user);
 		MQTTDbSync.setConnection(user);
+		//MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
 		//MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
 	}
 	catch(Exception e){
@@ -68,7 +75,9 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 %>
 <c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
 <%
-//HttpWebService.getAuthenticationToken();
+//System.out.println(HttpWebService.getDeviceInfo());
+
+//HttpWebService.updateDeviceInfo("9C-30-5B-D1-16-15", "RP-PL19-20", "conf");
 
 NavigableMap<String,Room> roomMap = (NavigableMap<String,Room>) session.getAttribute("roomMap");
 
@@ -101,7 +110,8 @@ if(ProfileUtil.getCurrentSeason().equals(Season.SUMMER)){
 	act = SystemType.COLD.toString();
 }
 
-if(currentRoom.getMode().equals(Mode.MANUAL)){	
+if(currentRoom.getMode().equals(Mode.MANUAL)){
+	act = currentRoom.getManualSystem().toString();
 	targetTemp=Double.toString(currentRoom.getManualTemp());	
 }else{
 	targetTemp = ProfileUtil.getCurrentTemperature(currentRoom);	
@@ -181,7 +191,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 				               	</div>
 				             
 				             	<button onclick="disableManualMode()" id="manualButton" type="submit" name="ACTION" value="changeManualProgrammableMode"  class="btn btn-light btn-lg text-center text-primary border-white" type="button" style=" position:absolute; bottom: 8px; right:8px;font-size: 50px;width: 70px;height: 70px;background-color: white;"><img src="images/md-hand-primary.svg" ></button>
-		                		<button onclick="enableManualMode()" id="programButton" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style=" position:absolute; bottom: 8px; right:8px;font-size: 50px;width: 70px;height: 70px;background-color: white;"><img src="images/md-hand-not-selected.svg" ></button>
+		                		<button onclick="enableManualMode()" id="programButton" type="submit" name="ACTION" value="changeManualProgrammableMode" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style=" position:absolute; bottom: 8px; right:8px;font-size: 50px;width: 70px;height: 70px;background-color: white;"><img src="images/md-hand-not-selected.svg" ></button>
 		                		
 					    		 <div class="btn-group btn-group-vertical" role="group" style="right: 8px;position: absolute;width: 65px; top:32px;"><!-- width: 25%; -->
 				                    <button id="increase" onclick="onIncreaseClick()" class="btn btn-primary" type="button" style="margin-bottom: 16px;align-self: end;padding-right: 8px;padding-left: 8px;">
@@ -230,6 +240,8 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     var currentTemp = document.getElementById("currentTemp");
     var act = document.getElementById("act");
     var saveButton = document.getElementById("saveButton");
+	//uso saveButton.disabled come flag !!!!!!!!!!!!!!!!!!!!!!!!!!
+    
 	var timerID = setInterval(function() {
 		setDate();
 		setTemperature();
@@ -318,7 +330,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		//saveButton.disabled = true;
     		document.getElementById("manualSection").style.display = "block";
     		updateActButtons();
-
+    		saveButton.disabled = true;//perchè i bottoni me lo abilitano
     		document.getElementById("targetTempText").innerHTML="Manual Temperature";
     		//console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
     	}
@@ -342,7 +354,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     	
     	function onIncreaseClick(){
     		var currentTemp = parseFloat(targetTemp.value);
-    		if(currentTemp>=26.0)
+    		if(currentTemp>=30.0)
     			return;
     		targetTemp.value=Number(currentTemp + 0.1).toFixed(1);
         	targetTempShown.innerHTML = targetTemp.value;
@@ -351,7 +363,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     
     	function onDecreaseClick(){
     		var currentTemp = parseFloat(targetTemp.value);
-    		if(currentTemp<=16.0){
+    		if(currentTemp<=18.0){
     			return;
     		}
     		targetTemp.value=Number(currentTemp - 0.1).toFixed(1);
@@ -528,13 +540,21 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 						var state = xmlHttpRequest.responseText
 						var res = state.split("-")
 						
-						mode.value = res[0]
-						targetTemp.value=res[1]
-						targetTempShown.innerHTML =targetTemp.value
-						if(mode.value=="<%=Mode.MANUAL%>"){
-							act.value=res[2];
-			    			enableManualMode();
-			    		}else if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
+						if(res[0]=="<%=Mode.MANUAL%>"){//check sull'enable!!!!!!
+							
+							if(saveButton.disabled==true||mode.value=="<%=Mode.PROGRAMMABLE%>"){//se sei progr il bottone è abilitato, di default
+								console.log("Entrato nell'if");
+								mode.value = res[0]
+								targetTemp.value=res[1]
+								targetTempShown.innerHTML =targetTemp.value
+								act.value=res[2];
+								enableManualMode();
+							}
+							
+			    		}else if(mode.value!="<%=Mode.PROGRAMMABLE%>"){//se ti arriva progr e non sei in progr
+			    			mode.value = res[0]
+			    			targetTemp.value=res[1]
+							targetTempShown.innerHTML =targetTemp.value
 			    			disableManualMode();
 			    		}
 						
