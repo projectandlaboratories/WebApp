@@ -62,6 +62,13 @@ public class MQTTDbSync{
 								MQTTAppSensori.notifyProfileChanged(inputMessage);
 							}
 						}
+						else if(topic.equals(Topics.LAST_WILL.getName())) {
+							//usato per segnalare che la schedina è ora attiva
+							JSONObject lastWillJson = new JSONObject(new String(message.getPayload()));
+			    			String roomId = lastWillJson.getString("roomId");
+			    			int roomStatus = lastWillJson.getInt("status");
+			    			DBClass.updateRoomStatus(roomId, roomStatus);
+						}
 						else {
 							DBClass.executeQuery(new String(message.getPayload()));
 						}
@@ -84,6 +91,7 @@ public class MQTTDbSync{
         		
         		
         		client.subscribe(subscribe_topic, qos);
+        		client.subscribe(Topics.LAST_WILL.name(),qos);
         		
         		if(user.equals(DbIdentifiers.LOCAL))
         			client.subscribe(Topics.MQTT_APP_SENSORI.getName());
@@ -106,6 +114,22 @@ public class MQTTDbSync{
     	MqttMessage message = new MqttMessage(payload.getBytes());
         message.setQos(qos);
         client.publish(Topics.MQTT_APP_SENSORI.getName(), message);
+    }
+    
+    public static void sendNewRoomInfo(String roomId, int airCondModel, String brokerIp) {
+    	JSONObject json = new JSONObject();
+    	try {
+    		json.put("airCondModel", airCondModel);
+        	json.put("brokerIp", brokerIp);
+        	MqttMessage message = new MqttMessage(json.toString().getBytes());
+            message.setQos(qos);
+            client.publish(Topics.ADD_ROOM.getName(), message);
+    	}
+    	catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	
+    	
     }
 
 }

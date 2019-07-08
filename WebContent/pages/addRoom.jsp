@@ -37,7 +37,7 @@
 		input.close(); 
 %>
 	
-	
+<c:set var="duplicateName" value="${param.duplicateName}"/>	
 <c:set var="airCondMap" value="<%=DBClass.getAirCondList()%>"/>
 
 <body>
@@ -74,7 +74,11 @@
 	           	</div>
 	        </div>
 	        
-	        <button disabled class="btn btn-primary" type="submit" id="connectButton" style="margin-top: 2%;width:25%;margin-left: 22.5%;">Connect</button>
+	        <button class="btn btn-primary" type="submit" id="connectButton" style="margin-top: 2%;width:25%;margin-left: 22.5%;">Connect</button>
+	        
+	        <c:if test="${duplicateName eq true}">
+	        	<h6 style="color:red;margin-top:1%;margin-left:19%;">An error has occurred: room name already exists</h6>
+	        </c:if>	        
 	   	</form>
     </div>
         

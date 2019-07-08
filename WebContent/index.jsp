@@ -342,9 +342,9 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     	
     	function onIncreaseClick(){
     		var currentTemp = parseFloat(targetTemp.value);
-    		if(currentTemp>=26.0)
+    		if(currentTemp>=40.0)
     			return;
-    		targetTemp.value=Number(currentTemp + 0.1).toFixed(1);
+    		targetTemp.value=Number(currentTemp + 1.0).toFixed(1);
         	targetTempShown.innerHTML = targetTemp.value;
         	saveButton.disabled = false;
     	}

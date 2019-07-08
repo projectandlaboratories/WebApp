@@ -48,6 +48,9 @@ public class ConnectWifi extends HttpServlet {
 					connectedSsid = "";
 				}
 				else {
+					//salvo ssid e pwd sul db
+					DBClass.updateConfigValue("localWifiSSid", connectedSsid);
+					DBClass.updateConfigValue("localWifiPwd", password);
 					//se mi sono connesso con successo alla rete richiesta mi riconnetto al broker di DbSync
 					MQTTDbSync.setConnection(DbIdentifiers.LOCAL);
 				}

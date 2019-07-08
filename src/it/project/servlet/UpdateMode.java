@@ -62,7 +62,7 @@ public class UpdateMode extends HttpServlet {
 		 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
 		 			Date endTimestamp = format.parse(date);
 		 			DBClass.setWeekendMode(date.toString());
-		 			MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,endTimestamp.getTime());
+		 			MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,endTimestamp.getTime()/1000);
 		 		} catch (ParseException e) {
 		 			
 		 			e.printStackTrace();
@@ -72,7 +72,7 @@ public class UpdateMode extends HttpServlet {
 		 	case "removeWeekendMode":
 				DBClass.stopWeekenMode();
 				Date now = new Date();
-				MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,now.getTime());
+				MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,now.getTime()/1000);
 		 		break;
 		}
 		
