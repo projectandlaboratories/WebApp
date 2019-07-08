@@ -45,6 +45,18 @@ public class HttpWebService {
 	public static JSONObject getDeviceInfo() {
 		//{”status”: status, ”data”: {”configuration”: configuration, ”nickname”:
 		//nickname, ”device status”: device status, ”device mac”: device mac}}
+		/**
+		 * {
+		 * 	"status": 200, 
+		 * 	"data": 
+		 * 	{
+		 * 		"nickname": "RP-PL19-20", 
+		 * 		"configuration": {"DEVICE": "RP v3b", "OWNER": "RP-PL19-20", "WIFI_SSID": "Home-Wifi", "NUM_SENSORS": 7}, 
+		 * 		"device_mac": "00:00:00:00:00:20", 
+		 * 		"device_status": 0
+		 * 	}
+		 * }
+		 * */
 		return sendGet(HttpAction.DEVICE);
 	}
 	public static JSONObject getLogs() {
@@ -163,7 +175,7 @@ public class HttpWebService {
 	public static void updateDeviceInfo(String deviceMac, String nickname, String configuration) {
 		JSONObject json = new JSONObject();
 		try {
-			json.put("device mac", deviceMac);
+			json.put("device_mac", deviceMac);
 			json.put("nickname", nickname);
 			json.put("configuration", configuration);
 			sendPost(HttpAction.DEVICE, json);

@@ -705,11 +705,5 @@ public class DBClass {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
-
-
-
-	
+		
 }

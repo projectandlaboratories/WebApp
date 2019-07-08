@@ -1,36 +1,68 @@
 package it.project.mqtt;
 
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+//import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+//import org.eclipse.paho.client.mqttv3.MqttCallback;
+//import org.eclipse.paho.client.mqttv3.MqttClient;
+//import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+//import org.eclipse.paho.client.mqttv3.MqttMessage;
+//import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONObject;
 
+import com.amazonaws.services.iot.client.AWSIotMqttClient;
+import com.amazonaws.services.iot.client.AWSIotQos;
+import com.amazonaws.services.iot.client.sample.sampleUtil.SampleUtil;
+import com.amazonaws.services.iot.client.sample.sampleUtil.SampleUtil.KeyStorePasswordPair;
+
+import it.project.db.DBClass;
 import it.project.utils.DbIdentifiers;
 
+
 public class MQTTDbProf {
-	private static final int qos = 2;
+	//private static final int qos = 2;
+	AWSIotQos qos = AWSIotQos.QOS1;//non esiste 2
 	private static final String topicNotification = "pl19/notification";//subscribe
 	private static final String topicEvent =  "pl19/event";//only send
-	private static MqttClient client;
-    private static MqttConnectOptions conOpt;
-    private static String endpoint = "a3cezb6rg1vyed-ats.iot.us-west-2.amazonaws.com"; //TODO ??
-    private static String username = "PL19-20";
-    private static String password = "projectdb";//TODO controlla
+	//private static MqttClient client;
+    //private static MqttConnectOptions conOpt;
+	private static AWSIotMqttClient client;
+    private static String endpoint = "a3cezb6rg1vyed-ats.iot.us-west-2.amazonaws.com"; //TODO  :8883
+    private static String clientId = "PL19-20";
     private static DbIdentifiers user;
+   
+    
+    public static void setConnection(DbIdentifiers usr, String rootCApath,String certificatePath, String privateKeyPath) {
+    	user = usr;
+    	if(user.equals(DbIdentifiers.LOCAL) && (client == null || client.getConnection()==null)) {
+	    	try {
+	    		//String host = String.format("ssl://%s", endpoint);
+	    		KeyStorePasswordPair pair = SampleUtil.getKeyStorePasswordPair(certificatePath, privateKeyPath);
+	    		client = new AWSIotMqttClient(endpoint, clientId, pair.keyStore, pair.keyPassword);
+	    		
+	    		
+	    		System.out.println("starting connect the server...");
+	    		client.connect();	    		
+	    		System.out.println("connected!");
+	    		
+	    		
+/*	    		conOpt = new MqttConnectOptions();
+	    		conOpt.setCleanSession(false);
+	    		conOpt.setUserName(username);
+	    		conOpt.setPassword(password.toCharArray());
 
-    public static void setConnection(DbIdentifiers usr) {
-    	try {
-    		String host = "";//???String.format("tcp://%s", endpoint);
-    		String clientId = "";//??user.name();
-    		
-    		conOpt = new MqttConnectOptions();
-    		conOpt.setCleanSession(false);
-    		conOpt.setUserName(username);
-    		conOpt.setPassword(password.toCharArray());
 
+<<<<<<< HEAD
+
+
+				System.out.println("starting connect the server...");
+	    		client = new MqttClient(host, clientId, new MemoryPersistence());
+	    		client.connect(conOpt);
+	    		System.out.println("connected!");
+	    		client.setCallback(new MqttCallback() {
+=======
     		client = new MqttClient(host, clientId, new MemoryPersistence());
     		client.connect(conOpt);
     		client.setCallback(new MqttCallback() {
@@ -43,26 +75,46 @@ public class MQTTDbProf {
 				@Override
 				public void deliveryComplete(IMqttDeliveryToken arg0) {
 					
+>>>>>>> branch 'master' of https://github.com/projectandlaboratories/WebApp.git
 					
+<<<<<<< HEAD
+					@Override
+					public void messageArrived(String topic, MqttMessage message) throws Exception {
+						System.out.println("topicReceived");
+						topicReceived(topic,message);
+					}
+=======
 				}
 				
 				@Override
 				public void connectionLost(Throwable arg0) {
 					
+>>>>>>> branch 'master' of https://github.com/projectandlaboratories/WebApp.git
 					
-				}
-			});
-    		
-    		
-    		client.subscribe(topicNotification, qos);
-    		
-    		
-    	} catch(Exception e) {
-        	e.printStackTrace();
-        }
+					@Override
+					public void deliveryComplete(IMqttDeliveryToken arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void connectionLost(Throwable arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+				});
+	    		
+	    		
+	    		client.subscribe(topicNotification, qos);
+	    		*/
+	    		
+	    	} catch(Exception e) {
+	        	e.printStackTrace();
+	        }
+    	}
     }
     
-    public static void topicReceived(String topic,MqttMessage message) throws Exception {
+    /*public static void topicReceived(String topic,MqttMessage message) throws Exception {
 		switch(topic) {
 			case topicNotification:
 				System.out.println("topicReceived notification");
@@ -82,6 +134,12 @@ public class MQTTDbProf {
     	JSONObject json = new JSONObject();
     	try {
     		json.put("event_id", 1);
+    		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+			String tokenDate = dateFormat.format(new Date());
+    		
+			json.put("timestamp", tokenDate);
+    		json.put("device_mac", DBClass.getConfigValue("mac"));
+    		
     		JSONObject event = new JSONObject();
     		event.put("sequence", sequence);
     		json.put("event", event);
@@ -106,6 +164,6 @@ public class MQTTDbProf {
     	MqttMessage message = new MqttMessage(stringMessage.getBytes());
         message.setQos(qos);
         client.publish(topic, message);
-    }
+    }*/
     
 }
