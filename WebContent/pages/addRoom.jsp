@@ -2,6 +2,8 @@
     pageEncoding="ISO-8859-1"%>
     <%@ page import="it.project.db.DBClass" %>
     <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+     <%@ page import="java.util.*" %>
+     <%@ page import="java.io.*" %>
 <!DOCTYPE html>
 
 <html>
@@ -14,8 +16,28 @@
     <style type="text/css"><%@include file="../assets/fonts/font-awesome.min.css"%></style>
     <style type="text/css"><%@include file="../assets/fonts/ionicons.min.css"%></style>
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
+            <!-- per la keyboard virtuale -->
+     <style type="text/css"><%@include file="../assets/css/keyboard.css"%></style>
+     <style type="text/css"><%@include file="../assets/css/jquery-ui.min.css"%></style>
 
 </head>
+
+<%
+		Set<String> ssidList = new HashSet<>();
+		Process listSsid = new ProcessBuilder("/bin/bash", getServletContext().getRealPath("/bash/list_ssid.sh"))
+				.redirectErrorStream(true).start();
+		String line;
+		BufferedReader input = new BufferedReader(new InputStreamReader(listSsid.getInputStream()));
+		while ((line = input.readLine()) != null) {
+			String ssidName = line.split(":")[1];
+			ssidName = ssidName.replace("\"", "");
+			if (!ssidName.equals("") && ssidName.startsWith("ESP-"))
+				ssidList.add(ssidName);
+		}
+		input.close(); 
+%>
+	
+	
 <c:set var="airCondMap" value="<%=DBClass.getAirCondList()%>"/>
 
 <body>
@@ -28,7 +50,7 @@
         </h1>
     <div style="width: device-width;position: absolute;bottom:0px;top: 25%;left:25%;right:0px;display: inline-block;vertical-align: middle;flex-direction:column;display:flex;">
         <form action="<%=request.getContextPath()+"/AddRoom"%>" method="POST">
-	        <input name="roomName" id="roomName" onkeyup="updateNameFlag()" style="width: 70%;margin-bottom: 2%;height: 50px;">
+	        <input class="keyboard" name="roomName" id="roomName" onkeyup="updateNameFlag()" style="width: 70%;margin-bottom: 2%;height: 50px;background-color:white;color:black;">
 	        <input name="airCondModel" id="airCondModel" style="display: none">
 	        <input name="apMAC" id="apMAC" style="display: none">
 	        
@@ -46,8 +68,8 @@
 	        	<button class="btn btn-primary dropdown-toggle d-md-flex justify-content-md-end" type="button" id="apDropDown"
 										data-toggle="dropdown" aria-expanded="false" style="width: 100%;height: 100%;">Associate Device</button>
 	            <div class="dropdown-menu" role="menu" style="width: 100%;"><%//TODO capire come prenderlo in input %>
-	            	<c:forEach items="${airCondMap}" var="airCondItem">
-						<a class="dropdown-item" onclick="changeAPValue('${airCondItem.key}','${airCondItem.value}')" role="presentation">${airCondItem.value}</a>
+	            	<c:forEach items="<%=ssidList%>" var="ssidItem">
+						<a class="dropdown-item" onclick="changeAPValue('${ssidItem}')" role="presentation">${ssidItem}</a>
 					</c:forEach>				
 	           	</div>
 	        </div>
@@ -78,10 +100,10 @@
 		enableConnect()
 	}
 	
-	function changeAPValue(id,name){
+	function changeAPValue(name){
 		var buttonAP = document.getElementById("apDropDown");
 		buttonAP.innerText = name
-		document.getElementById("apMAC").value=id;
+		document.getElementById("apMAC").value=name;
 		flagAP=true
 		enableConnect()
 	}
@@ -97,6 +119,19 @@
 	
 	
 	</script>
+	
+	   <!-- per la keyboard virtuale -->
+    <script><%@include file="../assets/js/jquery.mousewheel.js"%></script> 
+    <script><%@include file="../assets/js/jquery.keyboard.js"%></script>
+    <script><%@include file="../assets/js/jquery-ui-custom.min.js"%></script>  
+    
+    <c:if test="${user eq localUser}">
+	    <script>
+			$(function(){
+				$('.keyboard').keyboard();
+			});
+		</script>
+    </c:if>
 
 </body>
 </html>

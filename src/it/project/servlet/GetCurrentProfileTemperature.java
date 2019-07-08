@@ -27,7 +27,7 @@ public class GetCurrentProfileTemperature extends HttpServlet {
      */
     public GetCurrentProfileTemperature() {
         super();
-        // TODO Auto-generated constructor stub
+        
     }
 
 
@@ -35,13 +35,13 @@ public class GetCurrentProfileTemperature extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		String roomId = request.getParameter("roomId");
 		DbIdentifiers user = DbIdentifiers.valueOf(request.getParameter("user"));
 		try {
 			DBClass.getConnection(user);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		Room room=DBClass.getRoomByName(roomId);

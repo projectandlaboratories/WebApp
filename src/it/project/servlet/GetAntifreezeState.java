@@ -22,7 +22,7 @@ public class GetAntifreezeState extends HttpServlet {
      */
     public GetAntifreezeState() {
         super();
-        // TODO Auto-generated constructor stub
+        
     }
 
 
@@ -31,7 +31,7 @@ public class GetAntifreezeState extends HttpServlet {
 		try {
 			DBClass.getConnection(user);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		response.setContentType("text/html");

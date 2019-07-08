@@ -240,7 +240,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     var currentTemp = document.getElementById("currentTemp");
     var act = document.getElementById("act");
     var saveButton = document.getElementById("saveButton");
-	//uso saveButton.disabled come flag !!!!!!!!!!!!!!!!!!!!!!!!!!
+	//uso saveButton.disabled come flag 
     
 	var timerID = setInterval(function() {
 		setDate();

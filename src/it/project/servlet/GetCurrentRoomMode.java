@@ -27,14 +27,14 @@ public class GetCurrentRoomMode extends HttpServlet {
      */
     public GetCurrentRoomMode() {
         super();
-        // TODO Auto-generated constructor stub
+        
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
@@ -42,13 +42,13 @@ public class GetCurrentRoomMode extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		String roomId = request.getParameter("roomId");
 		DbIdentifiers user = DbIdentifiers.valueOf(request.getParameter("user"));
 		try {
 			DBClass.getConnection(user);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		response.setContentType("text/html");

@@ -54,6 +54,7 @@ public class MQTTDbProf {
 	    		conOpt.setPassword(password.toCharArray());
 
 
+<<<<<<< HEAD
 
 
 				System.out.println("starting connect the server...");
@@ -61,12 +62,34 @@ public class MQTTDbProf {
 	    		client.connect(conOpt);
 	    		System.out.println("connected!");
 	    		client.setCallback(new MqttCallback() {
+=======
+    		client = new MqttClient(host, clientId, new MemoryPersistence());
+    		client.connect(conOpt);
+    		client.setCallback(new MqttCallback() {
+				
+				@Override
+				public void messageArrived(String topic, MqttMessage message) throws Exception {
+					topicReceived(topic,message);
+				}
+				
+				@Override
+				public void deliveryComplete(IMqttDeliveryToken arg0) {
 					
+>>>>>>> branch 'master' of https://github.com/projectandlaboratories/WebApp.git
+					
+<<<<<<< HEAD
 					@Override
 					public void messageArrived(String topic, MqttMessage message) throws Exception {
 						System.out.println("topicReceived");
 						topicReceived(topic,message);
 					}
+=======
+				}
+				
+				@Override
+				public void connectionLost(Throwable arg0) {
+					
+>>>>>>> branch 'master' of https://github.com/projectandlaboratories/WebApp.git
 					
 					@Override
 					public void deliveryComplete(IMqttDeliveryToken arg0) {

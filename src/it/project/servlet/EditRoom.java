@@ -27,7 +27,7 @@ public class EditRoom extends HttpServlet {
      */
     public EditRoom() {
         super();
-        // TODO Auto-generated constructor stub
+        
     }
     
 
