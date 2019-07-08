@@ -20,6 +20,18 @@
      <style type="text/css"><%@include file="../assets/css/keyboard.css"%></style>
      <style type="text/css"><%@include file="../assets/css/jquery-ui.min.css"%></style>
 
+	  <style type="text/css">
+	#load{
+	    width:100%;
+	    height:100%;
+	    position:fixed;
+	    z-index:9999;
+	    background:url("<%=request.getContextPath() + "/images/loading-icon.gif"%>") no-repeat center center rgba(0,0,0,0.25)
+	}
+	.hide{
+		display:none;
+	}
+</style>
 </head>
 
 <%
@@ -41,6 +53,7 @@
 <c:set var="airCondMap" value="<%=DBClass.getAirCondList()%>"/>
 
 <body>
+	<div id="load" class="hide"></div>
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	<a class="btn btn-primary text-center d-lg-flex" href="roomManagement.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
    			<img src="../images/ios-arrow-round-back-white.svg" style="position:absolute; left: 0px; top: 0px; height: 60px; width: 60px;">
@@ -74,7 +87,7 @@
 	           	</div>
 	        </div>
 	        
-	        <button class="btn btn-primary" type="submit" id="connectButton" style="margin-top: 2%;width:25%;margin-left: 22.5%;">Connect</button>
+	        <button class="btn btn-primary" onclick="showLoadingIcon()" type="submit" id="connectButton" style="margin-top: 2%;width:25%;margin-left: 22.5%;">Connect</button>
 	        
 	        <c:if test="${duplicateName eq true}">
 	        	<h6 style="color:red;margin-top:1%;margin-left:19%;">An error has occurred: room name already exists</h6>
@@ -90,6 +103,10 @@
 	var flagName = false
 	var flagModel = false
 	var flagAP = false
+	
+	function showLoadingIcon(){
+		document.getElementById("load").classList.remove("hide")
+	}
 	
 	function updateNameFlag(){
 		flagName = document.getElementById("roomName").value== "" ? false : true;
