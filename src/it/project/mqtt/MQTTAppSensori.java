@@ -103,6 +103,7 @@ public class MQTTAppSensori {
 				roomId = tempJson.getString("roomId");
 				int currentTemp = Integer.parseInt(tempJson.getString("currentTemp"));
 				long tempTimestamp = tempJson.getLong("timestamp");
+				MQTTDbProf.sendAppSensoriLog(receivedTopic.getName(), roomId, Integer.toString(currentTemp), tempTimestamp);
 				DBClass.saveCurrentTemperature(roomId,currentTemp,tempTimestamp);
 				break;
 			case ACTUATOR_STATUS:
@@ -110,12 +111,14 @@ public class MQTTAppSensori {
 				roomId = actJson.getString("roomId");
 				ActuatorState actStatus = ActuatorState.valueOf(actJson.getString("status"));
 				long actTimestamp = actJson.getLong("timestamp");
+				MQTTDbProf.sendAppSensoriLog(receivedTopic.getName(), roomId, actStatus.name(), actTimestamp);
 				DBClass.saveActuatorStatus(roomId,actStatus,actTimestamp);
 				break;
 			case ANTIFREEZE:
 				JSONObject antifreezeJson = new JSONObject(new String(message.getPayload()));
 				int status = antifreezeJson.getInt("status");
 				long timestampMillisecond = antifreezeJson.getLong("timestamp");
+				MQTTDbProf.sendAppSensoriLog(receivedTopic.getName(), "-", Integer.toString(status), timestampMillisecond);
 				GregorianCalendar cal = new GregorianCalendar();
 				cal.setTimeInMillis(timestampMillisecond);
 				java.sql.Timestamp timestamp = new java.sql.Timestamp(cal.getTime().getTime());

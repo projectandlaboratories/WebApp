@@ -99,7 +99,8 @@ public class HttpWebService {
 					retSrc=retSrc.substring(1,retSrc.length()-2).replace("\"{", "{").replace("}\\\"", "}").replace("\\", "");
 					break;
 				case LOG:
-					retSrc=retSrc.substring(1,retSrc.length()-2).replace("\\", "");
+					retSrc=retSrc.substring(1,retSrc.length()-2).replace("\"{", "{").replace("}\\\"", "}").replace("\\", "").replace("\"\"", "\"");
+
 					break;
 			
 			}
