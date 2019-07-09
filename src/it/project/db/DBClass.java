@@ -68,8 +68,8 @@ public class DBClass {
 		Statement statement;
 		try {
 			statement = getStatement();
-			java.sql.Timestamp timestamp = new java.sql.Timestamp(timestampMs);
-			String query = "INSERT INTO actuators(ID_ROOM,TIMESTAMP,STATE) values('" + roomId + "','" + timestamp + "'," + actStatus.name() + ");" ;
+			//java.sql.Timestamp timestamp = new java.sql.Timestamp(timestampMs);
+			String query = "INSERT INTO actuators(ID_ROOM,TIMESTAMP,STATE) values('" + roomId + "', FROM_UNIXTIME(" + timestampMs + "),'" + actStatus.name() + "');" ;
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
@@ -119,7 +119,7 @@ public class DBClass {
 		}
 	}
 	
-	public static void enableAntifreeze(java.sql.Timestamp timestamp) {
+	public static void enableAntifreeze(long timestamp) {
 		Statement statement;
 		try {
 			statement = getStatement();
@@ -131,7 +131,7 @@ public class DBClass {
 			}
 			
 			if(id!=-1) {	
-				query = "INSERT INTO antifreeze(ID,ACTIVE,START_TIME,END_TIME) values(" + id + ",1,'" + timestamp + "',null);" ;
+				query = "INSERT INTO antifreeze(ID,ACTIVE,START_TIME,END_TIME) values(" + id + ",1, FROM_UNIXTIME(" + timestamp + "),null);" ;
 				statement.executeUpdate(query);
 				MQTTDbSync.sendQueryMessage(query);
 			}
@@ -141,11 +141,11 @@ public class DBClass {
 		}
 	}
 	
-	public static void disableAntiFreeze(java.sql.Timestamp timestamp) {
+	public static void disableAntiFreeze(long timestamp) {
 		Statement statement;
 		try {
 			statement = getStatement();
-			String query = "UPDATE antifreeze SET ACTIVE = 0, END_TIME = '" + timestamp + "' WHERE ACTIVE = 1" ;
+			String query = "UPDATE antifreeze SET ACTIVE = 0, END_TIME = FROM_UNIXTIME(" + timestamp + ") WHERE ACTIVE = 1" ;
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
 	
@@ -214,12 +214,12 @@ public class DBClass {
 		}
 	}
 	
-	public static void saveCurrentTemperature(String roomId, int currentTemp, long timestampMs) {
+	public static void saveCurrentTemperature(String roomId, float currentTemp, long timestampMs) {
 		Statement statement;
 		try {
 			statement = getStatement();
-			java.sql.Timestamp timestamp = new java.sql.Timestamp(timestampMs);
-			String query = "INSERT INTO temperatures(ID_ROOM,TIMESTAMP,TEMPERATURE) values('" + roomId + "','" + timestamp + "'," + currentTemp + ");" ;
+			//java.sql.Timestamp timestamp = new java.sql.Timestamp(timestampMs);
+			String query = "INSERT INTO temperatures(ID_ROOM,TIMESTAMP,TEMPERATURE) values('" + roomId + "',FROM_UNIXTIME(" + timestampMs + ")," + currentTemp + ");" ;
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
@@ -496,6 +496,18 @@ public class DBClass {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	public static void updateRoomStatus(String roomId, int status) {
+		Statement statement;
+		try {
+			statement = getStatement();
+			String query = "UPDATE rooms SET CONN_STATE=" + status + " WHERE ID_ROOM = '" + roomId + "'" ;
+			statement.executeUpdate(query);
+			MQTTDbSync.sendQueryMessage(query);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
