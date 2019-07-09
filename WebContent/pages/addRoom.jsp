@@ -100,7 +100,7 @@
     <script><%@include file="../assets/js/script.min.js"%></script> 
     
     <script type="text/javascript">
-	var flagName = false
+	var flagName = true //cosi dovrebbe essere abilitato, ma lascia creare stanze con nome vuoto
 	var flagModel = false
 	var flagAP = false
 	
@@ -108,10 +108,10 @@
 		document.getElementById("load").classList.remove("hide")
 	}
 	
-	function updateNameFlag(){
+	/*function updateNameFlag(){
 		flagName = document.getElementById("roomName").value== "" ? false : true;
 		enableConnect();
-	}
+	}*/
 	
 	function changeModelValue(id,name){
 		var buttonModel = document.getElementById("modelDropDown");
@@ -130,7 +130,7 @@
 	}
 	
 	function enableConnect(){
-		if(flagName&&flagModel && flagAP){
+		if(flagName && flagModel && flagAP){
 			document.getElementById("connectButton").disabled=false;
 		}else{
 			document.getElementById("connectButton").disabled=true;

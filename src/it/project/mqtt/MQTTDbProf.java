@@ -82,7 +82,7 @@ public class MQTTDbProf {
 				tempJson = new JSONObject(new String(message.getPayload()));
 				System.out.println(tempJson);
 				int event_id = tempJson.getInt("event_id");
-				System.out.println("event_id: "+event_id);//check if 0
+				//System.out.println("event_id: "+event_id);//check if 0
 				int sequence = tempJson.getJSONObject("event").getInt("sequence"); 
 				replyToPing(sequence);
 			} catch (Exception e) {

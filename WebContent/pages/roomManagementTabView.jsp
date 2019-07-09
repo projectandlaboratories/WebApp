@@ -47,7 +47,7 @@
 
 
 	<div
-		style="margin-right: 10%; margin-left: 10%; width: 80%; text-align: center; margin-top: 5%">
+		style="margin-right: 10%; margin-left: 10%; width: 80%; text-align: center; margin-top: 2%">
 		<jsp:include page="profileBars.jsp?profileParam=${profileParam}" />
 	</div>
 
