@@ -41,7 +41,11 @@
 		String line;
 		BufferedReader input = new BufferedReader(new InputStreamReader(listSsid.getInputStream()));
 		while ((line = input.readLine()) != null) {
-			String ssidName = line.split(":")[1];
+			String[] fields = line.split(":");
+			String ssidName = fields[1];
+			for(int i=2;i<fields.length; i++){
+				ssidName = ssidName + ":" + fields[i];
+			}			
 			ssidName = ssidName.replace("\"", "");
 			if (!ssidName.equals("") && ssidName.startsWith("ESP-"))
 				ssidList.add(ssidName);
