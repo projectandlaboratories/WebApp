@@ -75,7 +75,8 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 %>
 <c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
 <%
-//System.out.println(HttpWebService.getDeviceInfo());
+HttpWebService.updateDeviceInfo(DBClass.getConfigValue("mac"), "PL19-20", "conf");
+System.out.println(HttpWebService.getDeviceInfo());
 
 //HttpWebService.getLogs();
 //HttpWebService.updateDeviceInfo("9C-30-5B-D1-16-15", "RP-PL19-20", "conf");
