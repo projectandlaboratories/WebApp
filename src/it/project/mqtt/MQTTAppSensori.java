@@ -112,6 +112,7 @@ public class MQTTAppSensori {
     			float currentTemp = Float.parseFloat(tempJson.getString("currentTemp"));
     			long tempTimestamp = tempJson.getLong("timestamp");
     			DBClass.saveCurrentTemperature(roomId,currentTemp,tempTimestamp);
+    			MQTTDbProf.sendAppSensoriLog(receivedTopic.getName(), roomId, Float.toString(currentTemp), tempTimestamp);
     			break;
     		case ACTUATOR_STATUS:
     			JSONObject actJson = new JSONObject(new String(message.getPayload()));
@@ -119,21 +120,26 @@ public class MQTTAppSensori {
     			ActuatorState actStatus = ActuatorState.valueOf(actJson.getString("status"));
     			long actTimestamp = actJson.getLong("timestamp");
     			DBClass.saveActuatorStatus(roomId,actStatus,actTimestamp);
+    			MQTTDbProf.sendAppSensoriLog(receivedTopic.getName(), roomId, actStatus.toString(), actTimestamp);
     			break;
     		case LAST_WILL:
     			JSONObject lastWillJson = new JSONObject(new String(message.getPayload()));
     			roomId = lastWillJson.getString("roomId");
     			int roomStatus = lastWillJson.getInt("status");
     			DBClass.updateRoomStatus(roomId, roomStatus);
+    			MQTTDbProf.sendAppSensoriLog(receivedTopic.getName(), roomId, Integer.toString(roomStatus), System.currentTimeMillis());
     			break;
     		case ANTIFREEZE:
     			JSONObject antifreezeJson = new JSONObject(new String(message.getPayload()));
     			int status = antifreezeJson.getInt("status");
     			long timestampMillisecond = antifreezeJson.getLong("timestamp");
+    			
     			if(status == 1)
     				DBClass.enableAntifreeze(timestampMillisecond);
     			else
     				DBClass.disableAntiFreeze(timestampMillisecond);
+    			
+    			MQTTDbProf.sendAppSensoriLog(receivedTopic.getName(), "-", Integer.toString(status), timestampMillisecond);
     		}
     	}
 		

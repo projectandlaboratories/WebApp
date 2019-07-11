@@ -64,8 +64,8 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 	try{
 		DBClass.getConnection(user);
 		MQTTDbSync.setConnection(user);
-		//MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
-		MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
+		MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
+		//MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
 	}
 	catch(Exception e){
 %>
@@ -77,6 +77,7 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 <%
 //System.out.println(HttpWebService.getDeviceInfo());
 
+//HttpWebService.getLogs();
 //HttpWebService.updateDeviceInfo("9C-30-5B-D1-16-15", "RP-PL19-20", "conf");
 
 NavigableMap<String,Room> roomMap = (NavigableMap<String,Room>) session.getAttribute("roomMap");
@@ -540,10 +541,9 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 						var state = xmlHttpRequest.responseText
 						var res = state.split("-")
 						
-						if(res[0]=="<%=Mode.MANUAL%>"){//check sull'enable!!!!!!
+						if(res[0]=="<%=Mode.MANUAL%>"){
 							
 							if(saveButton.disabled==true||mode.value=="<%=Mode.PROGRAMMABLE%>"){//se sei progr il bottone è abilitato, di default
-								console.log("Entrato nell'if");
 								mode.value = res[0]
 								targetTemp.value=res[1]
 								targetTempShown.innerHTML =targetTemp.value

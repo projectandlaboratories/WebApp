@@ -99,7 +99,8 @@ public class HttpWebService {
 					retSrc=retSrc.substring(1,retSrc.length()-2).replace("\"{", "{").replace("}\\\"", "}").replace("\\", "");
 					break;
 				case LOG:
-					retSrc=retSrc.substring(1,retSrc.length()-2).replace("\\", "");
+					retSrc=retSrc.substring(1,retSrc.length()-2).replace("\"{", "{").replace("}\\\"", "}").replace("\\", "").replace("\"\"", "\"");
+
 					break;
 			
 			}
@@ -137,10 +138,10 @@ public class HttpWebService {
 			cal.add(Calendar.HOUR, -20);
 			DateFormat mydateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String pastDate = mydateFormat.format(cal.getTime());
-			System.out.println(pastDate);
+			//System.out.println(pastDate);
 			if(tokenDate.compareTo(pastDate)>=0) {//il token è ancora valido
 				token = DBClass.getConfigValue("mqtt.token");
-				System.out.println(tokenDate);
+				//System.out.println(tokenDate);
 				System.out.println(token);
 				return token;
 			}

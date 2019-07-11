@@ -34,11 +34,14 @@ ProfileUtil.getDayMomentColors();
 
 pageContext.setAttribute("workingIntervals", workingIntervals);
 pageContext.setAttribute("holidayIntervals", holidayIntervals);
+
+
+//Map<DayMoment, String> dayMomentColors = ProfileUtil.getDayMomentColors();
+
 %>
 
 
-
-<div class="progress beautiful" style="margin-top: 10px; margin-left: -5px; margin-right: -5px; background-color: white; ">    	
+<div class="progress beautiful" style="margin-top: 2px; margin-left: -5px; margin-right: -5px; background-color: white; ">    	
     	<c:forEach items="${workingIntervals}" var="interval">
 	    	<div class="progress-bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="background-color: white; color: #2C3E50; text-align:left; width: ${interval.getPercentageOfDay()}%; ">
 		    	<c:out value = "${interval.getStartHour()}"/>    	
@@ -80,3 +83,10 @@ pageContext.setAttribute("holidayIntervals", holidayIntervals);
     	</c:forEach>  
 </div>
 <div><%=holidayDaysString %></div>
+
+<div style="font-size: small; margin-top: 2%">
+	<span style="background-color: #2C3E50; padding: 4px; margin-left:4px; color: white; border-radius: 8px">NIGHT</span>
+	<span style="background-color: #f2a654; padding: 4px; margin-left:4px; color: white; border-radius: 8px">HOME</span>
+	<span style="background-color: #f96868; padding: 4px; margin-left:4px; color: white; border-radius: 8px">OUT</span>	
+</div>
+
