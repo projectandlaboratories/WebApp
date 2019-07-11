@@ -35,6 +35,15 @@ public class AddRoom extends HttpServlet {
         super();
         
     }
+    
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		SocketClient.createConnection("192.168.4.1", 5001);
+		String localWifiSSid = "ssid";//DBClass.getConfigValue("localWifiSSid");
+		String localWifiPwd = "pwd";//DBClass.getConfigValue("localWifiPwd");
+		SocketClient.sendWifiInfo(localWifiSSid, localWifiPwd);
+		SocketClient.closeConnection();
+		
+	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -53,7 +62,6 @@ public class AddRoom extends HttpServlet {
 				break;
 			}		
 		}
-		
 		if(duplicateName) {
 			response.sendRedirect("pages/addRoom.jsp?duplicateName=true");
 		}
@@ -77,11 +85,11 @@ public class AddRoom extends HttpServlet {
 			}
 
 			//send Wifi Info to ESP
-			//		SocketClient.createConnection(ESPipAddress, 5001);
+			SocketClient.createConnection(ESPipAddress, 5001);
 			String localWifiSSid = DBClass.getConfigValue("localWifiSSid");
 			String localWifiPwd = DBClass.getConfigValue("localWifiPwd");
-			//		SocketClient.sendWifiInfo(localWifiSSid, localWifiPwd);
-			//		SocketClient.closeConnection();
+			SocketClient.sendWifiInfo(localWifiSSid, localWifiPwd);
+			SocketClient.closeConnection();
 
 
 			//connect to local Wifi
@@ -96,7 +104,7 @@ public class AddRoom extends HttpServlet {
 			}
 
 			//send roomInfo to ESP via MQTT with online broker
-			//		MQTTDbSync.sendNewRoomInfo(roomId, airCondModelId, brokerIpAddress);
+			MQTTDbSync.sendNewRoomInfo(roomId, airCondModelId, brokerIpAddress);
 
 
 			//create room on db
