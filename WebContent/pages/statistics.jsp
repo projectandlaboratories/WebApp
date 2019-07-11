@@ -1,3 +1,4 @@
+<%@page import="it.project.enums.ActuatorState"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@ page import="it.project.db.DBClass" %>
@@ -7,6 +8,7 @@
 <!DOCTYPE html>
 
 <%
+//TEMPERATURE CHART
 Gson gsonObj = new Gson();
 Map<Object,Object> mapTemp = null;
 List<Map<Object,Object>> temperatureChartList = new ArrayList<Map<Object,Object>>();
@@ -35,40 +37,37 @@ if(prevKey==null)
 
 
 <%
+//ACTUATOR CHART
 Gson gsonObjAct = new Gson();
 Map<Object,Object> map = null;
-List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
- 
-map = new HashMap<Object,Object>(); map.put("label", "Q1"); map.put("y", 48); list.add(map);
-map = new HashMap<Object,Object>(); map.put("label", "Q2"); map.put("y", 82); list.add(map);
-map = new HashMap<Object,Object>(); map.put("label", "Q3"); map.put("y", 61); list.add(map);
-map = new HashMap<Object,Object>(); map.put("label", "Q4"); map.put("y", 64); list.add(map);
- 
-String dataPoints1 = gsonObj.toJson(list);
- 
-list = new ArrayList<Map<Object,Object>>();
-map = new HashMap<Object,Object>(); map.put("label", "Q1"); map.put("y", 43); list.add(map);
-map = new HashMap<Object,Object>(); map.put("label", "Q2"); map.put("y", 31); list.add(map);
-map = new HashMap<Object,Object>(); map.put("label", "Q3"); map.put("y", 41); list.add(map);
-map = new HashMap<Object,Object>(); map.put("label", "Q4"); map.put("y", 71); list.add(map);
- 
-String dataPoints2 = gsonObj.toJson(list);
- 
-list = new ArrayList<Map<Object,Object>>();
-map = new HashMap<Object,Object>(); map.put("label", "Q1"); map.put("y", 23); list.add(map);
-map = new HashMap<Object,Object>(); map.put("label", "Q2"); map.put("y", 42); list.add(map);
-map = new HashMap<Object,Object>(); map.put("label", "Q3"); map.put("y", 32); list.add(map);
-map = new HashMap<Object,Object>(); map.put("label", "Q4"); map.put("y", 34); list.add(map);
- 
-String dataPoints3 = gsonObj.toJson(list);
- 
-list = new ArrayList<Map<Object,Object>>();
-map = new HashMap<Object,Object>(); map.put("label", "Q1"); map.put("y", 17); list.add(map);
-map = new HashMap<Object,Object>(); map.put("label", "Q2"); map.put("y", 52); list.add(map);
-map = new HashMap<Object,Object>(); map.put("label", "Q3"); map.put("y", 25); list.add(map);
-map = new HashMap<Object,Object>(); map.put("label", "Q4"); map.put("y", 34); list.add(map);
- 
-String dataPoints4 = gsonObjAct.toJson(list);
+List<Map<Object,Object>> hotList = new ArrayList<Map<Object,Object>>();
+List<Map<Object,Object>> coldList = new ArrayList<Map<Object,Object>>();
+List<Map<Object,Object>> offList = new ArrayList<Map<Object,Object>>();
+int totSecondInDay = 24*60*60;
+Map<String,Map<String,Float>> actuatorStatePerDay = DBClass.getLastMonthActuators(request.getParameter("room"));
+
+for(String day : actuatorStatePerDay.keySet()){
+	Map<String,Float> actuatorsSecondsMap = actuatorStatePerDay.get(day);
+	for(String state : actuatorsSecondsMap.keySet()){
+		map = new HashMap<Object,Object>(); 
+		map.put("label", day); map.put("y", (actuatorsSecondsMap.get(state)/totSecondInDay)*100); 
+		switch(state){
+			case "HOT":
+				hotList.add(map);
+				break;
+			case "COLD":
+				coldList.add(map);
+				break;
+			case "OFF":
+				offList.add(map);
+				break;
+		}
+	}
+}
+
+String hotDataPoints = gsonObj.toJson(hotList);
+String coldDataPoints = gsonObj.toJson(coldList);
+String offDataPoints = gsonObj.toJson(offList);
 %>
 
 
@@ -137,21 +136,21 @@ String dataPoints4 = gsonObjAct.toJson(list);
 					name: "COLD",
 					showInLegend: true,
 					yValueFormatString: "#,##0\"%\"",
-					dataPoints: <%out.print(dataPoints1);%>
+					dataPoints: <%out.print(coldDataPoints);%>
 				},
 				{
 					type: "stackedColumn100",
 					name: "HOT",
 					showInLegend: true,
 					yValueFormatString: "#,##0\"%\"",
-					dataPoints: <%out.print(dataPoints2);%>
+					dataPoints: <%out.print(hotDataPoints);%>
 				},
 				{
 					type: "stackedColumn100",
 					name: "OFF",
 					showInLegend: true,
 					yValueFormatString: "#,##0\"%\"",
-					dataPoints: <%out.print(dataPoints3);%>
+					dataPoints: <%out.print(offDataPoints);%>
 				}]
 			});
 		}

@@ -43,12 +43,12 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
 							
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
-				conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
 				conn.setAutoCommit(true);
 			}
 		}
@@ -70,7 +70,7 @@ public class DBClass {
 		try {
 			statement = getStatement();
 			//java.sql.Timestamp timestamp = new java.sql.Timestamp(timestampMs);
-			String query = "INSERT INTO actuators(ID_ROOM,TIMESTAMP,STATE) values('" + roomId + "', FROM_UNIXTIME(" + timestampMs + "),'" + actStatus.name() + "');" ;
+			String query = "INSERT INTO actuators(ID_ROOM,START_TIMESTAMP,END_TIMESTAMP,STATE) values('" + roomId + "', FROM_UNIXTIME(" + timestampMs + "),null'" + actStatus.name() + "');" ;
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
@@ -483,31 +483,58 @@ public class DBClass {
 		}
 	}
 	
-//	public static Map<String,String> getLastMonthActuators(String roomId) {
-//		Statement statement;
-//		Map<String,String> lastMonthActuatorMap = new HashMap<>();
-//		try {
-//			statement = getStatement();
-//			ActuatorState state = null;
-//			String query = "SELECT DATE(TIMESTAMP) AS ForDate, TIMESTAMP, STATE from actuators where ID_ROOM = '" + roomId + "';";
-//			ResultSet result = statement.executeQuery(query);
-//			while (result.next()) {
-//				
-//				state = ActuatorState.valueOf(result.getString("STATE"));
-//			}
-//			return state;
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
+	public static Map<String,Map<String,Float>> getLastMonthActuators(String roomId) {
+		Statement statement;
+		Map<String,Map<String,Float>> lastMonthActuatorMap = new HashMap<>();
+		try {
+			statement = getStatement();
+			String query = "SELECT DATE(START_TIMESTAMP) AS startDay, TIMEDIFF(END_TIMESTAMP,START_TIMESTAMP) AS diff, "
+						+ "STATE from actuators where ID_ROOM = '" + roomId + "'"
+						+ " AND START_TIMESTAMP >= SUBDATE(CURDATE()-1, INTERVAL 1 MONTH) AND START_TIMESTAMP < CURDATE(); ";
+			
+			ResultSet result = statement.executeQuery(query);
+			while (result.next()) {
+				String startDay = result.getString("startDay");
+				String diff = result.getString("diff");
+				String state = result.getString("STATE");
+				
+				if(lastMonthActuatorMap.containsKey(startDay)) {
+					Map<String,Float> map = lastMonthActuatorMap.get(startDay);
+					if(map.containsKey(state)) {
+						float seconds = map.get(state);
+						seconds = seconds + getSecondsFromDiff(diff);
+						map.put(state, seconds);
+					}else {
+						map.put(state, getSecondsFromDiff(diff));
+					}
+				}else {
+					Map<String,Float> actuatorMap = new HashMap<>();
+					actuatorMap.put(state, getSecondsFromDiff(diff));
+					lastMonthActuatorMap.put(startDay, actuatorMap);
+				}
+			}
+			return lastMonthActuatorMap;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private static float getSecondsFromDiff(String diff) {
+		String[] fields = diff.split(":");
+		int hour = Integer.parseInt(fields[0]);
+		int minute = Integer.parseInt(fields[1]);
+		float second = Float.parseFloat(fields[2]);
+		second = second + minute*60 + hour*60*60;
+		return second;
+	}
 	
 	public static ActuatorState getActuatorState(String roomId) {
 		Statement statement;
 		try {
 			statement = getStatement();
 			ActuatorState state = null;
-			String query = "SELECT STATE from actuators where ID_ROOM = '" + roomId + "' order by timestamp desc limit 1";
+			String query = "SELECT STATE from actuators where ID_ROOM = '" + roomId + "' order by START_TIMESTAMP desc limit 1";
 			ResultSet result = statement.executeQuery(query);
 			while (result.next()) {
 				state = ActuatorState.valueOf(result.getString("STATE"));
