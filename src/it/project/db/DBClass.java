@@ -43,8 +43,8 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
@@ -481,6 +481,25 @@ public class DBClass {
 			return null;
 		}
 	}
+	
+//	public static Map<String,String> getLastMonthActuators(String roomId) {
+//		Statement statement;
+//		Map<String,String> lastMonthActuatorMap = new HashMap<>();
+//		try {
+//			statement = getStatement();
+//			ActuatorState state = null;
+//			String query = "SELECT DATE(TIMESTAMP) AS ForDate, TIMESTAMP, STATE from actuators where ID_ROOM = '" + roomId + "';";
+//			ResultSet result = statement.executeQuery(query);
+//			while (result.next()) {
+//				
+//				state = ActuatorState.valueOf(result.getString("STATE"));
+//			}
+//			return state;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
 	
 	public static ActuatorState getActuatorState(String roomId) {
 		Statement statement;

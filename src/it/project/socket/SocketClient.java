@@ -15,12 +15,16 @@ public class SocketClient {
 	
 	private static Socket socket;
 	
-	public static void createConnection(String IpAddress, int port) {
+	public static String createConnection(String IpAddress, int port) {
 		try {
 			socket = new Socket(IpAddress, port);
-
+			if(socket != null)
+				return "OK";
+			else
+				return "NOT OK";
 		} catch (Exception e) {
 			e.printStackTrace();
+			return e.getMessage();
 		} 
 		
 	}

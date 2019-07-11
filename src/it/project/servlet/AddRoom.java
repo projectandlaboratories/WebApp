@@ -20,6 +20,7 @@ import it.project.enums.SystemType;
 import it.project.enums.Topics;
 import it.project.mqtt.MQTTAppSensori;
 import it.project.socket.SocketClient;
+import it.project.utils.DbIdentifiers;
 
 /**
  * Servlet implementation class AddRoom
@@ -38,10 +39,10 @@ public class AddRoom extends HttpServlet {
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		SocketClient.createConnection("192.168.4.1", 5001);
-		String localWifiSSid = "ssid";//DBClass.getConfigValue("localWifiSSid");
-		String localWifiPwd = "pwd";//DBClass.getConfigValue("localWifiPwd");
+		String localWifiSSid = "Vodafone-34994366";//DBClass.getConfigValue("localWifiSSid");
+		String localWifiPwd = "dfl25j784zw6biv";//DBClass.getConfigValue("localWifiPwd");
 		SocketClient.sendWifiInfo(localWifiSSid, localWifiPwd);
-		SocketClient.closeConnection();
+		//SocketClient.closeConnection();
 		
 	}
 
@@ -74,27 +75,40 @@ public class AddRoom extends HttpServlet {
 
 			//connect to ESP AP
 			Process connectEspAP= new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/connect_wifi.sh"),ssid,espPassword).redirectErrorStream(true).start();
-
+			String line;
+			BufferedReader input = new BufferedReader(new InputStreamReader(connectEspAP.getInputStream()));
+			String connectedSsid = "";
+			while ((line = input.readLine()) != null) {
+				String[] outputSplitted = line.split(":");		
+			}
+			
+			
 			//get ESP IP
 			Process getAPipAddress = new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/getAPipAddress.sh")).redirectErrorStream(true).start();
-			String line;
-			BufferedReader input = new BufferedReader(new InputStreamReader(getAPipAddress.getInputStream()));
+			//String line;
+			input = new BufferedReader(new InputStreamReader(getAPipAddress.getInputStream()));
 			String ESPipAddress = "";
 			while ((line = input.readLine()) != null) {
 				ESPipAddress = line.split(" ")[2];
 			}
 
 			//send Wifi Info to ESP
-			SocketClient.createConnection(ESPipAddress, 5001);
+			String socketResult = SocketClient.createConnection(ESPipAddress, 5001);
 			String localWifiSSid = DBClass.getConfigValue("localWifiSSid");
 			String localWifiPwd = DBClass.getConfigValue("localWifiPwd");
 			SocketClient.sendWifiInfo(localWifiSSid, localWifiPwd);
-			SocketClient.closeConnection();
+			//SocketClient.closeConnection();
 
 
 			//connect to local Wifi
 			Process connectLocalWifi= new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/connect_wifi.sh"),localWifiSSid,localWifiPwd).redirectErrorStream(true).start();
-
+			input = new BufferedReader(new InputStreamReader(connectLocalWifi.getInputStream()));
+			connectedSsid = "";
+			while ((line = input.readLine()) != null) {
+				String[] outputSplitted = line.split(":");		
+			}
+			
+			
 			//get broker IP
 			Process getBrokerIPAddress = new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/getBrokerIpAddress.sh")).redirectErrorStream(true).start();
 			input = new BufferedReader(new InputStreamReader(getBrokerIPAddress.getInputStream()));
@@ -108,14 +122,15 @@ public class AddRoom extends HttpServlet {
 
 
 			//create room on db
-			//		String defaultProfileId = DBClass.getConfigValue("defaultProfile");
-			//		Program defaultProfile = DBClass.getProfileByName(defaultProfileId);
-			//		Room newRoom = new Room(roomId,roomName, airCondModelId, true, defaultProfile, defaultProfile, Mode.PROGRAMMABLE, 0.0, SystemType.HOT);
-			//		DBClass.createRoom(newRoom);
-			//		Map<String,Room> roomMap=(Map<String,Room>) request.getSession(false).getAttribute("roomMap");
-			//		roomMap.put(roomId, newRoom);
-			//		response.sendRedirect("pages/roomManagementItem.jsp?roomId=" + roomId);
-			response.sendRedirect("pages/roomManagementItem.jsp?roomId=" + roomId + "&ipBroker=" + brokerIpAddress + "&ipESP=" + ESPipAddress);	
+			String defaultProfileId = DBClass.getConfigValue("defaultProfile");
+			Program defaultProfile = DBClass.getProfileByName(defaultProfileId);
+			Room newRoom = new Room(roomId,roomName, airCondModelId, true, defaultProfile, defaultProfile, Mode.PROGRAMMABLE, 0.0, SystemType.HOT);
+			DBClass.createRoom(newRoom);
+			Map<String,Room> roomMap=(Map<String,Room>) request.getSession(false).getAttribute("roomMap");
+			roomMap.put(roomId, newRoom);
+			response.sendRedirect("pages/roomManagementItem.jsp?roomId=" + roomId);
+			response.sendRedirect("pages/addRoom.jsp?ssidConnected="+ connectedSsid + "&roomId=" + roomId + "&ipBroker=" + brokerIpAddress + "&ipESP=" + ESPipAddress+ "&ssidESP=" + ssid + "&ssidPwd=" + espPassword);	
+			//response.sendRedirect("pages/addRoom.jsp?socketResult="+ socketResult + "&ipBroker=" + brokerIpAddress + "&ipESP=" + ESPipAddress);	
 		}
 	}
 }

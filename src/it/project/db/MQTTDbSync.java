@@ -123,6 +123,7 @@ public class MQTTDbSync{
         	json.put("brokerIp", brokerIp);
         	MqttMessage message = new MqttMessage(json.toString().getBytes());
             message.setQos(qos);
+            message.setRetained(true);
             client.publish(Topics.ADD_ROOM.getName(), message);
     	}
     	catch(Exception e) {
