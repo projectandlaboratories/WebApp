@@ -20,7 +20,7 @@ network={
 sleep 3
 eval "sudo systemctl restart dhcpcd"
 
-sleep 15
+sleep 17
 
 output=$(eval "iwgetid")
 echo $output

@@ -8,14 +8,14 @@
 
 <%
 Gson gsonObj = new Gson();
-Map<Object,Object> map = null;
+Map<Object,Object> mapTemp = null;
 List<Map<Object,Object>> temperatureChartList = new ArrayList<Map<Object,Object>>();
 Map<String,Double> temperaturePerDay = DBClass.getLastMonthTemperature(request.getParameter("room"));
 
 for(String key : temperaturePerDay.keySet()){
-	map = new HashMap<Object,Object>(); 
-	map.put("label", key); map.put("y", temperaturePerDay.get(key));
-	temperatureChartList.add(map);
+	mapTemp = new HashMap<Object,Object>(); 
+	mapTemp.put("label", key); mapTemp.put("y", temperaturePerDay.get(key));
+	temperatureChartList.add(mapTemp);
 }
 
 NavigableMap<Integer,String> chartsMap = new TreeMap<Integer,String>();
@@ -31,6 +31,44 @@ Integer prevKey = chartsMap.lowerKey(currentChart);
 if(prevKey==null)
 	prevKey=chartsMap.lastKey();
 
+%>
+
+
+<%
+Gson gsonObjAct = new Gson();
+Map<Object,Object> map = null;
+List<Map<Object,Object>> list = new ArrayList<Map<Object,Object>>();
+ 
+map = new HashMap<Object,Object>(); map.put("label", "Q1"); map.put("y", 48); list.add(map);
+map = new HashMap<Object,Object>(); map.put("label", "Q2"); map.put("y", 82); list.add(map);
+map = new HashMap<Object,Object>(); map.put("label", "Q3"); map.put("y", 61); list.add(map);
+map = new HashMap<Object,Object>(); map.put("label", "Q4"); map.put("y", 64); list.add(map);
+ 
+String dataPoints1 = gsonObj.toJson(list);
+ 
+list = new ArrayList<Map<Object,Object>>();
+map = new HashMap<Object,Object>(); map.put("label", "Q1"); map.put("y", 43); list.add(map);
+map = new HashMap<Object,Object>(); map.put("label", "Q2"); map.put("y", 31); list.add(map);
+map = new HashMap<Object,Object>(); map.put("label", "Q3"); map.put("y", 41); list.add(map);
+map = new HashMap<Object,Object>(); map.put("label", "Q4"); map.put("y", 71); list.add(map);
+ 
+String dataPoints2 = gsonObj.toJson(list);
+ 
+list = new ArrayList<Map<Object,Object>>();
+map = new HashMap<Object,Object>(); map.put("label", "Q1"); map.put("y", 23); list.add(map);
+map = new HashMap<Object,Object>(); map.put("label", "Q2"); map.put("y", 42); list.add(map);
+map = new HashMap<Object,Object>(); map.put("label", "Q3"); map.put("y", 32); list.add(map);
+map = new HashMap<Object,Object>(); map.put("label", "Q4"); map.put("y", 34); list.add(map);
+ 
+String dataPoints3 = gsonObj.toJson(list);
+ 
+list = new ArrayList<Map<Object,Object>>();
+map = new HashMap<Object,Object>(); map.put("label", "Q1"); map.put("y", 17); list.add(map);
+map = new HashMap<Object,Object>(); map.put("label", "Q2"); map.put("y", 52); list.add(map);
+map = new HashMap<Object,Object>(); map.put("label", "Q3"); map.put("y", 25); list.add(map);
+map = new HashMap<Object,Object>(); map.put("label", "Q4"); map.put("y", 34); list.add(map);
+ 
+String dataPoints4 = gsonObjAct.toJson(list);
 %>
 
 
@@ -78,20 +116,42 @@ if(prevKey==null)
 		}
 		else{
 			var chart = new CanvasJS.Chart("chartContainer", {
-				theme: "light2",
-				title: {
-					text: "Last Month temperature Act"
-				},
-				axisX: {
-					title: "Day"
+				animationEnabled: true,  	
+				title:{
+					text: "Last Month actuator status"
 				},
 				axisY: {
-					title: "Temperature"
+					suffix: "%"
+				},
+				toolTip: {
+					shared: true,
+					reversed: true
+				},
+				legend: {
+					reversed: true,
+					horizontalAlign: "right",
+					verticalAlign: "center"
 				},
 				data: [{
-					type: "line",
-					yValueFormatString: "#,##0 actuator",
-					dataPoints : <%=chartsMap.get(currentChart)%>
+					type: "stackedColumn100",
+					name: "COLD",
+					showInLegend: true,
+					yValueFormatString: "#,##0\"%\"",
+					dataPoints: <%out.print(dataPoints1);%>
+				},
+				{
+					type: "stackedColumn100",
+					name: "HOT",
+					showInLegend: true,
+					yValueFormatString: "#,##0\"%\"",
+					dataPoints: <%out.print(dataPoints2);%>
+				},
+				{
+					type: "stackedColumn100",
+					name: "OFF",
+					showInLegend: true,
+					yValueFormatString: "#,##0\"%\"",
+					dataPoints: <%out.print(dataPoints3);%>
 				}]
 			});
 		}
