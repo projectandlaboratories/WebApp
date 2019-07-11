@@ -51,8 +51,11 @@ public class AssignProgramToRoom extends HttpServlet {
 		MQTTAppSensori.notifyProfileChanged(roomId, season, profile); //TODO decommentare quando si testa mqtt AppSensori
 		if(season.equals(Season.WINTER))
 			((Map<String, Room>) request.getSession(false).getAttribute("roomMap")).get(roomId).setWinterProfile(profile);
+		
 		if(season.equals(Season.SUMMER))
 			((Map<String, Room>) request.getSession(false).getAttribute("roomMap")).get(roomId).setSummerProfile(profile);
+		
+		request.getSession(false).setAttribute("activeTab", season.toString());
 		response.sendRedirect(request.getContextPath()+"/pages/roomManagementItem.jsp?roomId=" + roomId);
 		
 	}

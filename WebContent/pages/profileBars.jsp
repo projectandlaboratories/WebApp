@@ -85,8 +85,8 @@ pageContext.setAttribute("holidayIntervals", holidayIntervals);
 <div><%=holidayDaysString %></div>
 
 <div style="font-size: small; margin-top: 2%">
-	<span style="background-color: #2C3E50; padding: 4px; margin-left:4px; color: white; border-radius: 8px">NIGHT</span>
-	<span style="background-color: #f2a654; padding: 4px; margin-left:4px; color: white; border-radius: 8px">HOME</span>
-	<span style="background-color: #f96868; padding: 4px; margin-left:4px; color: white; border-radius: 8px">OUT</span>	
+	<span style="background-color: #2C3E50; width:4px; padding-left: 16px; margin-left:4px; margin-right:4px; color: white; border-radius: 12px"/></span><span> NIGHT</span>
+	<span style="background-color: #f2a654; width:4px; padding-left: 16px; margin-left:4px; margin-right:4px; color: white; border-radius: 12px"/></span><span> HOME</span>
+	<span style="background-color: #f96868; width:4px; padding-left: 16px; margin-left:4px; margin-right:4px; color: white; border-radius: 12px"/></span><span> OUT</span>
 </div>
 

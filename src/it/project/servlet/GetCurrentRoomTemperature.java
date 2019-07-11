@@ -43,6 +43,7 @@ public class GetCurrentRoomTemperature extends HttpServlet {
 		}
 		response.setContentType("text/html");
 		String temperature = String.valueOf(DBClass.getRoomLastTemp(roomId));
+		//System.out.println(temperature);
 		response.getWriter().write(temperature);
 	}
 
