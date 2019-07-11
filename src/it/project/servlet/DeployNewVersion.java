@@ -1,6 +1,9 @@
 package it.project.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,14 +26,14 @@ public class DeployNewVersion extends HttpServlet {
      */
     public DeployNewVersion() {
         super();
-        // TODO Auto-generated constructor stub
+      
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		MQTTDbSync.deployNewVersion();
 		response.sendRedirect("index.jsp");
 	}

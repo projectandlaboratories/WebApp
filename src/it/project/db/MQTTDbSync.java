@@ -8,6 +8,8 @@ import it.project.enums.Topics;
 import it.project.mqtt.MQTTAppSensori;
 import it.project.utils.DbIdentifiers;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -77,6 +79,12 @@ public class MQTTDbSync{
 							String url = new String(message.getPayload());
 							Process deployNewVersion = new ProcessBuilder("/bin/bash", servletContext.getRealPath("/bash/deploy_app.sh"), url)
 									.redirectErrorStream(true).start();
+							
+							String line;
+							BufferedReader input = new BufferedReader(new InputStreamReader(deployNewVersion.getInputStream()));
+							while ((line = input.readLine()) != null) {
+								String output = line;
+							}
 						}
 						else {
 							DBClass.executeQuery(new String(message.getPayload()));
@@ -101,6 +109,7 @@ public class MQTTDbSync{
         		
         		client.subscribe(subscribe_topic, qos);
         		client.subscribe(Topics.LAST_WILL.name(),qos);
+        		client.subscribe(Topics.DEPLOY_NEW_VERSION.getName());
         		
         		if(user.equals(DbIdentifiers.LOCAL))
         			client.subscribe(Topics.MQTT_APP_SENSORI.getName());
