@@ -129,7 +129,7 @@ public class AddRoom extends HttpServlet {
 			Map<String,Room> roomMap=(Map<String,Room>) request.getSession(false).getAttribute("roomMap");
 			roomMap.put(roomId, newRoom);
 			response.sendRedirect("pages/roomManagementItem.jsp?roomId=" + roomId);
-			response.sendRedirect("pages/addRoom.jsp?ssidConnected="+ connectedSsid + "&roomId=" + roomId + "&ipBroker=" + brokerIpAddress + "&ipESP=" + ESPipAddress+ "&ssidESP=" + ssid + "&ssidPwd=" + espPassword);	
+			//response.sendRedirect("pages/addRoom.jsp?ssidConnected="+ connectedSsid + "&roomId=" + roomId + "&ipBroker=" + brokerIpAddress + "&ipESP=" + ESPipAddress+ "&ssidESP=" + ssid + "&ssidPwd=" + espPassword);	
 			//response.sendRedirect("pages/addRoom.jsp?socketResult="+ socketResult + "&ipBroker=" + brokerIpAddress + "&ipESP=" + ESPipAddress);	
 		}
 	}

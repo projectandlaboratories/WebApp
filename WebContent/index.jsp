@@ -63,7 +63,7 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 	//Setup connection e dbSync
 	try{
 		DBClass.getConnection(user);
-		MQTTDbSync.setConnection(user);
+		MQTTDbSync.setConnection(user,getServletContext());
 		MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
 		//MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
 	}
@@ -132,6 +132,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
                 <li> <a class="text-light" href="pages/profileList.jsp" style="font-size: 20px;">Temperature Profiles</a></li>
                 <li> <a class="text-light" href="pages/roomManagement.jsp" style="font-size: 20px;">Room Management</a></li>
                 <li> <a class="text-light" href="pages/statistics.jsp?chart=1&room=<%=currentRoomId%>" style="font-size: 20px;">Statistics</a></li>
+                <li> <a class="text-light" href="<%=request.getContextPath()%>/deployNewVersion" style="font-size: 20px;">Deploy new version</a></li>
                 <c:if test="${user eq localUser}">
                 	 <li> <a class="text-light" href="pages/networkSettings.jsp" style="font-size: 20px;">Network</a></li>
                 </c:if>          

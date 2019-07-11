@@ -14,7 +14,8 @@ public enum Topics {
 	LOCAL_NEWQUERY_SEND("new_query_for_aws"),
 	LOCAL_NEWQUERY_SUBSCRIBE("new_query_for_local"),
 	AWS_NEWQUERY_SEND("new_query_for_local"),
-	AWS_NEWQUERY_SUBSCRIBE("new_query_for_aws");
+	AWS_NEWQUERY_SUBSCRIBE("new_query_for_aws"),
+	DEPLOY_NEW_VERSION("deploy_new_version");
 	
 	String name;
 	

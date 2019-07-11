@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 public class MQTTDbSync{
 	
 	private static final int qos = 2;
@@ -24,11 +26,13 @@ public class MQTTDbSync{
     private static String endpoint = "postman.cloudmqtt.com:17836";
     private static String username = "gadysjkt";
     private static String password = "OA4repM2hwOL";
+    private static ServletContext servletContext;
     
-    public static void setConnection(DbIdentifiers user) {
+    public static void setConnection(DbIdentifiers user, ServletContext context) {
     	if(conn == null || client == null || !client.isConnected()) {
     		try {
         		String host = String.format("tcp://%s", endpoint);
+        		servletContext = context;
         		String clientId = user.name();
         		if(user.equals(DbIdentifiers.LOCAL)) {
         			send_topic = Topics.LOCAL_NEWQUERY_SEND.getName();
@@ -68,6 +72,11 @@ public class MQTTDbSync{
 			    			String roomId = lastWillJson.getString("roomId");
 			    			int roomStatus = lastWillJson.getInt("status");
 			    			DBClass.updateRoomStatus(roomId, roomStatus);
+						}
+						else if(topic.equals(Topics.DEPLOY_NEW_VERSION.getName())) {
+							String url = new String(message.getPayload());
+							Process deployNewVersion = new ProcessBuilder("/bin/bash", servletContext.getRealPath("/bash/deploy_app.sh"), url)
+									.redirectErrorStream(true).start();
 						}
 						else {
 							DBClass.executeQuery(new String(message.getPayload()));
@@ -131,6 +140,18 @@ public class MQTTDbSync{
     	}
     	
     	
+    }
+    
+    public static void deployNewVersion() {
+    	String url = "https://github.com/projectandlaboratories/WebApp/raw/master/WARFiles/WebApp.war";
+    	MqttMessage message = new MqttMessage(url.getBytes());
+    	try {
+			client.publish(Topics.DEPLOY_NEW_VERSION.getName(), message);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
     }
 
 }
