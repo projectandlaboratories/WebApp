@@ -430,16 +430,16 @@ public class DBClass {
 	}
 	
 	
-	public static int getRoomLastTemp(String roomId) {
+	public static float getRoomLastTemp(String roomId) {
 		Statement statement;
 		List<Profile> profiles = new ArrayList<>();
 		try {
 			statement = getStatement();
-			int temperature = -100;
+			float temperature = -100;
 			String query = "SELECT TEMPERATURE from temperatures where ID_ROOM = '" + roomId + "' order by timestamp desc limit 1";
 			ResultSet result = statement.executeQuery(query);
 			while (result.next()) {
-				temperature = result.getInt("TEMPERATURE");
+				temperature = result.getFloat("TEMPERATURE");
 			}
 			return temperature;
 		} catch (Exception e) {

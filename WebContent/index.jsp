@@ -64,7 +64,7 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 	try{
 		DBClass.getConnection(user);
 		MQTTDbSync.setConnection(user,getServletContext());
-		MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
+		//MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
 		//MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
 	}
 	catch(Exception e){
@@ -75,8 +75,8 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 %>
 <c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
 <%
-HttpWebService.updateDeviceInfo(DBClass.getConfigValue("mac"), "PL19-20", "conf");
-System.out.println(HttpWebService.getDeviceInfo());
+//HttpWebService.updateDeviceInfo(DBClass.getConfigValue("mac"), "PL19-20", "conf");
+//System.out.println(HttpWebService.getDeviceInfo());
 
 //HttpWebService.getLogs();
 //HttpWebService.updateDeviceInfo("9C-30-5B-D1-16-15", "RP-PL19-20", "conf");
@@ -243,7 +243,8 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     var currentTemp = document.getElementById("currentTemp");
     var act = document.getElementById("act");
     var saveButton = document.getElementById("saveButton");
-	//uso saveButton.disabled come flag 
+    
+    var weekendDate; 
     
 	var timerID = setInterval(function() {
 		setDate();
@@ -261,6 +262,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     
 
     	function initializeParameters(){
+    		weekendDate = formatDate()
     		mode.value="<%=currentMode%>"
    			
     		act.value="<%=act%>"
@@ -273,7 +275,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		updateWeekendModeIcon();
     		setTemperature();
     		targetTemp.value="<%=targetTemp%>"
-    		targetTempShown.innerHTML ="<%=targetTemp%>"
+    		targetTempShown.innerHTML ="<%=targetTemp%>"+ "°"
     		   		
     		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
     		
@@ -360,7 +362,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		if(currentTemp>=30.0)
     			return;
     		targetTemp.value=Number(currentTemp + 0.1).toFixed(1);
-        	targetTempShown.innerHTML = targetTemp.value;
+        	targetTempShown.innerHTML = targetTemp.value+ "°";
         	saveButton.disabled = false;
     	}
     
@@ -370,7 +372,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     			return;
     		}
     		targetTemp.value=Number(currentTemp - 0.1).toFixed(1);
-    		targetTempShown.innerHTML = targetTemp.value;
+    		targetTempShown.innerHTML = targetTemp.value+ "°";
     		saveButton.disabled = false;
     	}
     	
@@ -389,7 +391,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					if (xmlHttpRequest.status == 200) {
 						targetTemp.value= xmlHttpRequest.responseText
 						console.log("Aggiorno temperatura"+ targetTemp.value);
-						targetTempShown.innerHTML =targetTemp.value
+						targetTempShown.innerHTML =targetTemp.value+ "°"
 				    		
 					} else {
 						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
@@ -548,7 +550,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 							if(saveButton.disabled==true||mode.value=="<%=Mode.PROGRAMMABLE%>"){//se sei progr il bottone è abilitato, di default
 								mode.value = res[0]
 								targetTemp.value=res[1]
-								targetTempShown.innerHTML =targetTemp.value
+								targetTempShown.innerHTML =targetTemp.value+ "°"
 								act.value=res[2];
 								enableManualMode();
 							}
@@ -556,7 +558,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 			    		}else if(mode.value!="<%=Mode.PROGRAMMABLE%>"){//se ti arriva progr e non sei in progr
 			    			mode.value = res[0]
 			    			targetTemp.value=res[1]
-							targetTempShown.innerHTML =targetTemp.value
+							targetTempShown.innerHTML =targetTemp.value+ "°"
 			    			disableManualMode();
 			    		}
 						
@@ -572,7 +574,22 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					"application/x-www-form-urlencoded");
 			xmlHttpRequest.send(null);
 		}
-		
+		function formatDate() {
+		    var d = new Date();
+		    var month = '' + (d.getMonth() + 1),
+		        day = '' + d.getDate(),
+		        year = d.getFullYear(),
+		    	hour=d.getHours(),
+		    	min=d.getMinutes();
+
+		    if (month<10) month = '0' + month;
+		    if (day<10) day = '0' + day;
+		    if (hour<10 ) hour = '0'+ hour;
+		    if (min<10 ) min = '0'+ min;
+		    //SimpleDateFormat("yyyy-MM-dd'T'HH:mm")
+
+		    return year+"-"+ month +"-" + day+"T"+hour+":"+min 
+		}
 		function setWeekendModePopupHtml(endTime){
 			
 			if(endTime != ""){
@@ -580,14 +597,22 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 				var submitBtnText = "Stop weekend mode"
 				var submitValueText = "removeWeekendMode"
 			    var popupText = "YOU ARE IN WEEKEND MODE UNTIL"
-			    var date = endTime
+			    weekendDate = endTime
 			}
 			else{
 				var inputDisable = ""
 				var submitBtnText = "Save changes"
 				var submitValueText = "setWeekendMode"
 				var popupText = "WHEN WILL YOU COME BACK?"
-				var date = "<%=dateFormat.format(date)%>"
+				//weekendDate = formatDate()
+				//"<!--%=dateFormat.format(date)%>"
+				if(document.getElementById("exampleModalCenter").style.display!="block"){
+					weekendDate = formatDate()
+					console.log("nuova Date "+weekendDate)	
+				}else{
+					console.log("vecchia Date "+weekendDate)	
+				}
+				
 			}
 			
 			var formUrl = "<%=request.getContextPath() + "/UpdateMode"%>"
@@ -604,7 +629,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 				"</div>" +
 				"<form action=' " + formUrl + "' method='POST'>" +
 					"<div class='modal-body'>" +
-							"<input type='datetime-local' name='date'" + inputDisable + " value='" + date + "' style='width: 70%; margin-bottom: 2%; height: 60px; margin-left: 15%; text-align: center;''></input>" +		
+							"<input type='datetime-local' name='date'" + inputDisable + " value='" + weekendDate + "' style='width: 70%; margin-bottom: 2%; height: 60px; margin-left: 15%; text-align: center;''></input>" +		
 					"</div>" +
 					"<div class='modal-footer'>" +
 						"<button type='button' class='btn btn-secondary'" +

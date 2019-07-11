@@ -25,6 +25,7 @@
 
 <c:set var="profileMap" scope="session" value="<%=DBClass.getProfileMap()%>"/>
 <c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
+<%//System.out.println(DBClass.getRoomLastTemp((String) pageContext.findAttribute("roomId"))); %>
 <body>
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	<a class="btn btn-primary text-center d-lg-flex" href="../index.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >

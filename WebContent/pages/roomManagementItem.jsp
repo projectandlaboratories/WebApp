@@ -44,6 +44,20 @@ if(roomId.compareTo(mainRoomId)==0){
 	disabled = "";
 	editAirCond = "inline-flex";
 }
+
+String winterTabClass = "tab-pane active";
+String summerTabClass = "tab-pane";
+String winterActive="active";
+String summerActive="";
+String activeTab = (String)session.getAttribute("activeTab");
+
+if(activeTab!=null && activeTab.equals(Season.SUMMER.toString())){
+	winterTabClass = "tab-pane";
+	summerTabClass = "tab-pane active";
+	winterActive="";
+	summerActive="active";
+}
+session.removeAttribute("activeTab");
 %>
 
 <body>
@@ -83,7 +97,7 @@ if(roomId.compareTo(mainRoomId)==0){
 						
 						<div style="display: <%=editAirCond%>">
 							<div class="dropdown d-inline-flex">
-								<button type="button" class="btn btn-primary dropdown-toggle" id="modelDropDown"
+								<button disabled type="button" class="btn btn-primary dropdown-toggle" id="modelDropDown"
 									data-toggle="dropdown" aria-expanded="false"
 									style="font-size: 15px;margin-top: 10px;">${airCondMap[roomMap[roomId].idAirCond]}</button>
 								<div class="dropdown-menu" role="menu" style="width: 100%">
@@ -138,19 +152,19 @@ if(roomId.compareTo(mainRoomId)==0){
 	<div>
         <div>
             <ul class="nav nav-tabs">
-                <li class="nav-item flex-fill"><a class="nav-link active d-lg-flex flex-fill justify-content-lg-center" role="tab" href="#tab-1" data-toggle="tab" style="font-size: 20px;text-align:center">Winter</a></li>
-                <li class="nav-item flex-fill"><a class="nav-link d-lg-flex flex-fill justify-content-lg-center" href="#tab-2" role="tab" data-toggle="tab" style="font-size: 20px;text-align:center">Summer</a></li>
+                <li class="nav-item flex-fill"><a class="nav-link <%=winterActive%> d-lg-flex flex-fill justify-content-lg-center" role="tab" href="#tab-1" data-toggle="tab" style="font-size: 20px;text-align:center">Winter</a></li>
+                <li class="nav-item flex-fill"><a class="nav-link <%=summerActive%> d-lg-flex flex-fill justify-content-lg-center" href="#tab-2" role="tab" data-toggle="tab" style="font-size: 20px;text-align:center">Summer</a></li>
             </ul>
             
             <div class="tab-content">
-                <div class="tab-pane active" role="tabpanel" id="tab-1" style="margin: 16px;">            
+                <div class="<%=winterTabClass%>" role="tabpanel" id="tab-1" style="margin: 16px;">            
 	                <jsp:include page="roomManagementTabView.jsp">
 	                	<jsp:param name="profile" value="${currentProfileWinter.name}"/>
 	                	<jsp:param name="season" value="<%=Season.WINTER.name()%>"/>
 	                </jsp:include>			 
                	</div>
                	 
-           		<div class="tab-pane" role="tabpanel" id="tab-2" style="margin: 16px;">
+           		<div class="<%=summerTabClass %>" role="tabpanel" id="tab-2" style="margin: 16px;">
                  	<jsp:include page="roomManagementTabView.jsp">
 	                	<jsp:param name="profile" value="${currentProfileSummer.name}"/>
 	                	<jsp:param name="season" value="<%=Season.SUMMER.name()%>"/>
