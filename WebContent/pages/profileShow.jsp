@@ -73,7 +73,7 @@ if(p.getName().compareTo(defaultProfile)==0){
     </div>
 	
 	<!-- Popup delete profile-->
-	<!-- div class="modal fade" id="#deleteNotAssignedProfilePopup" tabindex="-1"
+	<div class="modal fade" id="deleteNotAssignedProfilePopup" tabindex="-1"
 		role="dialog" aria-labelledby="exampleModalCenterTitle"
 		aria-hidden="true">
 		<div class='modal-dialog modal-dialog-centered' role='document'>
@@ -85,7 +85,7 @@ if(p.getName().compareTo(defaultProfile)==0){
 						<span aria-hidden='true'>&times;</span>
 					</button>
 				</div>
-				<form action="<-%=request.getContextPath()%>/newProgramServlet" method='POST'>
+				<form action="<%=request.getContextPath()%>/newProgramServlet" method='POST'>
 						<div class='modal-body'>
 							ARE YOU SURE YOU WANT TO DELETE THIS PROFILE?
 						</div>
@@ -98,10 +98,10 @@ if(p.getName().compareTo(defaultProfile)==0){
 				</form>
 			</div>
 		</div>
-	</div> -->
+	</div> 
 	
 	<!-- Popup error assigned delete profile -->
-	<div class="modal fade" id="#deleteProfilePopup" tabindex="-1"
+	<div class="modal fade" id="deleteProfilePopup" tabindex="-1"
 		role="dialog" aria-labelledby="exampleModalCenterTitle"
 		aria-hidden="true">
 		<div class='modal-dialog modal-dialog-centered' role='document'>
