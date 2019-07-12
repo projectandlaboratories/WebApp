@@ -43,8 +43,8 @@ public class DBClass {
 			}
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
 							
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
@@ -690,7 +690,13 @@ public class DBClass {
 		
 		try {
 			statement = conn.createStatement();
-			String query = "DELETE FROM rooms WHERE ID_ROOM='" + roomId +  "'";
+			String query = "DELETE FROM temperatures where ID_ROOM='" + roomId +  "'";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendQueryMessage(query);
+			query = "DELETE FROM actuators where ID_ROOM='" + roomId +  "'";
+			statement.executeUpdate(query);
+			MQTTDbSync.sendQueryMessage(query);
+			query = "DELETE FROM rooms WHERE ID_ROOM='" + roomId +  "'";
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {

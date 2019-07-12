@@ -56,6 +56,27 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 	session.setAttribute("localUser", DbIdentifiers.LOCAL.name());
 	session.setAttribute("awsUser", DbIdentifiers.AWS.name());
 	
+	String logged = "true";
+	if(user.equals(DbIdentifiers.AWS)){
+		logged = request.getParameter("logged");
+		if (logged != null){
+			session.setAttribute("logged", "true");
+		}
+		else{
+			logged = (String) session.getAttribute("logged");
+			if(logged == null)
+				session.setAttribute("logged", "false");
+		}
+	}
+%>
+<!--  logged = ${logged}  -->
+<c:choose>
+	<c:when test="${logged eq false}">
+		<jsp:include page="pages/login.jsp"/>
+	</c:when>
+	<c:otherwise>
+			
+<%	
 	String rootCApath = getServletContext().getRealPath("/Certificates_x509/root-CA.crt");
     String certificatePath = getServletContext().getRealPath("/Certificates_x509/PL-student.cert.pem");
     String privateKeyPath = getServletContext().getRealPath("/Certificates_x509/PL-student.private.key");
@@ -71,7 +92,7 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 %>
 <h5>Exception : <%=e.getMessage()%></h5>
 <% 
-	}
+		}
 %>
 <c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
 <%
@@ -132,9 +153,11 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
                 <li> <a class="text-light" href="pages/profileList.jsp" style="font-size: 20px;">Temperature Profiles</a></li>
                 <li> <a class="text-light" href="pages/roomManagement.jsp" style="font-size: 20px;">Room Management</a></li>
                 <li> <a class="text-light" href="pages/statistics.jsp?chart=1&room=<%=currentRoomId%>" style="font-size: 20px;">Statistics</a></li>
-                <li> <a class="text-light" href="<%=request.getContextPath()%>/deployNewVersion" style="font-size: 20px;">Deploy new version</a></li>
                 <c:if test="${user eq localUser}">
                 	 <li> <a class="text-light" href="pages/networkSettings.jsp" style="font-size: 20px;">Network</a></li>
+                </c:if>
+                <c:if test="${user eq awsUser}">
+                	 <li> <a class="text-light" href="<%=request.getContextPath()%>/checkLogin?action=logout" style="font-size: 20px;">Logout</a></li>
                 </c:if>          
             </ul>
         </div>
@@ -656,4 +679,6 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     <script src="assets/js/Sidebar-Menu.js"></script> -->
 </body>
 
+	</c:otherwise>
+</c:choose>
 </html>

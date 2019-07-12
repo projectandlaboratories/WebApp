@@ -22,24 +22,19 @@
 </head>
 
 <body>
+
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
-        <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
-        	<br>LOGIN<br><br></a>
+        <a class="btn btn-primary text-center d-lg-flex" href="../index.jsp" style="position:absolute; font-size:20px; left: 8px; top: 15px; height: 30px; width: 160px;background-color: rgb(44,62,80);" >
+   			<h3 style="font-size:20px">LOGOUT</h3>
+   		</a>
+        <a class="navbar-brand text-left flex-fill" style="margin-left: 580px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
+        	<br>ADMIN PAGE<br><br></a>
         </h1>
-        
-    <c:set var="error" value="${param.error}"/>
     
-    <div style="width: device-width;position: absolute;bottom:0px;top: 40%;left:25%;right:0px;display: inline-block;vertical-align: middle;flex-direction:column;display:flex;">
-        <form action="<%=request.getContextPath()%>/checkLogin?action=login" method="POST">
-	        <input id="username" name="username" placeholder="username" style="padding:2px; width: 70%;height: 50px;margin-bottom: 2%;background-color:white;color:black;">
-	        <input type="password" name="password" id="password" placeholder="password" style="padding:2px;width: 70%;height: 50px;margin-bottom: 2%;background-color:white;color:black;">
-			<button class="btn btn-primary" id="submitBtn" name="ssid" value="" type="submit" style="margin-top: 2%;width:25%;margin-left: 22.5%;">LOGIN</button>
-      	</form>
-    </div>
-    <c:if test="${error eq true}">
-    	<h6 style="color:red;margin-top:1%;margin-left:19%;">Wrong credentials</h6>
-    </c:if>
-    
+   <h2 style="margin-top: 10%;margin-left: 30%;">DEPLOY NEW VERSION</h2>
+   <form action="<%=request.getContextPath()%>/deployNewVersion">
+   		<button class="btn btn-primary" id="submitBtn" type="submit" style="margin-top: 2%;width:25%;margin-left: 35%;">DEPLOY</button>
+   </form>
     <script><%@include file="../assets/js/jquery.min.js"%></script> 
     <script><%@include file="../assets/bootstrap/js/bootstrap.min.js"%></script> 
     <script><%@include file="../assets/js/script.min.js"%></script> 
