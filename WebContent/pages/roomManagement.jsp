@@ -25,6 +25,7 @@
 
 <c:set var="profileMap" scope="session" value="<%=DBClass.getProfileMap()%>"/>
 <c:set var="roomMap" scope="session" value="<%=DBClass.getRooms()%>"/>
+<%session.removeAttribute("profileParam"); %>
 <%//System.out.println(DBClass.getRoomLastTemp((String) pageContext.findAttribute("roomId"))); %>
 <body>
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
@@ -63,10 +64,10 @@
 		</form>
 		</c:forEach>
 	</ul>
-	<footer class="d-lg-flex align-items-lg-center" style="background-color: #ecf0f1;vertical-align: middle; position: absolute; bottom: 0px; right: 0px; left: 0px">
+	<!-- footer class="d-lg-flex align-items-lg-center" style="background-color: #ecf0f1;vertical-align: middle; position: absolute; bottom: 0px; right: 0px; left: 0px">
      	<a class="btn btn-secondary text-center text-primary bg-light border-primary d-lg-flex" style="height: 60px;padding-top: 6px;margin-left: 8px;margin-bottom: 2px;font-size: 30px;">PREV</a>
      	<a class="btn btn-primary text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-right: 2px;margin-bottom: 2px;position: absolute;right: 8px;font-size: 30px;">NEXT</a>
-   	</footer>
+   	</footer> -->
     
     <script><%@include file="../assets/js/jquery.min.js"%></script> 
     <script><%@include file="../assets/bootstrap/js/bootstrap.min.js"%></script> 

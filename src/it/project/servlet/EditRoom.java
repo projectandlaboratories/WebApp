@@ -14,6 +14,7 @@ import it.project.db.DBClass;
 import it.project.dto.Program;
 import it.project.dto.Room;
 import it.project.enums.Season;
+import it.project.mqtt.MQTTDbProf;
 
 /**
  * Servlet implementation class EditRoom
@@ -42,6 +43,8 @@ public class EditRoom extends HttpServlet {
 		roomMap.get(roomId).setIdAirCond(Integer.parseInt(airCondModelId));
 		
 		DBClass.editRoom(roomId,roomName,airCondModelId);
+		MQTTDbProf.sendEditRoomLog("EditRoom", roomId, roomMap.get(roomId), System.currentTimeMillis());
+		
 		response.sendRedirect("pages/roomManagementItem.jsp?roomId=" + roomId);
 			
 	}

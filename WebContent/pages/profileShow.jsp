@@ -3,6 +3,7 @@
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <%@page import="it.project.dto.Program"%>
 <%@page import="it.project.db.DBClass"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,10 +32,12 @@ if(p.getName().compareTo(defaultProfile)==0){
 	deleteDisplay="none";
 }else deleteDisplay="block";
 
+
+
 %>
 
 <c:set var="assigned" value="<%=DBClass.isProfileAssigned(p.getName())%>"/>
-
+<%System.out.println(DBClass.isProfileAssigned(p.getName())); %>
 <body>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	<a class="btn btn-primary text-center d-lg-flex" href="profileList.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
@@ -55,22 +58,50 @@ if(p.getName().compareTo(defaultProfile)==0){
 	     <form action="<%=request.getContextPath()+"/newProgramServlet"%>" method="POST">
 	     	<c:choose>
 	     		<c:when test="${assigned eq true}">
-	     				<button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#deleteProfilePopup"  style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px; display: <%=deleteDisplay%>;">DELETE</button>
+	     			<button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#deleteProfilePopup"  style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px; display: <%=deleteDisplay%>;">DELETE</button>
 	     		</c:when>
 	     		<c:otherwise>
-	     				<button type='submit' name="ACTION" value="DELETE" class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px; display: <%=deleteDisplay%>;">DELETE</button>
+	     			<button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#deleteNotAssignedProfilePopup"  style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px; display: <%=deleteDisplay%>;">DELETE</button>
+	     				<!-- button type='submit' name="ACTION" value="DELETE" class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;margin-right: 16px;padding-right: 16px;padding-left: 18px; display: <-%=deleteDisplay%>;">DELETE</button> -->
 	     		</c:otherwise>
 	     	</c:choose>  
            
        	</form> 
-        	<button class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp'" type="button" style="font-size: 20px;margin-left: 16px;padding-right: 16px;padding-left: 16px;">EDIT</button>
+        	<button class="btn btn-primary d-lg-flex justify-content-lg-start" onclick="location.href = 'profileDays.jsp?action=update'" type="button" style="font-size: 20px;margin-left: 16px;padding-right: 16px;padding-left: 16px;">EDIT</button>
         </div>
 	  
     </div>
-
 	
-		<!-- Popup error delete profile -->
-	<div class="modal fade" id="deleteProfilePopup" tabindex="-1"
+	<!-- Popup delete profile-->
+	<!-- div class="modal fade" id="#deleteNotAssignedProfilePopup" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class='modal-dialog modal-dialog-centered' role='document'>
+			<div class='modal-content'>
+				<div class='modal-header'>
+					<h5 class='modal-title' id='exampleModalLongTitle'>DELETE PROFILE</h5>
+					<button type='button' class='close' data-dismiss='modal'
+						aria-label='Close'>
+						<span aria-hidden='true'>&times;</span>
+					</button>
+				</div>
+				<form action="<-%=request.getContextPath()%>/newProgramServlet" method='POST'>
+						<div class='modal-body'>
+							ARE YOU SURE YOU WANT TO DELETE THIS PROFILE?
+						</div>
+						<div class='modal-footer'>
+						<button type='button' class='btn btn-secondary'
+							data-dismiss='modal'>NO</button>
+						<button type='submit'
+							name="ACTION" value="DELETE" class='btn btn-primary'>YES</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div> -->
+	
+	<!-- Popup error assigned delete profile -->
+	<div class="modal fade" id="#deleteProfilePopup" tabindex="-1"
 		role="dialog" aria-labelledby="exampleModalCenterTitle"
 		aria-hidden="true">
 		<div class='modal-dialog modal-dialog-centered' role='document'>
@@ -92,6 +123,9 @@ if(p.getName().compareTo(defaultProfile)==0){
 			</div>
 		</div>
 	</div>
+	
+	
+	
 
     
     <script><%@include file="../assets/js/jquery.min.js"%></script> 

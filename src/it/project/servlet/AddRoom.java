@@ -19,6 +19,7 @@ import it.project.enums.Mode;
 import it.project.enums.SystemType;
 import it.project.enums.Topics;
 import it.project.mqtt.MQTTAppSensori;
+import it.project.mqtt.MQTTDbProf;
 import it.project.socket.SocketClient;
 import it.project.utils.DbIdentifiers;
 import it.project.utils.ProfileUtil;
@@ -92,6 +93,8 @@ public class AddRoom extends HttpServlet {
 			String defaultProfileId = DBClass.getConfigValue("defaultProfile");
 			Program defaultProfile = DBClass.getProfileByName(defaultProfileId);
 			Room newRoom = new Room(roomId,roomName, airCondModelId, true, defaultProfile, defaultProfile, Mode.PROGRAMMABLE, 0.0, SystemType.HOT);
+			MQTTDbProf.sendEditRoomLog("AddRoom", roomId, newRoom, System.currentTimeMillis());
+			
 			DBClass.createRoom(newRoom);
 			Map<String,Room> roomMap=(Map<String,Room>) request.getSession(false).getAttribute("roomMap");
 			roomMap.put(roomId, newRoom);
