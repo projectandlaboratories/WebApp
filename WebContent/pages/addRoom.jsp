@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     <%@ page import="it.project.db.DBClass" %>
+     <%@ page import="it.project.dto.Room" %>
     <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
      <%@ page import="java.util.*" %>
      <%@ page import="java.io.*" %>
@@ -40,6 +41,7 @@
 				.redirectErrorStream(true).start();
 		String line;
 		BufferedReader input = new BufferedReader(new InputStreamReader(listSsid.getInputStream()));
+		Map<String,Room> rooms = DBClass.getRooms();
 		while ((line = input.readLine()) != null) {
 			String[] fields = line.split(":");
 			String ssidName = fields[1];
@@ -47,8 +49,12 @@
 				ssidName = ssidName + ":" + fields[i];
 			}			
 			ssidName = ssidName.replace("\"", "");
-			if (!ssidName.equals("") && ssidName.startsWith("ESP-"))
-				ssidList.add(ssidName);
+			if (!ssidName.equals("") && ssidName.startsWith("ESP-")){
+				String roomId = ssidName.split("-")[1];
+				if(!rooms.containsKey(roomId))
+					ssidList.add(ssidName);
+			}
+				
 		}
 		input.close(); 
 %>
