@@ -1,42 +1,41 @@
 package it.project.servlet;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.Locale;
-import java.util.Map;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.sun.org.apache.xerces.internal.impl.dv.xs.DecimalDV;
-
 import it.project.db.DBClass;
-import it.project.dto.Room;
 import it.project.utils.DbIdentifiers;
-import it.project.utils.ProfileUtil;
 
 /**
- * Servlet implementation class GetCurrentRoomTemperature
+ * Servlet implementation class GetConnectionState
  */
-@WebServlet("/getCurrentRoomTemperature")
-public class GetCurrentRoomTemperature extends HttpServlet {
+@WebServlet("/getConnectionState")
+public class GetConnectionState extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetCurrentRoomTemperature() {
+    public GetConnectionState() {
         super();
-        
     }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("GetConnectionState");
 		String roomId = request.getParameter("roomId");
 		DbIdentifiers user = DbIdentifiers.valueOf(request.getParameter("user"));
 		try {
@@ -46,9 +45,10 @@ public class GetCurrentRoomTemperature extends HttpServlet {
 			e.printStackTrace();
 		}
 		response.setContentType("text/html");
-		String temperature = String.format(Locale.US, "%.1f", DBClass.getRoomLastTemp(roomId));
-
-		response.getWriter().write(temperature);
+		String connState = Integer.toString(DBClass.getConnectionState(roomId));
+		System.out.println("GetConnectionState: "+connState);
+		response.getWriter().write(connState);
+		
 	}
 
 }

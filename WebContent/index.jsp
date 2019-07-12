@@ -85,8 +85,8 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 	try{
 		DBClass.getConnection(user);
 		MQTTDbSync.setConnection(user,getServletContext());
-		MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
-		MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
+		//MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
+		//MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
 	}
 	catch(Exception e){
 %>
@@ -192,8 +192,10 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
                			
              			<div id="left" style="color: #2C3E50;">
              			
-             			<span style="font-size:16px; ">Room Temperature</span><br>
-             			<span id="currentTemp" style="font-size:900%;"></span></div>				    	
+             			<span style="font-size:16px; ">Room Temperature</span>
+             			<img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;"><br>
+             			<span id="currentTemp" style="font-size:900%;"></span><br>             			
+             			</div>				    	
 				    	 
 				    	<div id="right" style="color: #2C3E50;" >
 					    	<form action="<%=request.getContextPath()+"/UpdateMode"%>" method="POST">
@@ -273,7 +275,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 		setTemperature();
 		getActuatorState();
 		getAntifreezeState();
-		
+		getConnectionState();
 		updateWeekendModeIcon();
 		getMode();
 		if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
@@ -294,6 +296,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
    			}
     		getActuatorState();
     		getAntifreezeState();
+    		getConnectionState();
     		updateWeekendModeIcon();
     		setTemperature();
     		targetTemp.value="<%=targetTemp%>"
@@ -383,7 +386,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		var currentTemp = parseFloat(targetTemp.value);
     		if(currentTemp>=30.0)
     			return;
-    		targetTemp.value=Number(currentTemp + 0.1).toFixed(1);
+    		targetTemp.value=Number(currentTemp + 0.5).toFixed(1);
         	targetTempShown.innerHTML = targetTemp.value+ "°";
         	saveButton.disabled = false;
     	}
@@ -393,7 +396,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     		if(currentTemp<=18.0){
     			return;
     		}
-    		targetTemp.value=Number(currentTemp - 0.1).toFixed(1);
+    		targetTemp.value=Number(currentTemp - 0.5).toFixed(1);
     		targetTempShown.innerHTML = targetTemp.value+ "°";
     		saveButton.disabled = false;
     	}
@@ -525,7 +528,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					if (xmlHttpRequest.status == 200) {
 						updateIcons(xmlHttpRequest.responseText)
 					} else {
-						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+						alert("HTTP error getActuatorState" + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
 					}
 				}
 			};
@@ -549,7 +552,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 						}
 											
 					} else {
-						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+						alert("HTTP error GetAntifreezeState" + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
 					}
 				}
 			};
@@ -558,6 +561,32 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					"application/x-www-form-urlencoded");
 			xmlHttpRequest.send(null);
 		}
+		
+		function getConnectionState(){
+			var antifreezeIcon = document.getElementById("alertIcon");
+			var xmlHttpRequest = getXMLHttpRequest();
+			xmlHttpRequest.onreadystatechange = function() {
+				if (xmlHttpRequest.readyState == 4) {
+					if (xmlHttpRequest.status == 200) {
+						//1 connesso, 0 non connesso
+						if(xmlHttpRequest.responseText == '1'){
+							antifreezeIcon.style.visibility="hidden";
+						}
+						else{
+							antifreezeIcon.style.visibility="inherit";
+						}
+											
+					} else {
+						alert("HTTP error getConnectionState" + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+					}
+				}
+			};
+			xmlHttpRequest.open("POST", "<%=request.getContextPath()%>/getConnectionState?user=<%=user%>&roomId=<%=currentRoom.getRoom()%>", true);
+			xmlHttpRequest.setRequestHeader("Content-Type",
+					"application/x-www-form-urlencoded");
+			xmlHttpRequest.send(null);
+		}
+		
 		
 		function getMode() {
 			var xmlHttpRequest = getXMLHttpRequest();
@@ -587,7 +616,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 						console.log("getMode: " + mode.value+" "+targetTemp.value+" "+ act.value);  	
 						//updateIcons(xmlHttpRequest.responseText)
 					} else {
-						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+						alert("HTTP error getMode" + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
 					}
 				}
 			};

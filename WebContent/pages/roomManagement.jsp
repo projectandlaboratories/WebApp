@@ -47,8 +47,8 @@
 				<a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp?roomId=${roomId}" style="font-size: 24px;">${roomItem.value.roomName}</a>
 				
 				<c:if test="${roomItem.value.connState eq true}">
-					<c:set var="roomTemp" value="<%=DBClass.getRoomLastTemp((String) pageContext.findAttribute(\"roomId\"))%>"/>
-					<c:if test="${roomTemp eq -100}">
+					<c:set var="roomTemp" value="<%=String.format(Locale.US, \"%.1f\", DBClass.getRoomLastTemp((String) pageContext.findAttribute(\"roomId\")))%>"/>
+					<c:if test="${roomTemp eq \"-100.0\"}">
 						<c:set var="roomTemp" value="N/A"/>
 					</c:if>
 					<span class="d-inline-flex" style="font-size: 24px; margin-right: 8px; position: absolute; right: 50px">${roomTemp}°</span>
