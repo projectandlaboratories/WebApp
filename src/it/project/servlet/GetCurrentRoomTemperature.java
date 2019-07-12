@@ -1,6 +1,7 @@
 package it.project.servlet;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -8,6 +9,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.sun.org.apache.xerces.internal.impl.dv.xs.DecimalDV;
 
 import it.project.db.DBClass;
 import it.project.dto.Room;
@@ -42,7 +45,8 @@ public class GetCurrentRoomTemperature extends HttpServlet {
 			e.printStackTrace();
 		}
 		response.setContentType("text/html");
-		String temperature = String.valueOf(DBClass.getRoomLastTemp(roomId));
+		DecimalFormat df = new DecimalFormat("#.#");
+		String temperature = df.format(DBClass.getRoomLastTemp(roomId));
 		//System.out.println(temperature);
 		response.getWriter().write(temperature);
 	}
