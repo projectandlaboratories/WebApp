@@ -13,6 +13,7 @@ import it.project.db.DBClass;
 import it.project.dto.Program;
 import it.project.enums.Season;
 import it.project.mqtt.MQTTAppSensori;
+import it.project.mqtt.MQTTDbProf;
 
 public class NewProgramServlet  extends HttpServlet {
 	@Override
@@ -32,6 +33,7 @@ public class NewProgramServlet  extends HttpServlet {
 				//req.getSession(false).removeAttribute("currentProfile");
 				program.setName(req.getParameter("profile_name"));
 				DBClass.createProfiles(program);
+				MQTTDbProf.sendEditProfileLog("AddProfile", program.getName(), program, System.currentTimeMillis());
 				resp.sendRedirect("pages/profileList.jsp");
 			}
 			break;
@@ -55,6 +57,7 @@ public class NewProgramServlet  extends HttpServlet {
 				program.setName(req.getParameter("profile_name"));
 				//DBClass.createProfiles(program);
 				DBClass.updateProfile(previousName, currentName, program);
+				MQTTDbProf.sendEditProfileLog("UpdateProfile", program.getName(), program, System.currentTimeMillis());
 				String defaultProfile = DBClass.getConfigValue("defaultProfile");
 				if(previousName.compareTo(defaultProfile)==0) {
 					DBClass.updateConfigValue("defaultProfile",currentName);
@@ -75,7 +78,8 @@ public class NewProgramServlet  extends HttpServlet {
 			System.out.println(action);
 			boolean assigned = DBClass.isProfileAssigned(program.getName());
 			if(!assigned) {
-				DBClass.deleteProfiles(program.getName());			 
+				DBClass.deleteProfiles(program.getName());
+				MQTTDbProf.sendEditProfileLog("DeleteProfile", program.getName(), null, System.currentTimeMillis());
 				resp.sendRedirect("pages/profileList.jsp");
 			}
 			else {

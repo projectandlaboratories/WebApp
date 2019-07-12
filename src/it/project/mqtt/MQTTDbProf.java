@@ -21,6 +21,8 @@ import com.amazonaws.services.iot.client.sample.sampleUtil.SampleUtil;
 import com.amazonaws.services.iot.client.sample.sampleUtil.SampleUtil.KeyStorePasswordPair;
 import org.eclipse.paho.client.mqttv3.internal.wire.MqttReceivedMessage;
 import it.project.db.DBClass;
+import it.project.dto.Program;
+import it.project.dto.Room;
 import it.project.utils.DbIdentifiers;
 
 
@@ -172,5 +174,48 @@ public class MQTTDbProf {
 		}
     }
     
+    public static void sendEditRoomLog(String type, String roomId, Room room, long timestamp) {
+    	//type = ADDROOM, EDITROOM, DELETEROOM
+    	JSONObject log = new JSONObject();
+    	try {
+			log.put("type", type);
+			log.put("roomId", roomId);
+			if(room!=null) {
+				JSONObject jroom = new JSONObject();
+				jroom.put("roomId", room.getRoom());
+				jroom.put("roomName", room.getRoomName());
+				jroom.put("idAirCond", room.getIdAirCond());
+				jroom.put("winterProfileId", room.getWinterProfile().getName());
+				jroom.put("summerProfileId", room.getSummerProfile().getName());
+				log.put("room", jroom);
+			}else {
+				log.put("roomId", roomId);
+			}
+			log.put("timestamp", timestamp);
+			sendLog(log);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public static void sendEditProfileLog(String type, String profileId, Program program, long timestamp) {
+    	//type = ADDROOM, EDITROOM, DELETEROOM
+    	JSONObject log = new JSONObject();
+    	try {
+			log.put("type", type);
+			log.put("profileId", profileId);
+			if(program!=null) {
+				JSONObject jprogram = new JSONObject(program);
+				log.put("profile", jprogram);
+			}else {
+				log.put("profileId",profileId);				
+			}
+			
+			log.put("timestamp", timestamp);
+			sendLog(log);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+    }
     
 }

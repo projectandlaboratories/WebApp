@@ -160,10 +160,9 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 				<div class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px ">
                     <!-- Icons -->
                    <div style="height:100%; display: inline-grid">
-                    	<img id="hotIcon" style="margin-left:8px; margin-right:8px; margin-top:2%; margin-bottom:3%; height:30px;" src="images/ios-flame-primary.svg">
-                    	<img id="coldIcon" style="margin-left:8px; margin-right:8px; margin-top:3%; margin-bottom:3%; height:30px;" src="images/ios-snow-primary.svg">
-                    	<img id="antifreezeIcon" style="margin-left:8px; margin-right:8px; margin-top:3%; margin-bottom:3%; height:30px;" src="images/ios-thermometer-not-selected.svg">
-                    	<img id="fanIcon" style="margin-left:8px; margin-right:8px; margin-top:3%; margin-bottom:2%; height:30px;" src="images/ios-flower-not-selected.svg">
+                    	<img id="hotIcon" style="margin-left:8px; margin-right:8px; margin-top:3%; margin-bottom:5%; height:30px;" src="images/ios-flame-primary.svg">
+                    	<img id="coldIcon" style="margin-left:8px; margin-right:8px; margin-top:4%; margin-bottom:5%; height:30px;" src="images/ios-snow-primary.svg">
+                    	<img id="antifreezeIcon" style="margin-left:8px; margin-right:8px; margin-top:4%; margin-bottom:4%; height:30px;" src="images/ios-thermometer-not-selected.svg">
                     </div>
                    
                     <div style="position:absolute; width:100%; height:100%; margin-left: 64px;">
@@ -181,7 +180,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					    		<input type="hidden" id="targetTemp" name="targetTemp" value=<%=targetTemp%>>  
 					    		<input type="hidden" id="act" name="act" value=<%=act%>>
 					    		          
-					    		<span id="targetTempShown" style="font-size:600%; color: #2C3E50; margin-right:20%; "></span>
+					    		<span id="targetTempShown" style="font-size:600%; color: #2C3E50; margin-right:15%; "></span>
 					    	
 					    		
 		                		<div id="manualSection" style="display:none; background-color: auto; width: 50%; margin-left:15%; margin-right: 35%; position:absolute; bottom: 8px; font-size: 60px; border:1px solid #2C3E50;  border-radius: 10px;">

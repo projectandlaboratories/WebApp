@@ -20,6 +20,7 @@
 </head>
 
 <%session.removeAttribute("currentProfile");
+session.removeAttribute("profileParam");
 session.setAttribute("caller", "profileList.jsp");%>
 
 <c:set var="profileMap" scope="session" value="<%=DBClass.getProfileMap()%>"/>

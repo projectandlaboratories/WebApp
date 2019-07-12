@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import it.project.db.DBClass;
 import it.project.dto.Room;
+import it.project.mqtt.MQTTDbProf;
 
 /**
  * Servlet implementation class DeleteRoom
@@ -35,6 +36,7 @@ public class DeleteRoom extends HttpServlet {
 		
 		Map<String,Room> roomMap=(Map<String,Room>) request.getSession(false).getAttribute("roomMap");
 		roomMap.remove(roomId);
+		MQTTDbProf.sendEditRoomLog("DeleteRoom", roomId, null, System.currentTimeMillis());
 		
 		response.sendRedirect("pages/roomManagement.jsp");
 	}
