@@ -2,6 +2,7 @@ package it.project.servlet;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -45,8 +46,7 @@ public class GetCurrentRoomTemperature extends HttpServlet {
 			e.printStackTrace();
 		}
 		response.setContentType("text/html");
-		DecimalFormat df = new DecimalFormat("#.#");
-		String temperature = df.format(DBClass.getRoomLastTemp(roomId));
+		String temperature = String.format(Locale.US, "%.1f", DBClass.getRoomLastTemp(roomId));
 		//System.out.println(temperature);
 		response.getWriter().write(temperature);
 	}
