@@ -21,6 +21,7 @@ import it.project.enums.Topics;
 import it.project.mqtt.MQTTAppSensori;
 import it.project.socket.SocketClient;
 import it.project.utils.DbIdentifiers;
+import it.project.utils.ProfileUtil;
 
 /**
  * Servlet implementation class AddRoom
@@ -53,18 +54,23 @@ public class AddRoom extends HttpServlet {
 		
 		String roomName = request.getParameter("roomName");
 		
-		//controlla che il nome della stanza non esista
-		boolean duplicateName = false;
-		Map<String,Room> rooms = DBClass.getRooms();
-		for(String id : rooms.keySet()) {
-			String name = rooms.get(id).getRoomName();
-			if(roomName.equals(name)) {
-				duplicateName = true;
-				break;
-			}		
+		//controlla che il nome della stanza non esista e che non sia stringa vuota
+		int error = 0;
+		if(roomName.equals(""))
+			error = 1;
+		else {
+			Map<String,Room> rooms = DBClass.getRooms();
+			for(String id : rooms.keySet()) {
+				String name = rooms.get(id).getRoomName();
+				if(roomName.equals(name)) {
+					error = 2;
+					break;
+				}		
+			}
 		}
-		if(duplicateName) {
-			response.sendRedirect("pages/addRoom.jsp?duplicateName=true");
+		
+		if(error != 0) {
+			response.sendRedirect("pages/addRoom.jsp?error=" + error);
 		}
 		else {
 			int airCondModelId = Integer.parseInt(request.getParameter("airCondModel"));
@@ -73,52 +79,13 @@ public class AddRoom extends HttpServlet {
 			String roomId = ssid.split("-")[1];
 
 
-			//connect to ESP AP
-			Process connectEspAP= new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/connect_wifi.sh"),ssid,espPassword).redirectErrorStream(true).start();
-			String line;
-			BufferedReader input = new BufferedReader(new InputStreamReader(connectEspAP.getInputStream()));
-			String connectedSsid = "";
-			while ((line = input.readLine()) != null) {
-				String[] outputSplitted = line.split(":");		
+			//CONNECT TO ROOM
+			try {
+				ProfileUtil.connectToRoom(getServletContext(),roomId,airCondModelId, ssid, espPassword);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			
-			
-			//get ESP IP
-			Process getAPipAddress = new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/getAPipAddress.sh")).redirectErrorStream(true).start();
-			//String line;
-			input = new BufferedReader(new InputStreamReader(getAPipAddress.getInputStream()));
-			String ESPipAddress = "";
-			while ((line = input.readLine()) != null) {
-				ESPipAddress = line.split(" ")[2];
-			}
-
-			//send Wifi Info to ESP
-			String socketResult = SocketClient.createConnection(ESPipAddress, 5001);
-			String localWifiSSid = DBClass.getConfigValue("localWifiSSid");
-			String localWifiPwd = DBClass.getConfigValue("localWifiPwd");
-			SocketClient.sendWifiInfo(localWifiSSid, localWifiPwd);
-			//SocketClient.closeConnection();
-
-
-			//connect to local Wifi
-			Process connectLocalWifi= new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/connect_wifi.sh"),localWifiSSid,localWifiPwd).redirectErrorStream(true).start();
-			input = new BufferedReader(new InputStreamReader(connectLocalWifi.getInputStream()));
-			connectedSsid = "";
-			while ((line = input.readLine()) != null) {
-				String[] outputSplitted = line.split(":");		
-			}
-			
-			
-			//get broker IP
-			Process getBrokerIPAddress = new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/getBrokerIpAddress.sh")).redirectErrorStream(true).start();
-			input = new BufferedReader(new InputStreamReader(getBrokerIPAddress.getInputStream()));
-			String brokerIpAddress = "";
-			while ((line = input.readLine()) != null) {
-				brokerIpAddress = line;
-			}
-
-			//send roomInfo to ESP via MQTT with online broker
-			MQTTDbSync.sendNewRoomInfo(roomId, airCondModelId, brokerIpAddress);
 
 
 			//create room on db
@@ -128,9 +95,7 @@ public class AddRoom extends HttpServlet {
 			DBClass.createRoom(newRoom);
 			Map<String,Room> roomMap=(Map<String,Room>) request.getSession(false).getAttribute("roomMap");
 			roomMap.put(roomId, newRoom);
-			response.sendRedirect("pages/roomManagementItem.jsp?roomId=" + roomId);
-			//response.sendRedirect("pages/addRoom.jsp?ssidConnected="+ connectedSsid + "&roomId=" + roomId + "&ipBroker=" + brokerIpAddress + "&ipESP=" + ESPipAddress+ "&ssidESP=" + ssid + "&ssidPwd=" + espPassword);	
-			//response.sendRedirect("pages/addRoom.jsp?socketResult="+ socketResult + "&ipBroker=" + brokerIpAddress + "&ipESP=" + ESPipAddress);	
+			response.sendRedirect("pages/roomManagement.jsp");
 		}
 	}
 }

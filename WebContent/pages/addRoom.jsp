@@ -53,7 +53,7 @@
 		input.close(); 
 %>
 	
-<c:set var="duplicateName" value="${param.duplicateName}"/>	
+<c:set var="errorCode" value="${param.error}"/>	
 <c:set var="ssidConnected" value="${param.ssidConnected}"/>	
 <c:set var="airCondMap" value="<%=DBClass.getAirCondList()%>"/>
 
@@ -95,9 +95,12 @@
 	        
 	        <button class="btn btn-primary" onclick="showLoadingIcon()" type="submit" id="connectButton" style="margin-top: 2%;width:25%;margin-left: 22.5%;">Connect</button>
 	        
-	        <c:if test="${duplicateName eq true}">
+	        <c:if test="${errorCode eq 2}">
 	        	<h6 style="color:red;margin-top:1%;margin-left:19%;">An error has occurred: room name already exists</h6>
-	        </c:if>	        
+	        </c:if>
+	        <c:if test="${errorCode eq 1}">
+	        	<h6 style="color:red;margin-top:1%;margin-left:19%;">An error has occurred: room name can't be an empty string</h6>
+	        </c:if>	   	        
 	   	</form>
     </div>
         

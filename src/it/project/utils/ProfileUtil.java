@@ -1,5 +1,8 @@
 package it.project.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,6 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+
+import it.project.db.DBClass;
+import it.project.db.MQTTDbSync;
 import it.project.dto.Interval;
 import it.project.dto.Profile;
 import it.project.dto.Program;
@@ -17,6 +24,7 @@ import it.project.enums.DayMoment;
 import it.project.enums.DayName;
 import it.project.enums.DayType;
 import it.project.enums.Season;
+import it.project.socket.SocketClient;
 
 public class ProfileUtil {
 
@@ -160,5 +168,54 @@ public class ProfileUtil {
 			}
 		}
 		return temperature;
+	}
+	
+	public static void connectToRoom(ServletContext context, String roomId, int airCondModelId, String ssid, String espPassword) throws Exception {
+		//connect to ESP AP
+		Process connectEspAP= new ProcessBuilder("/bin/bash",context.getRealPath("/bash/connect_wifi.sh"),ssid,espPassword).redirectErrorStream(true).start();
+		String line;
+		BufferedReader input = new BufferedReader(new InputStreamReader(connectEspAP.getInputStream()));
+		String connectedSsid = "";
+		while ((line = input.readLine()) != null) {
+			String[] outputSplitted = line.split(":");		
+		}
+		
+		
+		//get ESP IP
+		Process getAPipAddress = new ProcessBuilder("/bin/bash",context.getRealPath("/bash/getAPipAddress.sh")).redirectErrorStream(true).start();
+		//String line;
+		input = new BufferedReader(new InputStreamReader(getAPipAddress.getInputStream()));
+		String ESPipAddress = "";
+		while ((line = input.readLine()) != null) {
+			ESPipAddress = line.split(" ")[2];
+		}
+
+		//send Wifi Info to ESP
+		String socketResult = SocketClient.createConnection(ESPipAddress, 5001);
+		String localWifiSSid = DBClass.getConfigValue("localWifiSSid");
+		String localWifiPwd = DBClass.getConfigValue("localWifiPwd");
+		SocketClient.sendWifiInfo(localWifiSSid, localWifiPwd);
+		//SocketClient.closeConnection();
+
+
+		//connect to local Wifi
+		Process connectLocalWifi= new ProcessBuilder("/bin/bash",context.getRealPath("/bash/connect_wifi.sh"),localWifiSSid,localWifiPwd).redirectErrorStream(true).start();
+		input = new BufferedReader(new InputStreamReader(connectLocalWifi.getInputStream()));
+		connectedSsid = "";
+		while ((line = input.readLine()) != null) {
+			String[] outputSplitted = line.split(":");		
+		}
+		
+		
+		//get broker IP
+		Process getBrokerIPAddress = new ProcessBuilder("/bin/bash",context.getRealPath("/bash/getBrokerIpAddress.sh")).redirectErrorStream(true).start();
+		input = new BufferedReader(new InputStreamReader(getBrokerIPAddress.getInputStream()));
+		String brokerIpAddress = "";
+		while ((line = input.readLine()) != null) {
+			brokerIpAddress = line;
+		}
+
+		//send roomInfo to ESP via MQTT with online broker
+		MQTTDbSync.sendNewRoomInfo(roomId, airCondModelId, brokerIpAddress);
 	}
 }
