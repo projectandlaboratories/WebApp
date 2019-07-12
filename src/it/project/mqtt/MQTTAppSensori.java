@@ -43,7 +43,7 @@ public class MQTTAppSensori {
     private static String send_topic,subscribe_topic;
     private static MqttClient client;
     private static MqttConnectOptions conOpt;
-    private static String endpoint = "192.168.1.44:1883"; //TODO da settare
+    private static String endpoint = "localhost:1883"; //TODO da settare
     private static String username = "";//TODO da settare
     private static String password = "";//TODO da settare
     private static DbIdentifiers user;
