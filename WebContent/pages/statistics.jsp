@@ -43,14 +43,22 @@ Map<Object,Object> map = null;
 List<Map<Object,Object>> hotList = new ArrayList<Map<Object,Object>>();
 List<Map<Object,Object>> coldList = new ArrayList<Map<Object,Object>>();
 List<Map<Object,Object>> offList = new ArrayList<Map<Object,Object>>();
-int totSecondInDay = 24*60*60;
+int totSecond = 0;
 Map<String,Map<String,Float>> actuatorStatePerDay = DBClass.getLastMonthActuators(request.getParameter("room"));
 
 for(String day : actuatorStatePerDay.keySet()){
 	Map<String,Float> actuatorsSecondsMap = actuatorStatePerDay.get(day);
 	for(String state : actuatorsSecondsMap.keySet()){
+		totSecond += actuatorsSecondsMap.get(state);
+	}
+}
+
+
+for(String day : actuatorStatePerDay.keySet()){
+	Map<String,Float> actuatorsSecondsMap = actuatorStatePerDay.get(day);
+	for(String state : actuatorsSecondsMap.keySet()){
 		map = new HashMap<Object,Object>(); 
-		map.put("label", day); map.put("y", (actuatorsSecondsMap.get(state)/totSecondInDay)*100); 
+		map.put("label", day); map.put("y", (actuatorsSecondsMap.get(state)/totSecond)*100); 
 		switch(state){
 			case "HOT":
 				hotList.add(map);
@@ -171,7 +179,7 @@ String offDataPoints = gsonObj.toJson(offList);
         	
       </h1>
       
-      <!-- TODO PRENDERE COME PARAMETRO IL ROOM -->
+
       <button onclick = "window.location='<%=request.getContextPath()%>/pages/statistics.jsp?room=${param.room}&chart=<%=prevKey%>'" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px; width: 60px; top:50%; position: absolute;left: 1%;;font-size: 30px;">
      		<img src="../images/ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">                   
       </button>
@@ -186,7 +194,7 @@ String offDataPoints = gsonObj.toJson(offList);
 			<div class="dropdown-menu" role="menu" style="width: 100%">
 				<c:forEach items="${roomMap}" var="roomItem">
 					<a class="dropdown-item"
-						href="<%=request.getContextPath()%>/pages/statistics.jsp?room=${roomItem.key}"
+						href="<%=request.getContextPath()%>/pages/statistics.jsp?room=${roomItem.key}&chart=<%=currentChart%>"
 						role="presentation">${roomMap[roomItem.key].roomName}</a>
 				</c:forEach>
 			</div>
