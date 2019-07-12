@@ -711,7 +711,7 @@ public class DBClass {
 			statement = getStatement();
 			String defaultProfile = DBClass.getConfigValue("defaultProfile");
 			String query = "insert into rooms(ID_ROOM, ROOM_NAME, ID_AIR_COND, CONN_STATE, ID_PROFILE_WINTER, ID_PROFILE_SUMMER, MODE, MANUAL_TEMP, MANUAL_SYSTEM)"+
-							"values('"+room.getRoom()+"','"+room.getRoomName()+"',"+room.getIdAirCond()+",true,'"+defaultProfile+"','"+defaultProfile+"','"+Mode.PROGRAMMABLE.toString()+"',0,'" + SystemType.HOT.toString()+"')";
+							"values('"+room.getRoom()+"','"+room.getRoomName()+"',"+room.getIdAirCond()+",0,'"+defaultProfile+"','"+defaultProfile+"','"+Mode.PROGRAMMABLE.toString()+"',0,'" + SystemType.HOT.toString()+"')";
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
 		} catch (Exception e) {
