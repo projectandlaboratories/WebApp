@@ -180,7 +180,16 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					
 				</div>
 
-				<div class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px ">
+				<div id="alertdiv" class="d-inline-flex flex-column" style="position:absolute;bottom:0px;top: 100px;left:0px;right:0px;width:100%; ">
+					
+					<span style="text-align:center;">
+					<img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;">
+					This room is not connected<br>
+					<button class="btn btn-primary" style="height: 40px;margin-top:20px;">CONNECT</button>
+					</span>
+                </div>
+                
+				<div id="maindiv" class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px ">
                     <!-- Icons -->
                    <div style="height:100%; display: inline-grid">
                     	<img id="hotIcon" style="margin-left:8px; margin-right:8px; margin-top:3%; margin-bottom:5%; height:30px;" src="images/ios-flame-primary.svg">
@@ -193,7 +202,8 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
              			<div id="left" style="color: #2C3E50;">
              			
              			<span style="font-size:16px; ">Room Temperature</span>
-             			<img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;"><br>
+             			<!-- img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;"> -->
+             			<br>
              			<span id="currentTemp" style="font-size:900%;"></span><br>             			
              			</div>				    	
 				    	 
@@ -267,7 +277,8 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
     var currentTemp = document.getElementById("currentTemp");
     var act = document.getElementById("act");
     var saveButton = document.getElementById("saveButton");
-    
+    var maindiv = document.getElementById("maindiv");
+	var alertdiv = document.getElementById("alertdiv");
     var weekendDate; 
     
 	var timerID = setInterval(function() {
@@ -563,17 +574,20 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 		}
 		
 		function getConnectionState(){
-			var antifreezeIcon = document.getElementById("alertIcon");
+			
 			var xmlHttpRequest = getXMLHttpRequest();
 			xmlHttpRequest.onreadystatechange = function() {
 				if (xmlHttpRequest.readyState == 4) {
 					if (xmlHttpRequest.status == 200) {
 						//1 connesso, 0 non connesso
 						if(xmlHttpRequest.responseText == '1'){
-							antifreezeIcon.style.visibility="hidden";
+							maindiv.style.visibility="visible";
+							alertdiv.style.visibility="hidden";
 						}
 						else{
-							antifreezeIcon.style.visibility="inherit";
+							alertdiv.style.visibility="visible";
+							maindiv.style.visibility="hidden";
+							//antifreezeIcon.style.visibility="inherit";
 						}
 											
 					} else {
