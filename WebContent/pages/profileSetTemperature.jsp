@@ -20,7 +20,18 @@
     <style type="text/css"><%@include file="../assets/css/Sidebar-Menu.css"%></style>
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
      <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
-
+       <style type="text/css">
+	#load{
+	    width:100%;
+	    height:100%;
+	    position:fixed;
+	    z-index:9999;
+	    background:url("<%=request.getContextPath() + "/images/loading-icon.gif"%>") no-repeat center center rgba(0,0,0,0.25)
+	}
+	.hide{
+		display:none;
+	}
+</style>
 </head>
 
 <jsp:useBean id="currentProfile" class="it.project.dto.Program" scope="session">  </jsp:useBean>
@@ -45,6 +56,7 @@ if(myProgram.getTemperatureMap()!=null){
 }
 %>
 <body>
+<div id="load" class="hide"></div>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
     	
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
@@ -69,15 +81,19 @@ if(myProgram.getTemperatureMap()!=null){
     </div>
  
      <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">
-     	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" href="profileTimeHolidays.jsp?action=<%=action%>" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
+     	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" onclick="showLoadingIcon()" href="profileTimeHolidays.jsp?action=<%=action%>" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
      		<img src="../images/ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
      	</a>
-     	<button type="submit" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">
-     		<img src="../images/ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">                     
+     	<button type="submit" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" onclick="showLoadingIcon()" style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">
+     		<img src="../images/ios-arrow-round-forward-primary.svg" style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">                     
      	</button>
    	</footer>
 </form>
     <script>    
+    function showLoadingIcon(){
+		document.getElementById("load").classList.remove("hide")
+	}
+    
     var classname = document.getElementsByClassName("range");
     Array.from(classname).forEach(function(element) {
         element.addEventListener('input', function rangeChange() {

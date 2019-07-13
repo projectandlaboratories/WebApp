@@ -18,6 +18,18 @@
     <style type="text/css"><%@include file="../assets/css/Sidebar-Menu.css"%></style>
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
 
+       <style type="text/css">
+	#load{
+	    width:100%;
+	    height:100%;
+	    position:fixed;
+	    z-index:9999;
+	    background:url("<%=request.getContextPath() + "/images/loading-icon.gif"%>") no-repeat center center rgba(0,0,0,0.25)
+	}
+	.hide{
+		display:none;
+	}
+</style>
 </head>
 <%
 
@@ -50,9 +62,9 @@ if(action.compareTo("update")==0){
 
 %>
 <body>
-
+<div id="load" class="hide"></div>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
-    	<a class="btn btn-primary text-center d-lg-flex" href="<%=caller %>" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
+    	<a class="btn btn-primary text-center d-lg-flex"  onclick="showLoadingIcon()" href="<%=caller %>" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
    			<img src="../images/ios-arrow-round-back-white.svg" style="position:absolute; left: 0px; top: 0px; height: 60px; width: 60px;">
    		</a>
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
@@ -74,7 +86,7 @@ if(action.compareTo("update")==0){
     
     
     <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">     	
-     	<button type="submit" name="caller" value="profileDays" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">
+     	<button type="submit" name="caller" onclick="showLoadingIcon()" value="profileDays" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">
      		<img src="../images/ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">                   
      	</button>
    	</footer>
@@ -85,7 +97,11 @@ if(action.compareTo("update")==0){
     <script><%@include file="../assets/bootstrap/js/bootstrap.min.js"%></script> 
     <script><%@include file="../assets/js/script.min.js"%></script> 
     
- 
+   <script type="text/javascript">
+  function showLoadingIcon(){
+		document.getElementById("load").classList.remove("hide")
+	}
+  </script>
       
 </body>
 </html>

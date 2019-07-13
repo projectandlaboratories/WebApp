@@ -98,8 +98,8 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 	try{
 		DBClass.getConnection(user);
 		MQTTDbSync.setConnection(user,getServletContext());
-		//MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
-		//MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
+		MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
+		MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
 	}
 	catch(Exception e){
 %>
@@ -162,15 +162,15 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
         <div id="sidebar-wrapper" style="background-color: #2C3E50;">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand" style="height: 70px;"> </li>
-                <li> <a class="text-light" href="index.jsp" style="font-size: 20px;">Home</a></li>
-                <li> <a class="text-light" href="pages/profileList.jsp" style="font-size: 20px;">Temperature Profiles</a></li>
-                <li> <a class="text-light" href="pages/roomManagement.jsp" style="font-size: 20px;">Room Management</a></li>
-                <li> <a class="text-light" href="pages/statistics.jsp?chart=1&room=<%=currentRoomId%>" style="font-size: 20px;">Statistics</a></li>
+                <li> <a class="text-light" onclick="showLoadingIcon()" href="index.jsp" style="font-size: 20px;">Home</a></li>
+                <li> <a class="text-light" onclick="showLoadingIcon()" href="pages/profileList.jsp" style="font-size: 20px;">Temperature Profiles</a></li>
+                <li> <a class="text-light" onclick="showLoadingIcon()" href="pages/roomManagement.jsp" style="font-size: 20px;">Room Management</a></li>
+                <li> <a class="text-light" onclick="showLoadingIcon()" href="pages/statistics.jsp?chart=1&room=<%=currentRoomId%>" style="font-size: 20px;">Statistics</a></li>
                 <c:if test="${user eq localUser}">
-                	 <li> <a class="text-light" href="pages/networkSettings.jsp" style="font-size: 20px;">Network</a></li>
+                	 <li> <a class="text-light" onclick="showLoadingIcon()" href="pages/networkSettings.jsp" style="font-size: 20px;">Network</a></li>
                 </c:if>
                 <c:if test="${user eq awsUser}">
-                	 <li> <a class="text-light" href="<%=request.getContextPath()%>/checkLogin?action=logout" style="font-size: 20px;">Logout</a></li>
+                	 <li> <a class="text-light" onclick="showLoadingIcon()" href="<%=request.getContextPath()%>/checkLogin?action=logout" style="font-size: 20px;">Logout</a></li>
                 </c:if>          
             </ul>
         </div>
@@ -240,7 +240,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 			    						<button id=<%=SystemType.HOT%> onclick="onHotSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white; vertical-align: top; "><img id="hotImage" src="images/ios-flame-primary.svg"></button>
 					              		<button id=<%=SystemType.COLD%> onclick="onColdSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white; vertical-align: top;"><img id="coldImage" src="images/ios-snow-primary.svg"></button>	
 		    						</div>
-		    						<button id="saveButton" class="btn btn-primary" type="submit" name="ACTION" value="changeManualProgrammableMode" style="width: 90%; margin-bottom: 4px; margin-top: 4px;">SAVE</button>
+		    						<button id="saveButton" onclick="showLoadingIcon()" class="btn btn-primary" type="submit" name="ACTION" value="changeManualProgrammableMode" style="width: 90%; margin-bottom: 4px; margin-top: 4px;">SAVE</button>
 				              		
 				               	</div>
 				             
@@ -724,7 +724,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					"<div class='modal-footer'>" +
 						"<button type='button' class='btn btn-secondary'" +
 							"data-dismiss='modal'>Close</button>" +
-						"<button type='submit' name='ACTION' value=" + submitValueText + " class='btn btn-primary'> " + submitBtnText + "</button>" +
+						"<button type='submit' onclick='showLoadingIcon()' name='ACTION' value=" + submitValueText + " class='btn btn-primary'> " + submitBtnText + "</button>" +
 					"</div>" +
 				"</form>" +
 			"</div>" +
@@ -732,10 +732,12 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 		}
 		
 		function nextPage(){
+			showLoadingIcon()
 			window.open("./index.jsp?currentRoom=<%=nextKey%>","_self")
 		}
 
 		function prevPage(){
+			showLoadingIcon()
 			window.open("./index.jsp?currentRoom=<%=prevKey%>","_self")
 		}
 

@@ -19,6 +19,19 @@
     <style type="text/css"><%@include file="../assets/css/Sidebar-Menu.css"%></style>
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
  	<style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
+ 	
+ 	 <style type="text/css">
+	#load{
+	    width:100%;
+	    height:100%;
+	    position:fixed;
+	    z-index:9999;
+	    background:url("<%=request.getContextPath() + "/images/loading-icon.gif"%>") no-repeat center center rgba(0,0,0,0.25)
+	}
+	.hide{
+		display:none;
+	}
+</style>
 
 </head>
 
@@ -61,8 +74,9 @@ session.removeAttribute("activeTab");
 %>
 
 <body>
+<div id="load" class="hide"></div>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
-  	<a class="btn btn-primary text-center d-lg-flex" href="roomManagement.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
+  	<a class="btn btn-primary text-center d-lg-flex" onclick="showLoadingIcon()" href="roomManagement.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
  			<img src="../images/ios-arrow-round-back-white.svg" style="position:absolute; left: 0px; top: 0px; height: 60px; width: 60px;">
  		</a>
     <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
@@ -115,7 +129,7 @@ session.removeAttribute("activeTab");
 					<div class='modal-footer'>
 						<button type='button' class='btn btn-secondary'
 							data-dismiss='modal'>Close</button>
-						<button type='submit' id="editRoomSubmit" name='airCondModel' value="${roomMap[roomId].idAirCond}"
+						<button type='submit' id="editRoomSubmit" onclick="showLoadingIcon()" name='airCondModel' value="${roomMap[roomId].idAirCond}"
 							class='btn btn-primary'>Save</button>
 					</div>
 				</form>
@@ -144,7 +158,7 @@ session.removeAttribute("activeTab");
 						<div class='modal-footer'>
 						<button type='button' class='btn btn-secondary'
 							data-dismiss='modal'>NO</button>
-						<button type='submit' id="editRoomSubmit"
+						<button type='submit' id="editRoomSubmit" onclick="showLoadingIcon()"
 							class='btn btn-primary'>YES</button>
 					</div>
 				</form>
@@ -193,9 +207,12 @@ session.removeAttribute("activeTab");
 		buttonSubmit.value = id
 		buttonModel.innerText = name
 	}
+	
+	  function showLoadingIcon(){
+			document.getElementById("load").classList.remove("hide")
+		}
 	</script>
 
-    
     <script><%@include file="../assets/js/jquery.min.js"%></script> 
     <script><%@include file="../assets/bootstrap/js/bootstrap.min.js"%></script> 
     <script><%@include file="../assets/js/script.min.js"%></script> 

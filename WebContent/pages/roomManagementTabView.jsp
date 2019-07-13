@@ -28,7 +28,7 @@
 			<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" type="button" style="font-size: 20px;">${param.profile}</button>
 			<div class="dropdown-menu" role="menu" style="width: 100%">
 				<c:forEach items="${profileMap}" var="profileItem">
-					<a class="dropdown-item"
+					<a class="dropdown-item" onclick="showLoadingIcon()"
 						href="<%=request.getContextPath()%>/assignProgramToRoom?profile=${profileItem.key}&room=${roomId}&season=${param.season}"
 						role="presentation">${profileItem.key}</a>
 				</c:forEach>

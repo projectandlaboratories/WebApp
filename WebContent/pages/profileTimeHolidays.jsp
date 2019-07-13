@@ -18,6 +18,19 @@
     <style type="text/css"><%@include file="../assets/css/Sidebar-Menu-1.css"%></style>
     <style type="text/css"><%@include file="../assets/css/Sidebar-Menu.css"%></style>
     <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
+    
+    <style type="text/css">
+	#load{
+	    width:100%;
+	    height:100%;
+	    position:fixed;
+	    z-index:9999;
+	    background:url("<%=request.getContextPath() + "/images/loading-icon.gif"%>") no-repeat center center rgba(0,0,0,0.25)
+	}
+	.hide{
+		display:none;
+	}
+</style>
 
 </head>
 <jsp:useBean id="currentProfile" class="it.project.dto.Program" scope="session">  </jsp:useBean>
@@ -72,7 +85,7 @@ if(myProgram.getWakeupTimeH()!=null){//vengo dalla pagina precedente
 
 
 <body>
-<body>
+<div id="load" class="hide"></div>
 <form action="profileSetTemperature.jsp?action=<%=action%>" method="POST">          
  
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
@@ -97,10 +110,10 @@ if(myProgram.getWakeupTimeH()!=null){//vengo dalla pagina precedente
     
     
     <footer class="d-lg-flex align-items-lg-center" style="height: 60px; background-color: #ecf0f1;vertical-align: middle; position: absolute; right: 0px; left: 0px">
-     	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" href="profileTimeWorkingDays.jsp?action=<%=action%>" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
+     	<a class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" onclick="showLoadingIcon()" href="profileTimeWorkingDays.jsp?action=<%=action%>" style="height: 60px;padding-top: 6px;margin-left: 2px; position: absolute;font-size: 30px;">
      		<img src="../images/ios-arrow-round-back-primary.svg"  style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">                		
      	</a>
-     	<button type="submit" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center"  style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">
+     	<button type="submit" class="btn btn-light text-center text-primary bg-light d-lg-flex justify-content-lg-center align-items-lg-center" onclick="showLoadingIcon()" style="height: 60px;padding-top: 6px;margin-right: 2px; position: absolute;right: 8px;font-size: 30px;">
      		<img src="../images/ios-arrow-round-forward-primary.svg"  style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">                     
      	</button>
    	</footer>
@@ -110,7 +123,11 @@ if(myProgram.getWakeupTimeH()!=null){//vengo dalla pagina precedente
     <script><%@include file="../assets/js/jquery.min.js"%></script> 
     <script><%@include file="../assets/bootstrap/js/bootstrap.min.js"%></script> 
     <script><%@include file="../assets/js/script.min.js"%></script> 
-    
+      <script type="text/javascript">
+  function showLoadingIcon(){
+		document.getElementById("load").classList.remove("hide")
+	}
+  </script>
       
 </body>
 </html>

@@ -15,6 +15,9 @@ import java.util.NavigableMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+
 import it.project.dto.Interval;
 import it.project.dto.Profile;
 import it.project.dto.Program;
@@ -28,6 +31,7 @@ public class DBClass {
 	private static Connection conn;
 	private static DbIdentifiers dbuser;
 	private static String mainRoomId; //MAC del raspberry
+	private static Logger log = Logger.getLogger(DBClass.class);
 	
 	
 	public DBClass(){
@@ -36,6 +40,7 @@ public class DBClass {
 	public static Connection getConnection(DbIdentifiers user) throws Exception {
 		dbuser = user;
 		if(conn == null) {
+			BasicConfigurator.configure();
 			if(user.equals(DbIdentifiers.AWS)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
 				conn = DriverManager.getConnection("jdbc:mysql://projectdb.c3mhigfjfwis.eu-west-3.rds.amazonaws.com:3306/projectDb", "db_admin", "projectpwd");

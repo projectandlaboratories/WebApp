@@ -43,7 +43,7 @@
 <body>
 <div id="load" class="hide"></div>
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
-    	<a class="btn btn-primary text-center d-lg-flex" href="../index.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
+    	<a class="btn btn-primary text-center d-lg-flex" onclick="showLoadingIcon()" href="../index.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
    			<img src="../images/ios-arrow-round-back-white.svg" style="position:absolute; left: 0px; top: 0px; height: 60px; width: 60px;">
    		</a>
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
@@ -58,7 +58,7 @@
 		<c:set var="roomId" scope="page" value="${roomItem.key}"/>
 		<form action="<%=request.getContextPath()+"/connectToRoom?from=pages/roomManagement&roomId="%>${roomId}" method='POST'>	
 			<li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px; padding-right: 16px; padding-bottom: 8px; padding-left: 16px; margin-top: 0px; height: 64px;">
-				<a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp?roomId=${roomId}" style="font-size: 24px;">${roomItem.value.roomName}</a>
+				<a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" onclick="showLoadingIcon()" href="roomManagementItem.jsp?roomId=${roomId}" style="font-size: 24px;">${roomItem.value.roomName}</a>
 				
 				<c:if test="${roomItem.value.connState eq true}">
 					<c:set var="roomTemp" value="<%=String.format(Locale.US, \"%.1f\", DBClass.getRoomLastTemp((String) pageContext.findAttribute(\"roomId\")))%>"/>

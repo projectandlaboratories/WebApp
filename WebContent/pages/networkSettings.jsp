@@ -41,7 +41,7 @@
 	<div id="load" class="hide"></div>
 	<%
  		 Set<String> ssidList = new HashSet<>();
-/* 		Process listSsid = new ProcessBuilder("/bin/bash", getServletContext().getRealPath("/bash/list_ssid.sh"))
+ 		Process listSsid = new ProcessBuilder("/bin/bash", getServletContext().getRealPath("/bash/list_ssid.sh"))
 				.redirectErrorStream(true).start();
 		String line;
 		BufferedReader input = new BufferedReader(new InputStreamReader(listSsid.getInputStream()));
@@ -64,9 +64,7 @@
 			}
 			input.close();
 			session.setAttribute("ipAddress", ipAddress);
-		}   */
-		
-		session.setAttribute("ipAddress", "192");
+		}  
 		
 	%>
 	<c:set var="ssidListString" value=""/>
@@ -78,12 +76,14 @@
         	<br>NETWORK SETTINGS<br><br></a>
         </h1>
     <div style="width: device-width;position: absolute;bottom:0px;top: 40%;left:25%;right:0px;display: inline-block;vertical-align: middle;flex-direction:column;display:flex;">
-        	<span style="margin-bottom:5px;">
-        		<span id="ipAddress">Current IP address: ${ipAddress}</span>
-        		  <button data-toggle="modal" type="button" data-target="#iPInfoPopup"  style="height: 25px; width: 25px; padding-bottom: 7px; background-image:url(../images/ios-alert-primary.svg);background-color:Transparent;background-repeat:no-repeat;border:none;curson:pointer;overflow:hidden;outline:none;">
-    			  </button>
-        		
-       		</span>
+        	
+        	
+	        	<span style="margin-bottom:5px;">
+	        		<span id="ipAddress">Current IP address: ${ipAddress}</span>
+	        		<c:if test="${ipAddress != 'None'}">
+	        		  <button data-toggle="modal" type="button" data-target="#iPInfoPopup"  style="height: 25px; width: 25px; padding-bottom: 7px; background-image:url(../images/ios-information-circle-primary.svg);background-color:Transparent;background-repeat:no-repeat;border:none;curson:pointer;overflow:hidden;outline:none;"></button>
+	    			</c:if>	
+	       		</span>
         	
         <form action="<%=request.getContextPath()+"/connectWifi"%>" method="POST">
 	        <div class="dropdown" style="width: 70%;margin-bottom: 2%;height: 60px;">
@@ -124,7 +124,7 @@
 						<div class='modal-body'>
 							You can use the IP address to connect to the chronotermostat from your pc. 
 							Open the browser and type in the search bar <br>
-							 {YOUR IP ADDRESS}:8080/WebApp
+							 ${ipAddress}:8080/WebApp
 						</div>
 						<div class='modal-footer'>
 						<button type='button' class='btn btn-primary'

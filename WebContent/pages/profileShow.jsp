@@ -18,7 +18,18 @@
     <style type="text/css"><%@include file="../assets/css/Sidebar-Menu.css"%></style>
     <style type="text/css"><%@include file="../assets/css/styles.css"%></style>
    <style type="text/css"><%@include file="../assets/css/mystyle.css"%></style>
-
+ <style type="text/css">
+	#load{
+	    width:100%;
+	    height:100%;
+	    position:fixed;
+	    z-index:9999;
+	    background:url("<%=request.getContextPath() + "/images/loading-icon.gif"%>") no-repeat center center rgba(0,0,0,0.25)
+	}
+	.hide{
+		display:none;
+	}
+</style>
 </head>
 
 <c:set var="currentProfile" scope="session" value="${profileMap[param.profile]}"/> 
@@ -39,8 +50,9 @@ if(p.getName().compareTo(defaultProfile)==0){
 <c:set var="assigned" value="<%=DBClass.isProfileAssigned(p.getName())%>"/>
 <%System.out.println(DBClass.isProfileAssigned(p.getName())); %>
 <body>
+<div id="load" class="hide"></div>
 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">
-    	<a class="btn btn-primary text-center d-lg-flex" href="profileList.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
+    	<a class="btn btn-primary text-center d-lg-flex" onclick="showLoadingIcon()" href="profileList.jsp" style="position:absolute; left: 8px; top: 6px; height: 60px; width: 60px;background-color: rgb(44,62,80);" >
    			<img src="../images/ios-arrow-round-back-white.svg" style="position:absolute; left: 0px; top: 0px; height: 60px; width: 60px;">
    		</a>
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
@@ -92,7 +104,7 @@ if(p.getName().compareTo(defaultProfile)==0){
 						<div class='modal-footer'>
 						<button type='button' class='btn btn-secondary'
 							data-dismiss='modal'>NO</button>
-						<button type='submit'
+						<button type='submit' onclick="showLoadingIcon()"
 							name="ACTION" value="DELETE" class='btn btn-primary'>YES</button>
 					</div>
 				</form>
@@ -124,7 +136,11 @@ if(p.getName().compareTo(defaultProfile)==0){
 		</div>
 	</div>
 	
-	
+	  <script type="text/javascript">
+  function showLoadingIcon(){
+		document.getElementById("load").classList.remove("hide")
+	}
+  </script>
 	
 
     
