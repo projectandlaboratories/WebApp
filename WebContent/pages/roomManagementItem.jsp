@@ -95,7 +95,10 @@ session.removeAttribute("activeTab");
 					<div class='modal-body'>
 						<input type="text" name="room_name" value="${roomMap[roomId].roomName}" style="width:100%">
 						
-						<div style="display: <%=editAirCond%>">
+						<div style="display: <%=editAirCond%>;font-size: 15px;margin-top: 10px;">
+							AC model: ${airCondMap[roomMap[roomId].idAirCond]}
+						</div>
+						<!-- div style="display: <-%=editAirCond%>">
 							<div class="dropdown d-inline-flex">
 								<button disabled type="button" class="btn btn-primary dropdown-toggle" id="modelDropDown"
 									data-toggle="dropdown" aria-expanded="false"
@@ -106,8 +109,8 @@ session.removeAttribute("activeTab");
 									</c:forEach>
 									
 								</div>
-							</div>
-						</div>
+							</div> 
+						</div> -->
 					</div>
 					<div class='modal-footer'>
 						<button type='button' class='btn btn-secondary'

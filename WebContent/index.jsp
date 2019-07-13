@@ -180,7 +180,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					
 				</div>
 
-				<div id="alertdiv" class="d-inline-flex flex-column" style="position:absolute;bottom:0px;top: 100px;left:0px;right:0px;width:100%; ">
+				<div id="alertdiv" class="d-inline-flex flex-column" style="position:absolute;bottom:0px;top: 100px;left:0px;right:0px;width:100%;visibility:hidden; ">
 					
 					<span style="text-align:center;">
 					<img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;">
@@ -468,9 +468,14 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 						setWeekendModePopupHtml(endTime)
 						if(endTime != ""){
 							weekendIcon.src = "images/ios-car-selected.svg";
+							disableManualMode();
+							mode.value="<%=Mode.PROGRAMMABLE%>"
+							document.getElementById("programButton").disabled=true;	
 						}
 						else{
 							weekendIcon.src = "images/ios-car-white.svg";
+							document.getElementById("programButton").disabled=false;
+													
 						}
 					} else {
 						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
@@ -602,7 +607,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 		}
 		
 		
-		function getMode() {
+		function getMode() {//TODO attenzione qui se aggiungi mode off
 			var xmlHttpRequest = getXMLHttpRequest();
 			xmlHttpRequest.onreadystatechange = function() {
 				if (xmlHttpRequest.readyState == 4) {
