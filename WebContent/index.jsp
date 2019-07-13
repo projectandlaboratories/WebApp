@@ -153,6 +153,13 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 	targetTemp = ProfileUtil.getCurrentTemperature(currentRoom);	
 }
 
+int connectionState = DBClass.getConnectionState(currentRoomId);
+String alertDiv = "hidden";
+String mainDiv = "visible";
+if(connectionState==0){
+	alertDiv = "visible";
+	mainDiv = "hidden";
+}
 %>
 
 
@@ -193,7 +200,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					
 				</div>
 
-				<div id="alertdiv" class="d-inline-flex flex-column" style="position:absolute;bottom:0px;top: 100px;left:0px;right:0px;width:100%;visibility:hidden; ">
+				<div id="alertdiv" class="d-inline-flex flex-column" style="position:absolute;bottom:0px;top: 100px;left:0px;right:0px;width:100%;visibility:<%=alertDiv%>; ">
 					
 					
 						<span style="text-align:center;">
@@ -206,7 +213,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 					
                 </div>
                 
-				<div id="maindiv" class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px ">
+				<div id="maindiv" class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px;visibility:<%=mainDiv%>; ">
                     <!-- Icons -->
                    <div style="height:100%; display: inline-grid">
                     	<img id="hotIcon" style="margin-left:8px; margin-right:8px; margin-top:3%; margin-bottom:5%; height:30px;" src="images/ios-flame-primary.svg">
@@ -327,7 +334,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
    			}
     		getActuatorState();
     		getAntifreezeState();
-    		getConnectionState();
+    		//getConnectionState();
     		updateWeekendModeIcon();
     		setTemperature();
     		targetTemp.value="<%=targetTemp%>"
