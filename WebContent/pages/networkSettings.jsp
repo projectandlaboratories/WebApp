@@ -40,8 +40,8 @@
 <body>
 	<div id="load" class="hide"></div>
 	<%
- 		Set<String> ssidList = new HashSet<>();
-			Process listSsid = new ProcessBuilder("/bin/bash", getServletContext().getRealPath("/bash/list_ssid.sh"))
+ 		 Set<String> ssidList = new HashSet<>();
+/* 		Process listSsid = new ProcessBuilder("/bin/bash", getServletContext().getRealPath("/bash/list_ssid.sh"))
 				.redirectErrorStream(true).start();
 		String line;
 		BufferedReader input = new BufferedReader(new InputStreamReader(listSsid.getInputStream()));
@@ -64,8 +64,9 @@
 			}
 			input.close();
 			session.setAttribute("ipAddress", ipAddress);
-		} 
+		}   */
 		
+		session.setAttribute("ipAddress", "192");
 		
 	%>
 	<c:set var="ssidListString" value=""/>
@@ -77,9 +78,11 @@
         	<br>NETWORK SETTINGS<br><br></a>
         </h1>
     <div style="width: device-width;position: absolute;bottom:0px;top: 40%;left:25%;right:0px;display: inline-block;vertical-align: middle;flex-direction:column;display:flex;">
-        	<span>
+        	<span style="margin-bottom:5px;">
         		<span id="ipAddress">Current IP address: ${ipAddress}</span>
-        		<img id="alertIcon" src="../images/ios-alert-primary.svg" style="height: 25px; width: 25px; padding-bottom: 4px;">
+        		  <button data-toggle="modal" type="button" data-target="#iPInfoPopup"  style="height: 25px; width: 25px; padding-bottom: 7px; background-image:url(../images/ios-alert-primary.svg);background-color:Transparent;background-repeat:no-repeat;border:none;curson:pointer;overflow:hidden;outline:none;">
+    			  </button>
+        		
        		</span>
         	
         <form action="<%=request.getContextPath()+"/connectWifi"%>" method="POST">
@@ -103,6 +106,33 @@
 			<button class="btn btn-primary" id="submitBtn" onclick="showLoadingIcon()" name="ssid" value="" type="submit" style="margin-top: 2%;width:25%;margin-left: 22.5%;">Connect</button>
        </form>
     </div>
+    
+    
+    <!-- Popup ipInfo-->
+	<div class="modal fade" id="iPInfoPopup" tabindex="-1"
+		role="dialog" aria-labelledby="exampleModalCenterTitle"
+		aria-hidden="true">
+		<div class='modal-dialog modal-dialog-centered' role='document'>
+			<div class='modal-content'>
+				<div class='modal-header'>
+					<h5 class='modal-title' id='exampleModalLongTitle'>HOW TO CONNECT FROM PC</h5>
+					<button type='button' class='close' data-dismiss='modal'
+						aria-label='Close'>
+						<span aria-hidden='true'>&times;</span>
+					</button>
+				</div>
+						<div class='modal-body'>
+							You can use the IP address to connect to the chronotermostat from your pc. 
+							Open the browser and type in the search bar <br>
+							 {YOUR IP ADDRESS}:8080/WebApp
+						</div>
+						<div class='modal-footer'>
+						<button type='button' class='btn btn-primary'
+							data-dismiss='modal'>Close</button>
+					</div>
+			</div>
+		</div>
+	</div>
     
      <script type="text/javascript">
 
