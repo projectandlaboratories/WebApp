@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mysql.cj.xdevapi.DatabaseObject.DbObjectStatus;
+
 import it.project.db.DBClass;
+import it.project.db.MQTTDbSync;
 import it.project.utils.ProfileUtil;
 
 /**
@@ -34,30 +37,39 @@ public class ConnectToRoom extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String roomId = request.getParameter("roomId");
-		int airCondModelId = DBClass.getRoomByName(roomId).getIdAirCond();
-		String ssid = "ESP-" + roomId;
-		String espPassword =  DBClass.getConfigValue("espPassword");
+		String user = (String) request.getSession(false).getAttribute("user");
+		String awsUser = (String) request.getSession(false).getAttribute("awsUser");
 		
-		String mainRoomId = DBClass.getMainRoomId();
-		if(mainRoomId.equals(roomId)) {
-			Process connectMainRoom= new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/connect_main_room.sh")).redirectErrorStream(true).start();
-			String line;
-			BufferedReader input = new BufferedReader(new InputStreamReader(connectMainRoom.getInputStream()));
-			while ((line = input.readLine()) != null) {
-				String output = line;	
-			}
+		if(user.equals(awsUser)) {
+			MQTTDbSync.connectToRoom(roomId);
 		}
 		else {
-			//CONNECT TO ROOM
-			try {
-				ProfileUtil.connectToRoom(getServletContext(),roomId,airCondModelId, ssid, espPassword);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			int airCondModelId = DBClass.getRoomByName(roomId).getIdAirCond();
+			String ssid = "ESP-" + roomId;
+			String espPassword =  DBClass.getConfigValue("espPassword");
+			
+			String mainRoomId = DBClass.getMainRoomId();
+			if(mainRoomId.equals(roomId)) {
+				Process connectMainRoom= new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/connect_main_room.sh")).redirectErrorStream(true).start();
+				String line;
+				BufferedReader input = new BufferedReader(new InputStreamReader(connectMainRoom.getInputStream()));
+				while ((line = input.readLine()) != null) {
+					String output = line;	
+				}
+			}
+			else {
+				//CONNECT TO ROOM
+				try {
+					ProfileUtil.connectToRoom(getServletContext(),roomId,airCondModelId, ssid, espPassword);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		
-		response.sendRedirect("pages/roomManagement.jsp");
+		String from = request.getParameter("from");
+		response.sendRedirect( from +".jsp");
 	}
 
 }

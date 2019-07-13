@@ -38,6 +38,19 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
     <style type="text/css"><%@include file="/assets/css/Sidebar-Menu.css"%></style>
     <style type="text/css"><%@include file="/assets/css/styles.css"%></style>
     <style type="text/css"><%@include file="/assets/css/mystyle.css"%></style>
+    
+      <style type="text/css">
+	#load{
+	    width:100%;
+	    height:100%;
+	    position:fixed;
+	    z-index:9999;
+	    background:url("<%=request.getContextPath() + "/images/loading-icon.gif"%>") no-repeat center center rgba(0,0,0,0.25)
+	}
+	.hide{
+		display:none;
+	}
+</style>
 
 <style type="text/css">
 * {margin: 0; padding: 0;}
@@ -144,7 +157,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 
 
 <body onload=initializeParameters()>
-
+	<div id="load" class="hide"></div>
     <div id="wrapper" class="toggled">
         <div id="sidebar-wrapper" style="background-color: #2C3E50;">
             <ul class="sidebar-nav">
@@ -182,11 +195,15 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 
 				<div id="alertdiv" class="d-inline-flex flex-column" style="position:absolute;bottom:0px;top: 100px;left:0px;right:0px;width:100%;visibility:hidden; ">
 					
-					<span style="text-align:center;">
-					<img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;">
-					This room is not connected<br>
-					<button class="btn btn-primary" style="height: 40px;margin-top:20px;">CONNECT</button>
-					</span>
+					
+						<span style="text-align:center;">
+						<img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;">
+						This room is not connected<br>
+						<form action="<%=request.getContextPath()+"/connectToRoom?from=index&roomId="%>${currentRoomId}" method='POST'>	
+						<button onclick="showLoadingIcon()" class="btn btn-primary" style="height: 40px;margin-top:20px;">CONNECT</button>
+						</form>
+						</span>
+					
                 </div>
                 
 				<div id="maindiv" class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px ">
@@ -265,7 +282,10 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
        
     <script type="text/javascript">
     
-    
+	function showLoadingIcon(){
+		document.getElementById("load").classList.remove("hide")
+	}
+	
     var hotSystemButton = document.getElementById("<%=SystemType.HOT%>");
     var coldSystemButton = document.getElementById("<%=SystemType.COLD%>");
     var increaseButton = document.getElementById("increase");

@@ -189,7 +189,7 @@ public class MQTTAppSensori {
     		}
     		else {
     			//pubblica su dbSync
-    			MQTTDbSync.sendMQTTMessage(json.toString());
+    			MQTTDbSync.sendMQTTMessage(json.toString(),"modechange");
     		} 	
 
     	}
@@ -220,7 +220,7 @@ public class MQTTAppSensori {
     		}
     		else {
     			//pubblica su dbSync
-    			MQTTDbSync.sendMQTTMessage(finalJson);
+    			MQTTDbSync.sendMQTTMessage(finalJson,"profilechange");
     		}      		
     	}
     	catch(Exception e) {
