@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import it.project.db.DBClass;
 import it.project.db.MQTTDbSync;
 import it.project.dto.Program;
+import it.project.dto.Room;
 import it.project.enums.ActuatorState;
 import it.project.enums.Mode;
 import it.project.enums.Season;
@@ -126,6 +127,25 @@ public class MQTTAppSensori {
     			JSONObject lastWillJson = new JSONObject(new String(message.getPayload()));
     			roomId = lastWillJson.getString("roomId");
     			int roomStatus = lastWillJson.getInt("status");
+    			//send info to AP when room is reconnected
+    			if(roomStatus == 1) {
+    				Map<String,Room> roomsMap = DBClass.getRooms();
+    				Room room = roomsMap.get(roomId);
+    				Program summerProfile =room.getSummerProfile();
+    				Program winterProfile = room.getWinterProfile();
+    				notifyProfileChanged(roomId,Season.SUMMER,summerProfile);
+    				notifyProfileChanged(roomId,Season.WINTER,winterProfile);
+    				String weekendEndDate = DBClass.isWeekendMode();
+    				if(weekendEndDate == null) {
+    					notifyModeChanged(room.getMode(), roomId, room.getManualTemp(), room.getManualSystem(), 0);
+    				}	
+    				else {
+    					DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+    		 			Date endTimestamp = format.parse(weekendEndDate);
+    					notifyModeChanged(Mode.WEEKEND, roomId, 0, null, endTimestamp.getTime()/1000);
+    				}
+    					
+    			}
     			DBClass.updateRoomStatus(roomId, roomStatus);
     			MQTTDbProf.sendAppSensoriLog(receivedTopic.getName(), roomId, Integer.toString(roomStatus), System.currentTimeMillis());
     			break;

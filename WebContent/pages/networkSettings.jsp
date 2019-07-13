@@ -52,6 +52,20 @@
 				ssidList.add(ssidName);
 		}
 		input.close(); 
+		
+		String ipAddress = (String) session.getAttribute("ipAddress");
+		if(ipAddress == null){
+			Process getIpAddress = new ProcessBuilder("/bin/bash", getServletContext().getRealPath("/bash/getBrokerIpAddress.sh"))
+					.redirectErrorStream(true).start();
+			input = new BufferedReader(new InputStreamReader(getIpAddress.getInputStream()));
+			while ((line = input.readLine()) != null) {
+				ipAddress = line;
+			}
+			input.close();
+			session.setAttribute("ipAddress", ipAddress);
+		}
+		
+		
 	%>
 	<c:set var="ssidListString" value=""/>
     <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;">

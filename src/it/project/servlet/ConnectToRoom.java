@@ -1,6 +1,9 @@
 package it.project.servlet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,12 +38,23 @@ public class ConnectToRoom extends HttpServlet {
 		String ssid = "ESP-" + roomId;
 		String espPassword =  DBClass.getConfigValue("espPassword");
 		
-		//CONNECT TO ROOM
-		try {
-			ProfileUtil.connectToRoom(getServletContext(),roomId,airCondModelId, ssid, espPassword);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		String mainRoomId = DBClass.getMainRoomId();
+		if(mainRoomId.equals(roomId)) {
+			Process connectMainRoom= new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/connect_main_room.sh")).redirectErrorStream(true).start();
+			String line;
+			BufferedReader input = new BufferedReader(new InputStreamReader(connectMainRoom.getInputStream()));
+			while ((line = input.readLine()) != null) {
+				String output = line;	
+			}
+		}
+		else {
+			//CONNECT TO ROOM
+			try {
+				ProfileUtil.connectToRoom(getServletContext(),roomId,airCondModelId, ssid, espPassword);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		response.sendRedirect("pages/roomManagement.jsp");

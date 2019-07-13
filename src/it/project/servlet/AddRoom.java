@@ -3,6 +3,10 @@ package it.project.servlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -15,6 +19,7 @@ import it.project.db.DBClass;
 import it.project.db.MQTTDbSync;
 import it.project.dto.Program;
 import it.project.dto.Room;
+import it.project.enums.ActuatorState;
 import it.project.enums.Mode;
 import it.project.enums.SystemType;
 import it.project.enums.Topics;
@@ -98,6 +103,9 @@ public class AddRoom extends HttpServlet {
 			DBClass.createRoom(newRoom);
 			Map<String,Room> roomMap=(Map<String,Room>) request.getSession(false).getAttribute("roomMap");
 			roomMap.put(roomId, newRoom);
+			Date now = new Date();
+			DBClass.saveActuatorStatus(roomId, ActuatorState.OFF, now.getTime()/1000);
+			DBClass.saveCurrentTemperature(roomId, 20, now.getTime());
 			response.sendRedirect("pages/roomManagement.jsp");
 		}
 	}
