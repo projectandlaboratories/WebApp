@@ -56,7 +56,7 @@
 	<ul class="list-group">
 		<c:forEach items="${roomMap}" var="roomItem">
 		<c:set var="roomId" scope="page" value="${roomItem.key}"/>
-		<form action="<%=request.getContextPath()+"/connectToRoom?roomId="%>${roomId}" method='POST'>	
+		<form action="<%=request.getContextPath()+"/connectToRoom?from=pages/roomManagement&roomId="%>${roomId}" method='POST'>	
 			<li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px; padding-right: 16px; padding-bottom: 8px; padding-left: 16px; margin-top: 0px; height: 64px;">
 				<a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" href="roomManagementItem.jsp?roomId=${roomId}" style="font-size: 24px;">${roomItem.value.roomName}</a>
 				

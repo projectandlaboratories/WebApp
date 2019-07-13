@@ -2,11 +2,13 @@ package it.project.db;
 
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import it.project.enums.Topics;
 import it.project.mqtt.MQTTAppSensori;
 import it.project.utils.DbIdentifiers;
+import it.project.utils.ProfileUtil;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -62,10 +64,20 @@ public class MQTTDbSync{
 							JSONObject inputJson = new JSONObject(message.getPayload());
 							String operation = inputJson.getString("operation");
 							JSONObject inputMessage = inputJson.getJSONObject("message");
-							if(operation.equals("modechange"))
+							switch(operation) {
+							case "modechange":
 								MQTTAppSensori.notifyModeChanged(inputMessage);
-							else {
+								break;
+							case "profilechange":
 								MQTTAppSensori.notifyProfileChanged(inputMessage);
+								break;
+							case "connectroom":
+								String roomId = inputMessage.getString("roomId");
+								int airCondModelId = DBClass.getRoomByName(roomId).getIdAirCond();
+								String ssid = "ESP-" + roomId;
+								String espPassword =  DBClass.getConfigValue("espPassword");
+								ProfileUtil.connectToRoom(context, roomId, airCondModelId, ssid, espPassword);
+								break;
 							}
 						}
 						else if(topic.equals(Topics.LAST_WILL.getName())) {
@@ -128,7 +140,11 @@ public class MQTTDbSync{
         client.publish(send_topic, message);
     }
     
-    public static void sendMQTTMessage(String payload) throws Exception {
+    public static void sendMQTTMessage(String payload,String operation) throws Exception {
+    	JSONObject json = new JSONObject();
+    	json.put("operation", operation);
+    	JSONObject jsonMessage = new JSONObject(payload);
+    	json.put("message", jsonMessage);
     	MqttMessage message = new MqttMessage(payload.getBytes());
         message.setQos(qos);
         client.publish(Topics.MQTT_APP_SENSORI.getName(), message);
@@ -161,6 +177,19 @@ public class MQTTDbSync{
 			e.printStackTrace();
 		} 
 		
+    }
+    
+    public static void connectToRoom(String roomId) {
+    	JSONObject json = new JSONObject();
+    	JSONObject roomIdObject = new JSONObject();
+    	try {
+    		roomIdObject.put("roomId", roomId);
+			json.put("operation", "connectroom");
+			json.put("message", roomIdObject);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 }
