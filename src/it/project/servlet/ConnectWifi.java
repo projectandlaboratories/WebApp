@@ -53,6 +53,16 @@ public class ConnectWifi extends HttpServlet {
 					DBClass.updateConfigValue("localWifiPwd", password);
 					//se mi sono connesso con successo alla rete richiesta mi riconnetto al broker di DbSync
 					MQTTDbSync.setConnection(DbIdentifiers.LOCAL,getServletContext());
+					
+					Process getIpAddress = new ProcessBuilder("/bin/bash", getServletContext().getRealPath("/bash/getBrokerIpAddress.sh"))
+							.redirectErrorStream(true).start();
+					input = new BufferedReader(new InputStreamReader(getIpAddress.getInputStream()));
+					String ipAddress = "";
+					while ((line = input.readLine()) != null) {
+						ipAddress = line;
+					}
+					input.close();
+					request.getSession(false).setAttribute("ipAddress", ipAddress);
 				}
 			}			
 		}

@@ -45,33 +45,35 @@ List<Map<Object,Object>> coldList = new ArrayList<Map<Object,Object>>();
 List<Map<Object,Object>> offList = new ArrayList<Map<Object,Object>>();
 int totSecond = 0;
 Map<String,Map<String,Float>> actuatorStatePerDay = DBClass.getLastMonthActuators(request.getParameter("room"));
-
-for(String day : actuatorStatePerDay.keySet()){
-	Map<String,Float> actuatorsSecondsMap = actuatorStatePerDay.get(day);
-	for(String state : actuatorsSecondsMap.keySet()){
-		totSecond += actuatorsSecondsMap.get(state);
+if(actuatorStatePerDay != null){
+	for(String day : actuatorStatePerDay.keySet()){
+		Map<String,Float> actuatorsSecondsMap = actuatorStatePerDay.get(day);
+		for(String state : actuatorsSecondsMap.keySet()){
+			totSecond += actuatorsSecondsMap.get(state);
+		}
 	}
-}
 
 
-for(String day : actuatorStatePerDay.keySet()){
-	Map<String,Float> actuatorsSecondsMap = actuatorStatePerDay.get(day);
-	for(String state : actuatorsSecondsMap.keySet()){
-		map = new HashMap<Object,Object>(); 
-		map.put("label", day); map.put("y", (actuatorsSecondsMap.get(state)/totSecond)*100); 
-		switch(state){
-			case "HOT":
-				hotList.add(map);
-				break;
-			case "COLD":
-				coldList.add(map);
-				break;
-			case "OFF":
-				offList.add(map);
-				break;
+	for(String day : actuatorStatePerDay.keySet()){
+		Map<String,Float> actuatorsSecondsMap = actuatorStatePerDay.get(day);
+		for(String state : actuatorsSecondsMap.keySet()){
+			map = new HashMap<Object,Object>(); 
+			map.put("label", day); map.put("y", (actuatorsSecondsMap.get(state)/totSecond)*100); 
+			switch(state){
+				case "HOT":
+					hotList.add(map);
+					break;
+				case "COLD":
+					coldList.add(map);
+					break;
+				case "OFF":
+					offList.add(map);
+					break;
+			}
 		}
 	}
 }
+
 
 String hotDataPoints = gsonObj.toJson(hotList);
 String coldDataPoints = gsonObj.toJson(coldList);

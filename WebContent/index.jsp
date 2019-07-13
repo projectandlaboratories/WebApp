@@ -145,7 +145,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
 
 <body onload=initializeParameters()>
 
-    <div id="wrapper">
+    <div id="wrapper" class="toggled">
         <div id="sidebar-wrapper" style="background-color: #2C3E50;">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand" style="height: 70px;"> </li>
@@ -164,7 +164,7 @@ if(currentRoom.getMode().equals(Mode.MANUAL)){
         <div>
             <div class="container-fluid" style="height: 70px;padding-right: 0px;padding-left: 0px;">
                 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;vertical-align: middle;">
-                	<a class="btn btn-link d-xl-flex align-items-xl-center" role="button" id="menu-toggle" href="#menu-toggle" style="height: 70px;">
+                	<a role="button" id="menu-toggle" href="#menu-toggle" style="height: 70px;">
                 		<img src="images/md-reorder-white.svg" style="height: 100%;"></a>
                 	<a class="navbar-brand text-left flex-fill" id="date" style="margin-left: 16px;padding-top: 5px;height: auto;margin-top: 0px;margin-bottom: 0px;min-width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;font-size: 30px;"></a>
                     <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#exampleModalCenter" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px; top: 0px; ">
