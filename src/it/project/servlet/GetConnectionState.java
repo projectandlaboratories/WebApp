@@ -35,7 +35,6 @@ public class GetConnectionState extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("GetConnectionState");
 		String roomId = request.getParameter("roomId");
 		DbIdentifiers user = DbIdentifiers.valueOf(request.getParameter("user"));
 		try {
@@ -46,7 +45,7 @@ public class GetConnectionState extends HttpServlet {
 		}
 		response.setContentType("text/html");
 		String connState = Integer.toString(DBClass.getConnectionState(roomId));
-		System.out.println("GetConnectionState: "+connState);
+		//System.out.println("GetConnectionState: "+connState);
 		response.getWriter().write(connState);
 		
 	}
