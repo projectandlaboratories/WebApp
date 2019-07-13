@@ -77,7 +77,11 @@
         	<br>NETWORK SETTINGS<br><br></a>
         </h1>
     <div style="width: device-width;position: absolute;bottom:0px;top: 40%;left:25%;right:0px;display: inline-block;vertical-align: middle;flex-direction:column;display:flex;">
-        	<h5 id="ipAddress">Current IP address: ${ipAddress}</h5>
+        	<span>
+        		<span id="ipAddress">Current IP address: ${ipAddress}</span>
+        		<img id="alertIcon" src="../images/ios-alert-primary.svg" style="height: 25px; width: 25px; padding-bottom: 4px;">
+       		</span>
+        	
         <form action="<%=request.getContextPath()+"/connectWifi"%>" method="POST">
 	        <div class="dropdown" style="width: 70%;margin-bottom: 2%;height: 60px;">
 	        	<button id="SsidDropDown" class="btn btn-primary dropdown-toggle d-md-flex justify-content-md-end" data-toggle="dropdown" aria-expanded="false" type="button" style="width: 100%;height: 100%;">Available networks</button>
