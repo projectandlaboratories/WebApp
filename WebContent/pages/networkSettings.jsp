@@ -40,8 +40,8 @@
 <body>
 	<div id="load" class="hide"></div>
 	<%
-		Set<String> ssidList = new HashSet<>();
-		Process listSsid = new ProcessBuilder("/bin/bash", getServletContext().getRealPath("/bash/list_ssid.sh"))
+ 		Set<String> ssidList = new HashSet<>();
+			Process listSsid = new ProcessBuilder("/bin/bash", getServletContext().getRealPath("/bash/list_ssid.sh"))
 				.redirectErrorStream(true).start();
 		String line;
 		BufferedReader input = new BufferedReader(new InputStreamReader(listSsid.getInputStream()));
@@ -58,12 +58,13 @@
 			Process getIpAddress = new ProcessBuilder("/bin/bash", getServletContext().getRealPath("/bash/getBrokerIpAddress.sh"))
 					.redirectErrorStream(true).start();
 			input = new BufferedReader(new InputStreamReader(getIpAddress.getInputStream()));
+			ipAddress = "None";
 			while ((line = input.readLine()) != null) {
 				ipAddress = line;
 			}
 			input.close();
 			session.setAttribute("ipAddress", ipAddress);
-		}
+		} 
 		
 		
 	%>
@@ -76,7 +77,8 @@
         	<br>NETWORK SETTINGS<br><br></a>
         </h1>
     <div style="width: device-width;position: absolute;bottom:0px;top: 40%;left:25%;right:0px;display: inline-block;vertical-align: middle;flex-direction:column;display:flex;">
-        
+        	<h5 id="ipAddress">Current IP address: ${ipAddress}</h5>
+        <form action="<%=request.getContextPath()+"/connectWifi"%>" method="POST">
 	        <div class="dropdown" style="width: 70%;margin-bottom: 2%;height: 60px;">
 	        	<button id="SsidDropDown" class="btn btn-primary dropdown-toggle d-md-flex justify-content-md-end" data-toggle="dropdown" aria-expanded="false" type="button" style="width: 100%;height: 100%;">Available networks</button>
 	            <div class="dropdown-menu" role="menu" style="width: 100%;">
@@ -86,10 +88,16 @@
 					</c:forEach>
 	           	</div>
 	        </div>
-	        <input class="keyboard" type="password" id="password" placeholder="Enter Password" style="width: 70%;height: 60px;background-color:white;color:black;">
-			<div id="responseText"></div>
-			<button class="btn btn-primary" id="submitBtn" onclick="connectWifi()" name="ssid" value="" type="button" style="margin-top: 2%;width:25%;margin-left: 22.5%;">Connect</button>
-       
+	        <input class="keyboard" type="password" name="password" id="password" placeholder="Enter Password" style="width: 70%;height: 60px;background-color:white;color:black;">
+			<c:if test="${param.result eq true}">
+				<h6 style='color:green'>Successfully connected to Wifi Network ${param.connectedSsid}</h6>
+			</c:if>
+			<c:if test="${param.result eq false}">
+				<h6 style='color:red'>An error has occurred: the password is wrong</h6>
+			</c:if>
+			
+			<button class="btn btn-primary" id="submitBtn" onclick="showLoadingIcon()" name="ssid" value="" type="submit" style="margin-top: 2%;width:25%;margin-left: 22.5%;">Connect</button>
+       </form>
     </div>
     
      <script type="text/javascript">
@@ -108,52 +116,8 @@
     
 <script type="text/javascript">
     
-function connectWifi() {
-	var ssid = document.getElementById("submitBtn").value
-	var password = document.getElementById("password").value
+function showLoadingIcon(){
 	document.getElementById("load").classList.remove("hide")
-	var xmlHttpRequest = getXMLHttpRequest();
-	xmlHttpRequest.onreadystatechange = function() {
-		if (xmlHttpRequest.readyState == 4) {
-			if (xmlHttpRequest.status == 200) {
-				document.getElementById("load").className += "hide"
-				if(xmlHttpRequest.responseText != "")
-					document.getElementById("responseText").innerHTML = "<h6 style='color:green'>Successfully connected to Wifi Network " + xmlHttpRequest.responseText + "</h6>"
-				else
-					document.getElementById("responseText").innerHTML = "<h6 style='color:red'>An error has occurred: the password is wrong</h6>"
-			} else {
-				alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
-			}
-		}
-	};
-	var url = "<%=request.getContextPath()%>" + "/connectWifi?ssid="+ ssid + "&password="+ password
-	xmlHttpRequest.open("POST", url, true);
-	xmlHttpRequest.setRequestHeader("Content-Type",
-			"application/x-www-form-urlencoded");
-	xmlHttpRequest.send(null);
-}
-
-function getXMLHttpRequest() {
-	var xmlHttpReq = false;
-	// to create XMLHttpRequest object in non-Microsoft browsers
-	if (window.XMLHttpRequest) {
-		xmlHttpReq = new XMLHttpRequest();
-	} else if (window.ActiveXObject) {
-		try {
-			// to create XMLHttpRequest object in later versions
-			// of Internet Explorer
-			xmlHttpReq = new ActiveXObject("Msxml2.XMLHTTP");
-		} catch (exp1) {
-			try {
-				// to create XMLHttpRequest object in older versions
-				// of Internet Explorer
-				xmlHttpReq = new ActiveXObject("Microsoft.XMLHTTP");
-			} catch (exp2) {
-				xmlHttpReq = false;
-			}
-		}
-	}
-	return xmlHttpReq;
 }
     
 </script>
