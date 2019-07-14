@@ -12,7 +12,7 @@
 Gson gsonObj = new Gson();
 Map<Object,Object> mapTemp = null;
 List<Map<Object,Object>> temperatureChartList = new ArrayList<Map<Object,Object>>();
-Map<String,Double> temperaturePerDay = DBClass.getLastMonthTemperature(request.getParameter("room"));
+TreeMap<String,Double> temperaturePerDay = DBClass.getLastMonthTemperature(request.getParameter("room"));
 
 for(String key : temperaturePerDay.keySet()){
 	mapTemp = new HashMap<Object,Object>(); 
@@ -43,17 +43,10 @@ Map<Object,Object> map = null;
 List<Map<Object,Object>> hotList = new ArrayList<Map<Object,Object>>();
 List<Map<Object,Object>> coldList = new ArrayList<Map<Object,Object>>();
 List<Map<Object,Object>> offList = new ArrayList<Map<Object,Object>>();
-int totSecond = 0;
-Map<String,Map<String,Float>> actuatorStatePerDay = DBClass.getLastMonthActuators(request.getParameter("room"));
+int totSecond = 24*60*60;
+TreeMap<String,Map<String,Float>> actuatorStatePerDay = DBClass.getLastMonthActuators(request.getParameter("room"));
 if(actuatorStatePerDay != null){
-	for(String day : actuatorStatePerDay.keySet()){
-		Map<String,Float> actuatorsSecondsMap = actuatorStatePerDay.get(day);
-		for(String state : actuatorsSecondsMap.keySet()){
-			totSecond += actuatorsSecondsMap.get(state);
-		}
-	}
-
-
+	
 	for(String day : actuatorStatePerDay.keySet()){
 		Map<String,Float> actuatorsSecondsMap = actuatorStatePerDay.get(day);
 		for(String state : actuatorsSecondsMap.keySet()){
@@ -117,7 +110,7 @@ String offDataPoints = gsonObj.toJson(offList);
 			 
 			var chart = new CanvasJS.Chart("chartContainer", {
 				theme: "light2",
-				height: 330,
+				height: 240,
 				title: {
 					text: "Last Month temperature"
 				},
@@ -136,7 +129,8 @@ String offDataPoints = gsonObj.toJson(offList);
 		}
 		else{
 			var chart = new CanvasJS.Chart("chartContainer", {
-				animationEnabled: true,  	
+				animationEnabled: true, 
+				height: 240,
 				title:{
 					text: "Last Month actuator status"
 				},

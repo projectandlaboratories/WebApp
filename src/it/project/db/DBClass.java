@@ -49,10 +49,10 @@ public class DBClass {
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 			
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
-				conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
 				conn.setAutoCommit(true);
 			}
 		}
@@ -99,9 +99,9 @@ public class DBClass {
 		}
 	}
 	
-	public static Map<String,Double> getLastMonthTemperature(String roomId){
+	public static TreeMap<String,Double> getLastMonthTemperature(String roomId){
 		Statement statement;
-		Map<String,Double> temperatureDayMap = new HashMap<>();
+		TreeMap<String,Double> temperatureDayMap = new TreeMap<>();
 		try {
 			statement = getStatement();
 			String query = "SELECT DATE(TIMESTAMP) AS ForDate, AVG(TEMPERATURE) AS AvgTemp "
@@ -487,9 +487,9 @@ public class DBClass {
 		}
 	}
 	
-	public static Map<String,Map<String,Float>> getLastMonthActuators(String roomId) {
+	public static TreeMap<String,Map<String,Float>> getLastMonthActuators(String roomId) {
 		Statement statement;
-		Map<String,Map<String,Float>> lastMonthActuatorMap = new HashMap<>();
+		TreeMap<String,Map<String,Float>> lastMonthActuatorMap = new TreeMap<>();
 		try {
 			statement = getStatement();
 			String query = "SELECT DATE(START_TIMESTAMP) AS startDay, TIMEDIFF(END_TIMESTAMP,START_TIMESTAMP) AS diff, "
