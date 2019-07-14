@@ -206,7 +206,7 @@ if(connectionState==0){
 						<span style="text-align:center;">
 						<img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;">
 						This room is not connected<br>
-						<form action="<%=request.getContextPath()+"/connectToRoom?from=index&roomId="%>${currentRoomId}" method='POST'>	
+						<form action="<%=request.getContextPath()+"/connectToRoom?roomId="%>${currentRoomId}" method='POST'>	
 						<button onclick="showLoadingIcon()" class="btn btn-primary" style="height: 40px;margin-top:20px;">CONNECT</button>
 						</form>
 						</span>

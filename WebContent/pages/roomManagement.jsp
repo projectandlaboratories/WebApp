@@ -49,14 +49,14 @@
         <a class="navbar-brand text-left flex-fill" style="margin-left: 80px;padding-top: 5px;height: auto;font-size: 30px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: 206px;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;">
         	<br>ROOM MANAGEMENT<br><br></a>
          <c:if test="${user eq localUser}">
-            <a class="btn btn-light text-center text-primary d-lg-flex justify-content-lg-center align-items-lg-center action-button" href="addRoom.jsp" style="height: 55px;font-size: 20px;margin-right: 8px;position:absolute; right: 2px; top:8px; font-family: Roboto, sans-serif;">Add room</a>
+            <a class="btn btn-light text-center text-primary d-lg-flex justify-content-lg-center align-items-lg-center action-button" onclick="showLoadingIcon()" href="addRoom.jsp" style="height: 55px;font-size: 20px;margin-right: 8px;position:absolute; right: 2px; top:8px; font-family: Roboto, sans-serif;">Add room</a>
          </c:if>  
        
         </h1>
 	<ul class="list-group">
 		<c:forEach items="${roomMap}" var="roomItem">
 		<c:set var="roomId" scope="page" value="${roomItem.key}"/>
-		<form action="<%=request.getContextPath()+"/connectToRoom?from=pages/roomManagement&roomId="%>${roomId}" method='POST'>	
+		<form action="<%=request.getContextPath()+"/connectToRoom?roomId="%>${roomId}" method='POST'>	
 			<li class="list-group-item d-lg-flex justify-content-lg-center align-items-lg-center" style="padding-top: 8px; padding-right: 16px; padding-bottom: 8px; padding-left: 16px; margin-top: 0px; height: 64px;">
 				<a class="d-inline-flex flex-shrink-0 flex-fill justify-content-lg-start align-items-lg-center" onclick="showLoadingIcon()" href="roomManagementItem.jsp?roomId=${roomId}" style="font-size: 24px;">${roomItem.value.roomName}</a>
 				

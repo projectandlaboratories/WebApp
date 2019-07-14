@@ -78,11 +78,11 @@ public class MQTTDbProf {
         public void onMessage(AWSIotMessage message) {
         	/*{"device_mac":"00:00:00:00:00:00","event_id":0,"event":{"sequence":10296,"message":"Please reply."},"timestamp":"2019-07-08 12:51:14.992790"}
 			event_id: 0*/
-        	System.out.println("topicReceived notification");
+        	//System.out.println("topicReceived notification");
 			JSONObject tempJson;
 			try {
 				tempJson = new JSONObject(new String(message.getPayload()));
-				System.out.println(tempJson);
+				//System.out.println(tempJson);
 				int event_id = tempJson.getInt("event_id");
 				//System.out.println("event_id: "+event_id);//check if 0
 				int sequence = tempJson.getJSONObject("event").getInt("sequence"); 
@@ -101,19 +101,19 @@ public class MQTTDbProf {
         @Override
         public void onSuccess() {
             // called when message publishing succeeded
-        	System.out.println("Success!");
+        	//System.out.println("Success!");
         }
 
         @Override
         public void onFailure() {
             // called when message publishing failed
-        	System.out.println("Failure!");
+        	//System.out.println("Failure!");
         }
 
         @Override
         public void onTimeout() {
             // called when message publishing timed out
-        	System.out.println("Timeout!");
+        	//System.out.println("Timeout!");
         }
     }
     
@@ -131,7 +131,7 @@ public class MQTTDbProf {
     		event.put("sequence", sequence);
     		json.put("event", event);
     		
-    		System.out.println(json.toString());
+    		//System.out.println(json.toString());
     		MyMessage message = new MyMessage(topicEvent, qos, json.toString());
     		client.publish(message, timeout);
     	}
@@ -152,7 +152,7 @@ public class MQTTDbProf {
     		
     		json.put("event", event);
     		
-    		System.out.println("Sending: " + json.toString());
+    		//System.out.println("Sending: " + json.toString());
     		MyMessage message = new MyMessage(topicEvent, qos, json.toString());
     		client.publish(message, timeout);
     	}

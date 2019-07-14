@@ -106,7 +106,7 @@ public class AddRoom extends HttpServlet {
 			Date now = new Date();
 			DBClass.saveActuatorStatus(roomId, ActuatorState.OFF, now.getTime()/1000);
 			DBClass.saveCurrentTemperature(roomId, 20, now.getTime());
-			response.sendRedirect("pages/roomManagement.jsp");
+			response.sendRedirect("index.jsp?currentRoom=" + roomId);
 		}
 	}
 }

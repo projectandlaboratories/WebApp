@@ -68,8 +68,7 @@ public class ConnectToRoom extends HttpServlet {
 			}
 		}
 		
-		String from = request.getParameter("from");
-		response.sendRedirect( from +".jsp");
+		response.sendRedirect("index.jsp?currentRoom=" + roomId);
 	}
 
 }

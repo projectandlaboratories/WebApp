@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -56,12 +57,14 @@ public class MQTTDbSync{
 
         		client = new MqttClient(host, clientId, new MemoryPersistence());
         		client.connect(conOpt);
+        		System.out.println(new Date().toString() + "Connected to Remote Cloud MQTT");
         		client.setCallback(new MqttCallback() {
 					
 					@Override
 					public void messageArrived(String topic, MqttMessage message) throws Exception {
 						if(topic.equals(Topics.MQTT_APP_SENSORI.getName())) {
 							JSONObject inputJson = new JSONObject(message.getPayload());
+							System.out.println(new Date().toString() + "Topic MQTT_APP_SENSORI arrived: " + inputJson.toString());
 							String operation = inputJson.getString("operation");
 							JSONObject inputMessage = inputJson.getJSONObject("message");
 							switch(operation) {
@@ -83,12 +86,15 @@ public class MQTTDbSync{
 						else if(topic.equals(Topics.LAST_WILL.getName())) {
 							//usato per segnalare che la schedina è ora attiva
 							JSONObject lastWillJson = new JSONObject(new String(message.getPayload()));
-			    			String roomId = lastWillJson.getString("roomId");
+							System.out.println(new Date().toString() + "Topic DbSync LAST_WILL arrived: " + lastWillJson.toString());
+							String roomId = lastWillJson.getString("roomId");
 			    			int roomStatus = lastWillJson.getInt("status");
 			    			DBClass.updateRoomStatus(roomId, roomStatus);
 						}
 						else if(topic.equals(Topics.DEPLOY_NEW_VERSION.getName())) {
 							String url = new String(message.getPayload());
+							System.out.println(new Date().toString() + "Deploy new version TOPIC arrived");
+							
 							Process deployNewVersion = new ProcessBuilder("/bin/bash", servletContext.getRealPath("/bash/deploy_app.sh"), url)
 									.redirectErrorStream(true).start();
 							
@@ -113,7 +119,7 @@ public class MQTTDbSync{
 					
 					@Override
 					public void connectionLost(Throwable arg0) {
-						
+						System.out.println(new Date().toString() + "DbSyncMQTT connection Lost");
 						
 					}
 				});

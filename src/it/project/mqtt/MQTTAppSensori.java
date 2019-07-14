@@ -63,6 +63,7 @@ public class MQTTAppSensori {
 
         		client = new MqttClient(host, clientId, new MemoryPersistence());
         		client.connect(conOpt);
+        		System.out.println(new Date().toString() + "connected to MQTTAppSensori");
         		client.setCallback(new MqttCallback() {
 					
 					@Override
@@ -78,8 +79,7 @@ public class MQTTAppSensori {
 					
 					@Override
 					public void connectionLost(Throwable arg0) {
-						
-						
+						System.out.println(new Date().toString() + "AppSensoriMQTT connection Lost");
 					}
 				});
         		
@@ -117,6 +117,7 @@ public class MQTTAppSensori {
     			break;
     		case ACTUATOR_STATUS:
     			JSONObject actJson = new JSONObject(new String(message.getPayload()));
+    			System.out.println(new Date().toString() + " - Actuator status received: " + actJson.toString());
     			roomId = actJson.getString("roomId");
     			ActuatorState actStatus = ActuatorState.valueOf(actJson.getString("status"));
     			long actTimestamp = actJson.getLong("timestamp");
@@ -125,6 +126,7 @@ public class MQTTAppSensori {
     			break;
     		case LAST_WILL:
     			JSONObject lastWillJson = new JSONObject(new String(message.getPayload()));
+    			System.out.println(new Date().toString() + " - Last will received: " + lastWillJson.toString());
     			roomId = lastWillJson.getString("roomId");
     			int roomStatus = lastWillJson.getInt("status");
     			//send info to AP when room is reconnected
@@ -151,6 +153,7 @@ public class MQTTAppSensori {
     			break;
     		case ANTIFREEZE:
     			JSONObject antifreezeJson = new JSONObject(new String(message.getPayload()));
+    			System.out.println(new Date().toString() + " - Antifreeze received: " + antifreezeJson.toString());
     			int status = antifreezeJson.getInt("status");
     			long timestampMillisecond = antifreezeJson.getLong("timestamp");
     			
@@ -190,7 +193,8 @@ public class MQTTAppSensori {
     		else {
     			//pubblica su dbSync
     			MQTTDbSync.sendMQTTMessage(json.toString(),"modechange");
-    		} 	
+    		}
+    		System.out.println(new Date().toString() + "Mode changed : " + json.toString());
 
     	}
     	catch(Exception e) {
@@ -203,11 +207,12 @@ public class MQTTAppSensori {
     
     
     public static void notifyModeChanged(JSONObject json) throws Exception {
-    	publish(json.toString(),qos,Topics.MODE.getName());
+    	System.out.println(new Date().toString() + "Mode changed : " + json.toString());
+    	publish(json.toString(),qos,Topics.MODE.getName());  	
     }
     
     public static void notifyProfileChanged(String roomId, Season season, Program profile) {
-
+    	
     	Gson json = new Gson();
     	try {    		
     		Map<String,Object> map = new HashMap<>();
@@ -221,7 +226,8 @@ public class MQTTAppSensori {
     		else {
     			//pubblica su dbSync
     			MQTTDbSync.sendMQTTMessage(finalJson,"profilechange");
-    		}      		
+    		} 
+    		System.out.println(new Date().toString() + "Profile changed: profileName = " + profile.getName());
     	}
     	catch(Exception e) {
     		e.printStackTrace();
@@ -232,6 +238,7 @@ public class MQTTAppSensori {
     }
     
     public static void notifyProfileChanged(JSONObject json) throws Exception {
+    	System.out.println(new Date().toString() + "Profile changed : " + json.toString());
     	publish(json.toString(),qos,Topics.PROFILE_CHANGE.getName());
     }
     

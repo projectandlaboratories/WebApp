@@ -44,16 +44,19 @@
 		Map<String,Room> rooms = DBClass.getRooms();
 		while ((line = input.readLine()) != null) {
 			String[] fields = line.split(":");
-			String ssidName = fields[1];
-			for(int i=2;i<fields.length; i++){
-				ssidName = ssidName + ":" + fields[i];
-			}			
-			ssidName = ssidName.replace("\"", "");
-			if (!ssidName.equals("") && ssidName.startsWith("ESP-")){
-				String roomId = ssidName.split("-")[1];
-				if(!rooms.containsKey(roomId))
-					ssidList.add(ssidName);
+			if(fields.length > 1){
+				String ssidName = fields[1];
+				for(int i=2;i<fields.length; i++){
+					ssidName = ssidName + ":" + fields[i];
+				}			
+				ssidName = ssidName.replace("\"", "");
+				if (!ssidName.equals("") && ssidName.startsWith("ESP-")){
+					String roomId = ssidName.split("-")[1];
+					if(!rooms.containsKey(roomId))
+						ssidList.add(ssidName);
+				}
 			}
+			
 				
 		}
 		input.close(); 
