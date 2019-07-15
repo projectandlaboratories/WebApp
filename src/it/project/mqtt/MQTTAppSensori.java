@@ -188,6 +188,9 @@ public class MQTTAppSensori {
     		if(mode.equals(Mode.WEEKEND)) {
     			json.put("endTimestamp", endTimestampMs);
     		}
+    		if(mode.equals(Mode.OFF)) {
+    			json.put("roomId", roomId);
+    		}
     		    		
     		if(user.equals(DbIdentifiers.LOCAL)) {
     			publish(json.toString(),qos,Topics.MODE.getName());

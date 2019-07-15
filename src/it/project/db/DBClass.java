@@ -393,6 +393,20 @@ public class DBClass {
 		
 	}
 	
+	public static void updateRoomMode(String roomId, Mode mode) {
+		Statement statement;
+		try {
+			statement = getStatement();
+			String query = "UPDATE rooms SET MODE= '" + mode 
+					+ "' WHERE ID_ROOM = '" + roomId + "'" ;
+			statement.executeUpdate(query);
+			MQTTDbSync.sendQueryMessage(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 
 	
 	public static String getRoomProfile(String roomId, Season season) {
