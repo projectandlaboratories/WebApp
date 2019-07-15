@@ -294,8 +294,8 @@ if(connectionState==0){
                     	<input type="hidden" id="modeOff" name="modeOff">		
 						
 						<button id="offButton" onclick="onOffClick()" type="submit" name="ACTION" value="onOffClick" class="btn btn-primary text-center bg-light border-light d-lg-flex justify-content-lg-center align-items-lg-center" onclick="setOffMode()" type="button" style="height: 60px;width: 60px;background-color: rgb(44,62,80);position: absolute; right: 100px; bottom:0px;color: #2C3E50; font-size:25px;visibility: <%=mainDiv%>;">
-	                   		<!-- img src="images/ios-power-primary.svg" style="height: 50px; width: 50px;position: absolute; bottom:2px; right: 4px"> -->
-	                   		<span id="offText"></span>
+	                   		<img id="offText" src="images/ios-power-primary.svg" style="height: 50px; width: 50px;position: absolute; bottom:2px; right: 4px">
+	                   		<!-- span id="offText"></span> -->
 	                   	</button>
                     </form>
                    
@@ -433,13 +433,13 @@ if(connectionState==0){
 
     	function updateModeButton(){
     		if(mode.value=="<%=Mode.MANUAL%>"){
-    			document.getElementById("offText").innerHTML="ON";
+    			document.getElementById("offText").setAttribute('src','images/ios-power-primary.svg');
     			enableManualMode();
     		}else if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
-    			document.getElementById("offText").innerHTML="ON";
+    			document.getElementById("offText").setAttribute('src','images/ios-power-primary.svg');
     			disableManualMode();
     		}else if(mode.value=="<%=Mode.OFF%>"){
-    			document.getElementById("offText").innerHTML="OFF";
+    			document.getElementById("offText").setAttribute('src','images/ios-power-not-selected.svg');
     			enableOff();
     		}
     	}
