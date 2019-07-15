@@ -111,9 +111,9 @@
 	//Setup connection e dbSync
 	try{
 		DBClass.getConnection(user);
-		//MQTTDbSync.setConnection(user,getServletContext());
-		//MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
-		//MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
+		MQTTDbSync.setConnection(user,getServletContext());
+		MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
+		MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
 	}
 	catch(Exception e){
 %>
@@ -239,7 +239,7 @@ if(connectionState==0){
                			
              			<div id="left" style="color: #2C3E50;">
              			
-             			<span style="font-size:16px; ">Room Temperature</span>
+             			<span style="font-size:24px; ">Room Temperature</span>
              			<!-- img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;"> -->
              			<br>
              			<span id="currentTemp" style="font-size:900%;"></span><br>             			
@@ -248,7 +248,7 @@ if(connectionState==0){
 				    	<div id="right" style="color: #2C3E50;">
 					    	<form action="<%=request.getContextPath()+"/UpdateMode"%>" method="POST">
 					    	
-					    		<span id="targetTempText" style="font-size:16px;margin-right:20%;"></span><br>
+					    		<span id="targetTempText" style="font-size:24px;margin-right:20%;"></span><br>
 					    		<input type="hidden" id="mode" name="mode" value=<%=currentMode%>>   
 					    		<input type="hidden" id="targetTemp" name="targetTemp" value=<%=targetTemp%>>  
 					    		<input type="hidden" id="act" name="act" value=<%=act%>>
@@ -449,8 +449,10 @@ if(connectionState==0){
     		document.getElementById("manualButton").style.display = "none";
     		document.getElementById("programButton").style.display = "none";
     		mode.value="<%=Mode.OFF%>"	
-    		increaseButton.disabled = true;
-    		decreaseButton.disabled = true;
+    		//increaseButton.disabled = true;
+    		//decreaseButton.disabled = true;
+    		increaseButton.style.visibility = "hidden";
+    		decreaseButton.style.visibility = "hidden";
     		document.getElementById("manualSection").style.display = "none";
     		document.getElementById("targetTempText").innerHTML="The temperature control<br>is set to OFF.<br>";
     		targetTemp.innerHTML="";    		
@@ -471,6 +473,8 @@ if(connectionState==0){
     		
     		//document.getElementById("manualImage").setAttribute('src','images/md-hand-primary.svg');
     		mode.value="<%=Mode.MANUAL%>"
+    		increaseButton.style.visibility = "visible";
+    		decreaseButton.style.visibility = "visible";
     		increaseButton.disabled = false;
     		decreaseButton.disabled = false;
     		//saveButton.disabled = true;
@@ -491,6 +495,8 @@ if(connectionState==0){
     		
     		//document.getElementById("manualImage").setAttribute('src','images/md-hand-not-selected.svg');
     		mode.value="<%=Mode.PROGRAMMABLE%>"	
+    		increaseButton.style.visibility = "visible";
+    		decreaseButton.style.visibility = "visible";
     		increaseButton.disabled = true;
     		decreaseButton.disabled = true;
     		document.getElementById("manualSection").style.display = "none";
@@ -522,7 +528,7 @@ if(connectionState==0){
     	
 
     	function setDate(){
-    		var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute:'numeric'};
+    		var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour:'numeric', minute:'numeric', hour12:false};
     	    var d = new Date();
     	    var n = d.toLocaleDateString("en-US",options);
     	    document.getElementById("date").innerHTML = n;
@@ -579,11 +585,12 @@ if(connectionState==0){
 							disableManualMode();
 							mode.value="<%=Mode.PROGRAMMABLE%>"
 							document.getElementById("programButton").disabled=true;	
+							document.getElementById("offButton").disabled=true;
 						}
 						else{
 							weekendIcon.src = "images/ios-car-white.svg";
 							document.getElementById("programButton").disabled=false;
-													
+							document.getElementById("offButton").disabled=false;							
 						}
 					} else {
 						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
@@ -772,6 +779,7 @@ if(connectionState==0){
 
 		    return year+"-"+ month +"-" + day+"T"+hour+":"+min 
 		}
+		
 		function setWeekendModePopupHtml(endTime){
 			
 			if(endTime != ""){

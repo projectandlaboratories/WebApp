@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import it.project.enums.*;
 import it.project.mqtt.MQTTAppSensori;
 import it.project.db.DBClass;
+import it.project.dto.Room;
 
 /**
  * Servlet implementation class UpdateMode
@@ -59,7 +61,7 @@ public class UpdateMode extends HttpServlet {
 		 	case "onOffClick":
 		 		String prova = (String)request.getParameter("modeOff");
 		 		Mode modeOff = Mode.valueOf((String)request.getParameter("modeOff"));//off o programmable
-				DBClass.updateRoomMode(currentRoomId, modeOff, 0.0, SystemType.COLD);
+				DBClass.updateRoomMode(currentRoomId, modeOff);
 				MQTTAppSensori.notifyModeChanged(modeOff, currentRoomId, 0.0, SystemType.COLD,0); //TODO decommentare quando dobbiamo testare mqtt con appSensori
 		 		break;
 		 	case "setWeekendMode":				
@@ -72,15 +74,19 @@ public class UpdateMode extends HttpServlet {
 		 				break;
 		 			}
 		 			DBClass.setWeekendMode(date.toString());
-		 			DBClass.updateRoomMode(currentRoomId, Mode.PROGRAMMABLE, 20.0, SystemType.COLD);
+		 			Map<String,Room> rooms = DBClass.getRooms();//la removeWeekendMode è chiamata solo se l'utente lo disattiva manualmente
+			 		for(String roomId:rooms.keySet()) {
+			 			DBClass.updateRoomMode(roomId, Mode.PROGRAMMABLE);	
+			 		}
+		 			//DBClass.updateRoomMode(currentRoomId, Mode.PROGRAMMABLE, 20.0, SystemType.COLD);
 		 			MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,endTimestamp.getTime()/1000);
 		 		} catch (ParseException e) {
 		 			
 		 			e.printStackTrace();
 		 		}
-
 		 		break;
 		 	case "removeWeekendMode":
+		 		
 		 		DBClass.stopWeekenMode();
 				Date now = new Date();
 				MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,now.getTime()/1000);

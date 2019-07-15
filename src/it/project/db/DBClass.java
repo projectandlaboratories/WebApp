@@ -50,10 +50,10 @@ public class DBClass {
 			if(user.equals(DbIdentifiers.LOCAL)) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/project", "PCSUser", "root"); //Vincenzo
-				conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
+				//conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/thermostat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "root", "ily2marzo"); //Ilaria
 			
 				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova", "provauser", "password"); //raspberry vins
-				//conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
+				conn = DriverManager.getConnection("jdbc:mysql://localhost/prova?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", "provauser", "password"); //raspberry prof
 				conn.setAutoCommit(true);
 				System.out.println(new Date().toString() + "Connected to the db");
 			}
@@ -384,6 +384,20 @@ public class DBClass {
 		try {
 			statement = getStatement();
 			String query = "UPDATE rooms SET MODE= '" + mode + "', MANUAL_TEMP= '" + targetTemp + "', MANUAL_SYSTEM= '" + systemType 
+					+ "' WHERE ID_ROOM = '" + roomId + "'" ;
+			statement.executeUpdate(query);
+			MQTTDbSync.sendQueryMessage(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static void updateRoomMode(String roomId, Mode mode) {
+		Statement statement;
+		try {
+			statement = getStatement();
+			String query = "UPDATE rooms SET MODE= '" + mode 
 					+ "' WHERE ID_ROOM = '" + roomId + "'" ;
 			statement.executeUpdate(query);
 			MQTTDbSync.sendQueryMessage(query);
