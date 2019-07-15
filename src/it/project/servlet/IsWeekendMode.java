@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -49,10 +50,12 @@ public class IsWeekendMode extends HttpServlet {
 		}
 		String endTime = DBClass.isWeekendMode();
 		if(endTime != null) {
-			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			format.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
 			Date endDate;
 			try {
 				endDate = format.parse(endTime);
+				System.out.println("Weekend mode until " + endDate.toString());
 				Date now = new Date();
 				if(endDate.compareTo(now) <= 0) { //esco dalla weekend mode
 					DBClass.stopWeekenMode();

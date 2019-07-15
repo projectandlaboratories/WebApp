@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -65,9 +66,11 @@ public class UpdateMode extends HttpServlet {
 		 	case "setWeekendMode":				
 		 		try {
 		 			String date = request.getParameter("date").replaceAll("T", " ");
-		 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+		 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		 			format.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
 		 			Date now = new Date();
 		 			Date endTimestamp = format.parse(date);
+		 			System.out.println("Weekend Mode is now set until + " + endTimestamp.toString());
 		 			if(now.compareTo(endTimestamp)>=0) {
 		 				break;
 		 			}
