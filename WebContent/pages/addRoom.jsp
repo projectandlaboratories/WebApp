@@ -42,9 +42,9 @@
 		String line;
 		BufferedReader input = new BufferedReader(new InputStreamReader(listSsid.getInputStream()));
 		Map<String,Room> rooms = DBClass.getRooms();
-		System.out.println("Add room called!");
+		//System.out.println("Add room called!");
 		while ((line = input.readLine()) != null) {
-			System.out.println("Line=" + line);
+			//System.out.println("Line=" + line);
 			String[] fields = line.split(":");
 			if(fields.length > 1){
 				String ssidName = fields[1];
@@ -52,11 +52,11 @@
 					ssidName = ssidName + ":" + fields[i];
 				}	
 				ssidName = ssidName.replace("\"", "");
-				System.out.println("SSID name=" + ssidName);
+				//System.out.println("SSID name=" + ssidName);
 				if (!ssidName.equals("") && ssidName.startsWith("ESP-")){
 					String roomId = ssidName.split("-")[1];
 					if(!rooms.containsKey(roomId)){
-						System.out.println("SSID name=" + ssidName + " added to the list");
+						//System.out.println("SSID name=" + ssidName + " added to the list");
 						ssidList.add(ssidName);
 					}
 						

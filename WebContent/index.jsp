@@ -464,6 +464,7 @@ if(connectionState==0){
     		}else{//entro in off
     			document.getElementById("modeOff").value = "<%=Mode.OFF%>";
     		}
+    		showLoadingIcon()
     	}
     	
     	function enableManualMode(){

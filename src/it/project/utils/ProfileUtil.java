@@ -177,6 +177,7 @@ public class ProfileUtil {
 		BufferedReader input = new BufferedReader(new InputStreamReader(connectEspAP.getInputStream()));
 		String connectedSsid = "";
 		while ((line = input.readLine()) != null) {
+			System.out.println(new Date().toString() + "- Connection to Wifi SSID= " + ssid + " password = " + espPassword + ", output = " + line);
 			String[] outputSplitted = line.split(":");		
 		}
 		
@@ -203,8 +204,10 @@ public class ProfileUtil {
 		input = new BufferedReader(new InputStreamReader(connectLocalWifi.getInputStream()));
 		connectedSsid = "";
 		while ((line = input.readLine()) != null) {
+			System.out.println(new Date().toString() + "- Connection to Wifi SSID= " + localWifiSSid + " password = " + localWifiPwd + ", output = " + line);
 			String[] outputSplitted = line.split(":");		
 		}
+		
 		
 		
 		//get broker IP

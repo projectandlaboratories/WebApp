@@ -3,6 +3,7 @@ package it.project.servlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -52,10 +53,13 @@ public class ConnectToRoom extends HttpServlet {
 			if(mainRoomId.equals(roomId)) {
 				Process connectMainRoom= new ProcessBuilder("/bin/bash",getServletContext().getRealPath("/bash/connect_main_room.sh")).redirectErrorStream(true).start();
 				String line;
+				String output="None";
 				BufferedReader input = new BufferedReader(new InputStreamReader(connectMainRoom.getInputStream()));
 				while ((line = input.readLine()) != null) {
-					String output = line;	
+					output = line;
+					System.out.println(new Date().toString() + "- Connection to Room HALL, output = " + output);
 				}
+				System.out.println(new Date().toString() + "- Connection to Room HALL, output = " + output);
 			}
 			else {
 				//CONNECT TO ROOM

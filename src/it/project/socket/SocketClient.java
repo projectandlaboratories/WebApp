@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Date;
 
 import org.json.JSONObject;
 
@@ -37,7 +38,7 @@ public class SocketClient {
 			JSONObject json = new JSONObject();
 			json.put("wifiSsid", wifiSsid);
 			json.put("wifiPwd", wifiPwd);
-			
+			System.out.println(new Date().toString() + "- Sending wifi info via socket --> " + json.toString());
 			writer.println(json.toString());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

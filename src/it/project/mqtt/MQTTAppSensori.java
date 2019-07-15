@@ -199,7 +199,7 @@ public class MQTTAppSensori {
     			//pubblica su dbSync
     			MQTTDbSync.sendMQTTMessage(json.toString(),"modechange");
     		}
-    		System.out.println(new Date().toString() + "Mode changed : " + json.toString());
+    		System.out.println(new Date().toString() + " - Mode changed : " + json.toString());
 
     	}
     	catch(Exception e) {
@@ -232,7 +232,7 @@ public class MQTTAppSensori {
     			//pubblica su dbSync
     			MQTTDbSync.sendMQTTMessage(finalJson,"profilechange");
     		} 
-    		System.out.println(new Date().toString() + "Profile changed: profileName = " + profile.getName());
+    		System.out.println(new Date().toString() + "Profile changed: profileName = " + profile.getName() + " for room: " + roomId);
     	}
     	catch(Exception e) {
     		e.printStackTrace();

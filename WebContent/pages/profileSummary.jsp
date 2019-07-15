@@ -67,14 +67,6 @@ if(myProgram.getName()!=null){
 %>
 <script type="text/javascript">
 
-alertCode="<%=alertCode%>"
-if(alertCode=='present'){
-	alert("Profile name already present!")
-}
-else if(alertCode == 'empty'){
-	alert("Profile name can't be empty!")
-}
-
 function showLoadingIcon(){
 	document.getElementById("load").classList.remove("hide")
 }
@@ -91,7 +83,15 @@ function showLoadingIcon(){
         
     <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; margin-top:3%">
     
-    	<div style="margin-bottom: 20px"><input class="keyboard" type="text" placeholder="enter profile name" name="profile_name" value="<%=name %>" style="width:100%;background-color:white;color:black;"></div>	
+    	<div style="margin-bottom: 20px">
+    	<input class="keyboard" type="text" placeholder="enter profile name" name="profile_name" value="<%=name %>" style="width:100%;background-color:white;color:black;">
+    	<c:if test="${param.alert eq 2}">
+				<h6 style='color:red'>An error has occurred: profile name can't be empty</h6>
+		</c:if>
+		<c:if test="${param.alert eq 1}">
+				<h6 style='color:red'>An error has occurred: profile already exists</h6>
+		</c:if>
+    	</div>	
     	<jsp:include page="profileBars.jsp" /> 
 	   
 	   

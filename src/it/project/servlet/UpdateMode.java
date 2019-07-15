@@ -82,7 +82,7 @@ public class UpdateMode extends HttpServlet {
 			 			DBClass.updateRoomMode(roomId, Mode.PROGRAMMABLE);	
 			 		}
 		 			//DBClass.updateRoomMode(currentRoomId, Mode.PROGRAMMABLE, 20.0, SystemType.COLD);
-			 		long ms = (endTimestamp.getTime()/1000) + 2*60*60*1000;
+			 		long ms = endTimestamp.getTime()/1000;
 		 			MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,ms);
 		 		} catch (ParseException e) {
 		 			
@@ -93,7 +93,7 @@ public class UpdateMode extends HttpServlet {
 		 	case "removeWeekendMode":
 		 		DBClass.stopWeekenMode();
 				Date now = new Date();
-				long ms = (now.getTime()/1000) + 2*60*60*1000;
+				long ms = now.getTime()/1000;
 				MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,ms);
 		 		break;
 		}

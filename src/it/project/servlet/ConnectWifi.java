@@ -41,6 +41,7 @@ public class ConnectWifi extends HttpServlet {
 		String connectedSsid = "";
 		String result="false";
 		while ((line = input.readLine()) != null) {
+			System.out.println("Connection to Wifi Line= " + line);
 			connectedSsid = line;
 			String[] outputSplitted = line.split(":");
 			if(outputSplitted.length > 1){
@@ -48,6 +49,7 @@ public class ConnectWifi extends HttpServlet {
 				connectedSsid = connectedSsid.replace("\"", "");	
 			}			
 		}
+		System.out.println("Connection to Wifi SSID= " + ssid + " password = " + password + ", output = " + connectedSsid);
 		input.close();
 		
 		if(!connectedSsid.equals(ssid)){

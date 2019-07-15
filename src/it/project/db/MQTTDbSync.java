@@ -165,6 +165,7 @@ public class MQTTDbSync{
             message.setQos(qos);
             message.setRetained(true);
             client.publish(Topics.ADD_ROOM.getName(), message);
+            System.out.println(new Date().toString() + "- Room Info sent -->" + json.toString());
     	}
     	catch(Exception e) {
     		e.printStackTrace();

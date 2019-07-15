@@ -1,6 +1,7 @@
 package it.project.servlet;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -23,7 +24,6 @@ public class NewProgramServlet  extends HttpServlet {
 		
 		switch(action) {
 		 case "ADD":
-			System.out.println(action);
 			if(req.getParameter("profile_name").equals("")) {
 				resp.sendRedirect("pages/profileSummary.jsp?alert=2");
 			}
@@ -33,13 +33,13 @@ public class NewProgramServlet  extends HttpServlet {
 				//req.getSession(false).removeAttribute("currentProfile");
 				program.setName(req.getParameter("profile_name"));
 				DBClass.createProfiles(program);
+				System.out.println(new Date().toString() + " - New Profile created: " + program.getName());
 				MQTTDbProf.sendEditProfileLog("AddProfile", program.getName(), program, System.currentTimeMillis());
 				resp.sendRedirect("pages/profileList.jsp");
 			}
 			break;
 		 case "UPDATE":
-			System.out.println(action + " Profile");
-
+		
 			String previousName=(String)req.getSession(false).getAttribute("previousName");
 			//System.out.println(previousName);
 			String currentName=(String)req.getParameter("profile_name");
@@ -57,6 +57,7 @@ public class NewProgramServlet  extends HttpServlet {
 				program.setName(req.getParameter("profile_name"));
 				//DBClass.createProfiles(program);
 				DBClass.updateProfile(previousName, currentName, program);
+				System.out.println(new Date().toString() + " - Profile " + program.getName() + " updated");
 				MQTTDbProf.sendEditProfileLog("UpdateProfile", program.getName(), program, System.currentTimeMillis());
 				String defaultProfile = DBClass.getConfigValue("defaultProfile");
 				if(previousName.compareTo(defaultProfile)==0) {
@@ -79,6 +80,7 @@ public class NewProgramServlet  extends HttpServlet {
 			boolean assigned = DBClass.isProfileAssigned(program.getName());
 			if(!assigned) {
 				DBClass.deleteProfiles(program.getName());
+				System.out.println(new Date().toString() + " - Profile " + program.getName() + " deleted");
 				MQTTDbProf.sendEditProfileLog("DeleteProfile", program.getName(), null, System.currentTimeMillis());
 				resp.sendRedirect("pages/profileList.jsp");
 			}
