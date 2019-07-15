@@ -111,9 +111,9 @@
 	//Setup connection e dbSync
 	try{
 		DBClass.getConnection(user);
-		MQTTDbSync.setConnection(user,getServletContext());
-		MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
-		MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
+		//MQTTDbSync.setConnection(user,getServletContext());
+		//MQTTDbProf.setConnection(user,rootCApath,certificatePath,privateKeyPath);
+		//MQTTAppSensori.setConnection(user); //TODO decommentare quando testeremo mqtt con AppSensori
 	}
 	catch(Exception e){
 %>
@@ -288,7 +288,7 @@ if(connectionState==0){
                 	<button class="btn btn-light text-center bg-light border-light d-lg-flex" onclick="prevPage()" type="button"  style="height: 60px;padding-top: 6px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);">
                 		<img src="images/ios-arrow-round-back-primary.svg" style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">
                 	</button>
-                    <a class="navbar-brand text-center text-primary flex-fill" onclick="showLoadingIcon()" href="pages/roomManagementItem.jsp?roomId=<%=currentRoomId%>" style="margin-right:64px; padding-top: 5px;font-size: 40px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;"><%=currentRoom.getRoomName() %></a>
+                    <a class="navbar-brand text-center text-primary flex-fill" onclick="showLoadingIcon()" href="pages/roomManagementItem.jsp?roomId=<%=currentRoomId%>&callerIndex=index" style="margin-right:64px; padding-top: 5px;font-size: 40px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;"><%=currentRoom.getRoomName() %></a>
                    
                     <form action="<%=request.getContextPath()+"/UpdateMode"%>" method="POST">
                     	<input type="hidden" id="modeOff" name="modeOff">		

@@ -54,13 +54,13 @@ public class UpdateMode extends HttpServlet {
 				Double targetTemp=Double.parseDouble(request.getParameter("targetTemp"));
 				SystemType systemType = SystemType.valueOf(request.getParameter("act"));
 				DBClass.updateRoomMode(currentRoomId, mode, targetTemp, systemType);
-				//MQTTAppSensori.notifyModeChanged(mode, currentRoomId, targetTemp, systemType,0); //TODO decommentare quando dobbiamo testare mqtt con appSensori
+				MQTTAppSensori.notifyModeChanged(mode, currentRoomId, targetTemp, systemType,0); //TODO decommentare quando dobbiamo testare mqtt con appSensori
 		 		break;
 		 	case "onOffClick":
 		 		String prova = (String)request.getParameter("modeOff");
 		 		Mode modeOff = Mode.valueOf((String)request.getParameter("modeOff"));//off o programmable
 				DBClass.updateRoomMode(currentRoomId, modeOff, 0.0, SystemType.COLD);
-				//MQTTAppSensori.notifyModeChanged(modeOff, currentRoomId, 0.0, SystemType.COLD,0); //TODO decommentare quando dobbiamo testare mqtt con appSensori
+				MQTTAppSensori.notifyModeChanged(modeOff, currentRoomId, 0.0, SystemType.COLD,0); //TODO decommentare quando dobbiamo testare mqtt con appSensori
 		 		break;
 		 	case "setWeekendMode":				
 		 		try {
