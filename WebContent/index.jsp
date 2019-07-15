@@ -19,13 +19,6 @@
     <%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<% //HttpWebService.getAuthenticationToken();
-/*System.out.println("1");
-System.out.println(HttpWebService.getGroupInfo()+"\n\n");
-System.out.println("2");
-System.out.println(HttpWebService.getDeviceInfo()+"\n\n");
-System.out.println("3");
-System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
@@ -59,6 +52,8 @@ System.out.println(HttpWebService.getLogs()+"\n\n");*/%>
 #left { background: auto; width:50%; text-align:center; padding-top: 12px;}
 #middle {background: green;}
 #right {background: auto; width:50%;height:100%; text-align:center;padding-top: 12px;border-top-left-radius: 10px; border-left:1px solid #2C3E50; border-top:1px solid #2C3E50; position:absolute; right: 0px; }
+#right_off {background: auto; width:50%;height:100%; text-align:center;padding-top: 12px;border-top-left-radius: 10px; border-left:1px solid #2C3E50; border-top:1px solid #2C3E50; position:absolute; right: 0px; }
+
 </style>
 
 </head>
@@ -149,10 +144,9 @@ if(ProfileUtil.getCurrentSeason().equals(Season.SUMMER)){
 if(currentRoom.getMode().equals(Mode.MANUAL)){
 	act = currentRoom.getManualSystem().toString();
 	targetTemp=Double.toString(currentRoom.getManualTemp());	
-}else{
+}else if(currentRoom.getMode().equals(Mode.PROGRAMMABLE)){
 	targetTemp = ProfileUtil.getCurrentTemperature(currentRoom);	
 }
-
 int connectionState = DBClass.getConnectionState(currentRoomId);
 String alertDiv = "hidden";
 String mainDiv = "visible";
@@ -183,6 +177,7 @@ if(connectionState==0){
         </div>
         <div>
             <div class="container-fluid" style="height: 70px;padding-right: 0px;padding-left: 0px;">
+            
                 <h1 class="d-lg-flex align-items-lg-center" style="background-color: rgb(44,62,80);height: 70px;vertical-align: middle;">
                 	<a role="button" id="menu-toggle" href="#menu-toggle" style="height: 70px;">
                 		<img src="images/md-reorder-white.svg" style="height: 100%;"></a>
@@ -202,7 +197,6 @@ if(connectionState==0){
 
 				<div id="alertdiv" class="d-inline-flex flex-column" style="position:absolute;bottom:0px;top: 100px;left:0px;right:0px;width:100%;visibility:<%=alertDiv%>; ">
 					
-					
 						<span style="text-align:center;">
 						<img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;">
 						This room is not connected<br>
@@ -216,9 +210,9 @@ if(connectionState==0){
 				<div id="maindiv" class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px;visibility:<%=mainDiv%>; ">
                     <!-- Icons -->
                    <div style="height:100%; display: inline-grid">
-                    	<img id="hotIcon" style="margin-left:8px; margin-right:8px; margin-top:3%; margin-bottom:5%; height:30px;" src="images/ios-flame-primary.svg">
-                    	<img id="coldIcon" style="margin-left:8px; margin-right:8px; margin-top:4%; margin-bottom:5%; height:30px;" src="images/ios-snow-primary.svg">
-                    	<img id="antifreezeIcon" style="margin-left:8px; margin-right:8px; margin-top:4%; margin-bottom:4%; height:30px;" src="images/ios-thermometer-not-selected.svg">
+                    	<img id="hotIcon" style="margin-left:2px; margin-right:8px; margin-top:3%; margin-bottom:5%; height:50px;" src="images/ios-flame-primary.svg">
+                    	<img id="coldIcon" style="margin-left:2px; margin-right:8px; margin-top:4%; margin-bottom:5%; height:50px;" src="images/ios-snow-primary.svg">
+                    	<img id="antifreezeIcon" style="margin-left:2px; margin-right:8px; margin-top:4%; margin-bottom:4%; height:50px;" src="images/ios-thermometer-not-selected.svg">
                     </div>
                    
                     <div style="position:absolute; width:100%; height:100%; margin-left: 64px;">
@@ -231,7 +225,7 @@ if(connectionState==0){
              			<span id="currentTemp" style="font-size:900%;"></span><br>             			
              			</div>				    	
 				    	 
-				    	<div id="right" style="color: #2C3E50;" >
+				    	<div id="right" style="color: #2C3E50;">
 					    	<form action="<%=request.getContextPath()+"/UpdateMode"%>" method="POST">
 					    	
 					    		<span id="targetTempText" style="font-size:16px;margin-right:20%;"></span><br>
@@ -244,15 +238,15 @@ if(connectionState==0){
 					    		
 		                		<div id="manualSection" style="display:none; background-color: auto; width: 50%; margin-left:15%; margin-right: 35%; position:absolute; bottom: 8px; font-size: 60px; border:1px solid #2C3E50;  border-radius: 10px;">
 		    						<div style="height: 65px; ">
-			    						<button id=<%=SystemType.HOT%> onclick="onHotSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white; vertical-align: top; "><img id="hotImage" src="images/ios-flame-primary.svg"></button>
-					              		<button id=<%=SystemType.COLD%> onclick="onColdSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 65px;height: 65px;background-color: white; vertical-align: top;"><img id="coldImage" src="images/ios-snow-primary.svg"></button>	
+			    						<button id=<%=SystemType.HOT%> onclick="onHotSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 80px;height: 80px;background-color: white; vertical-align: top; "><img id="hotImage" src="images/ios-flame-primary.svg"></button>
+					              		<button id=<%=SystemType.COLD%> onclick="onColdSystemClick()" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style="font-size: 50px;width: 80px;height: 80px;background-color: white; vertical-align: top;"><img id="coldImage" src="images/ios-snow-primary.svg"></button>	
 		    						</div>
-		    						<button id="saveButton" onclick="showLoadingIcon()" class="btn btn-primary" type="submit" name="ACTION" value="changeManualProgrammableMode" style="width: 90%; margin-bottom: 4px; margin-top: 4px;">SAVE</button>
+		    						<button id="saveButton" onclick="showLoadingIcon()" class="btn btn-primary" type="submit" name="ACTION" value="changeManualProgrammableMode" style="width: 90%; margin-bottom: 4px; margin-top: 8px;">SAVE</button>
 				              		
 				               	</div>
 				             
-				             	<button onclick="disableManualMode()" id="manualButton" type="submit" name="ACTION" value="changeManualProgrammableMode"  class="btn btn-light btn-lg text-center text-primary border-white" type="button" style=" position:absolute; bottom: 8px; right:8px;font-size: 50px;width: 70px;height: 70px;background-color: white;"><img src="images/md-hand-primary.svg" ></button>
-		                		<button onclick="enableManualMode()" id="programButton" type="submit" name="ACTION" value="changeManualProgrammableMode" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style=" position:absolute; bottom: 8px; right:8px;font-size: 50px;width: 70px;height: 70px;background-color: white;"><img src="images/md-hand-not-selected.svg" ></button>
+				             	<button onclick="disableManualMode()" id="manualButton" type="submit" name="ACTION" value="changeManualProgrammableMode"  class="btn btn-light btn-lg text-center text-primary border-white" type="button" style=" position:absolute; bottom: 8px; right:0px;font-size: 50px;width: 90px;height: 100px;background-color: white;"><img src="images/md-hand-primary.svg" ></button>
+		                		<button onclick="enableManualMode()" id="programButton" type="submit" name="ACTION" value="changeManualProgrammableMode" class="btn btn-light btn-lg text-center text-primary border-white" type="button" style=" position:absolute; bottom: 8px; right:0px;font-size: 50px;width: 90px;height: 100px;background-color: white;"><img src="images/md-hand-not-selected.svg" ></button>
 		                		
 					    		 <div class="btn-group btn-group-vertical" role="group" style="right: 8px;position: absolute;width: 65px; top:32px;"><!-- width: 25%; -->
 				                    <button id="increase" onclick="onIncreaseClick()" class="btn btn-primary" type="button" style="margin-bottom: 16px;align-self: end;padding-right: 8px;padding-left: 8px;">
@@ -275,7 +269,17 @@ if(connectionState==0){
                 		<img src="images/ios-arrow-round-back-primary.svg" style="height: 60px;padding-top: 2px;margin-left: 8px;width: 60px; position: absolute; bottom: 2px; left: 0px">
                 	</button>
                     <a class="navbar-brand text-center text-primary flex-fill" onclick="showLoadingIcon()" href="pages/roomManagementItem.jsp?roomId=<%=currentRoomId%>" style="margin-right:64px; padding-top: 5px;font-size: 40px;margin-top: 0px;margin-bottom: 0px;min-width: auto;width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;"><%=currentRoom.getRoomName() %></a>
-                    <button class="btn btn-primary text-center bg-light border-light d-lg-flex justify-content-lg-center align-items-lg-center" onclick="nextPage()" type="button" style="height: 60px;padding-top: 6px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 8px;">
+                   
+                    <form action="<%=request.getContextPath()+"/UpdateMode"%>" method="POST">
+                    	<input type="hidden" id="modeOff" name="modeOff">		
+						
+						<button id="offButton" onclick="onOffClick()" type="submit" name="ACTION" value="onOffClick" class="btn btn-primary text-center bg-light border-light d-lg-flex justify-content-lg-center align-items-lg-center" onclick="setOffMode()" type="button" style="height: 60px;width: 60px;background-color: rgb(44,62,80);position: absolute; right: 100px; bottom:0px;color: #2C3E50; font-size:25px;visibility: <%=mainDiv%>;">
+	                   		<!-- img src="images/ios-power-primary.svg" style="height: 50px; width: 50px;position: absolute; bottom:2px; right: 4px"> -->
+	                   		<span id="offText"></span>
+	                   	</button>
+                    </form>
+                   
+                    <button class="btn btn-primary text-center bg-light border-light d-lg-flex justify-content-lg-center align-items-lg-center" onclick="nextPage()" type="button" style="height: 60px;padding-top: 6px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 0px;">
                    		<img src="images/ios-arrow-round-forward-primary.svg" style="height: 60px;padding-top: 6px;width: 60px;position: absolute; bottom:2px; right: 0px">
                    	</button>
                </footer>
@@ -315,12 +319,12 @@ if(connectionState==0){
 		getAntifreezeState();
 		getConnectionState();
 		updateWeekendModeIcon();
-		getMode();
+		getMode(); 
 		if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
 			setProfileTemperature();
 		}
 		
-	}, 20 * 1000); 
+	}, 10 * 1000); 
     
 
     	function initializeParameters(){
@@ -330,15 +334,16 @@ if(connectionState==0){
     		act.value="<%=act%>"
     	    updateModeButton();
     		if(mode.value=="<%=Mode.MANUAL%>"){
-   				saveButton.disabled = true;
+    			disableSaveButton();
    			}
     		getActuatorState();
     		getAntifreezeState();
-    		//getConnectionState();
     		updateWeekendModeIcon();
     		setTemperature();
     		targetTemp.value="<%=targetTemp%>"
-    		targetTempShown.innerHTML ="<%=targetTemp%>"+ "°"
+    		if(mode.value!="<%=Mode.OFF%>"){
+    			targetTempShown.innerHTML ="<%=targetTemp%>"+ "°"	
+    		}
     		   		
     		console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
     		
@@ -347,10 +352,19 @@ if(connectionState==0){
     			setProfileTemperature();
     		}
     	}
-    	
+    	function enableSaveButton(){
+    		saveButton.style.background="#2c3e50";
+			saveButton.style.border="#2c3e50";
+			saveButton.disabled = false;
+    	}
+    	function disableSaveButton(){
+    		saveButton.style.background="#adbfd2";
+			saveButton.style.border="#adbfd2";
+			saveButton.disabled = true;
+    	}
     	
     	function onHotSystemClick(){
-    		saveButton.disabled = false;
+    		enableSaveButton();
     		act.value="<%=SystemType.HOT%>"
     		//seleziona hot
     		document.getElementById("hotImage").setAttribute('src','images/ios-flame-primary.svg');
@@ -360,7 +374,7 @@ if(connectionState==0){
     	}
     	
     	function onColdSystemClick(){
-    		saveButton.disabled = false;
+    		enableSaveButton();
     		act.value="<%=SystemType.COLD%>"
     		//seleziona cold
     		document.getElementById("coldImage").setAttribute('src','images/ios-snow-primary.svg');
@@ -379,11 +393,35 @@ if(connectionState==0){
 
     	function updateModeButton(){
     		if(mode.value=="<%=Mode.MANUAL%>"){
+    			document.getElementById("offText").innerHTML="ON";
     			enableManualMode();
     		}else if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
+    			document.getElementById("offText").innerHTML="ON";
     			disableManualMode();
+    		}else if(mode.value=="<%=Mode.OFF%>"){
+    			document.getElementById("offText").innerHTML="OFF";
+    			enableOff();
     		}
-    		
+    	}
+    	
+    	function enableOff(){
+    		console.log("Enable Off!");
+    		document.getElementById("manualButton").style.display = "none";
+    		document.getElementById("programButton").style.display = "none";
+    		mode.value="<%=Mode.OFF%>"	
+    		increaseButton.disabled = true;
+    		decreaseButton.disabled = true;
+    		document.getElementById("manualSection").style.display = "none";
+    		document.getElementById("targetTempText").innerHTML="The temperature control<br>is set to OFF.<br>";
+    		targetTemp.innerHTML="";    		
+    	}
+    	
+    	function onOffClick(){
+    		if(mode.value=="<%=Mode.OFF%>"){//esco da off
+    			document.getElementById("modeOff").value = "<%=Mode.PROGRAMMABLE%>";
+    		}else{//entro in off
+    			document.getElementById("modeOff").value = "<%=Mode.OFF%>";
+    		}
     	}
     	
     	function enableManualMode(){
@@ -398,7 +436,8 @@ if(connectionState==0){
     		//saveButton.disabled = true;
     		document.getElementById("manualSection").style.display = "block";
     		updateActButtons();
-    		saveButton.disabled = true;//perchè i bottoni me lo abilitano
+    		disableSaveButton();
+    		//saveButton.disabled = true;//perchè i bottoni me lo abilitano
     		document.getElementById("targetTempText").innerHTML="Manual Temperature";
     		//console.log(mode.value+" "+targetTemp.value+" "+ act.value);  	
     	}
@@ -426,7 +465,8 @@ if(connectionState==0){
     			return;
     		targetTemp.value=Number(currentTemp + 0.5).toFixed(1);
         	targetTempShown.innerHTML = targetTemp.value+ "°";
-        	saveButton.disabled = false;
+        	enableSaveButton();
+        	//saveButton.disabled = false;
     	}
     
     	function onDecreaseClick(){
@@ -436,7 +476,8 @@ if(connectionState==0){
     		}
     		targetTemp.value=Number(currentTemp - 0.5).toFixed(1);
     		targetTempShown.innerHTML = targetTemp.value+ "°";
-    		saveButton.disabled = false;
+    		enableSaveButton();
+    		//saveButton.disabled = false;
     	}
     	
 
@@ -615,10 +656,12 @@ if(connectionState==0){
 						if(xmlHttpRequest.responseText == '1'){
 							maindiv.style.visibility="visible";
 							alertdiv.style.visibility="hidden";
+							document.getElementById("offButton").style.visibility="visible";
 						}
 						else{
 							alertdiv.style.visibility="visible";
 							maindiv.style.visibility="hidden";
+							document.getElementById("offButton").style.visibility="hidden";
 							//antifreezeIcon.style.visibility="inherit";
 						}
 											
@@ -642,7 +685,7 @@ if(connectionState==0){
 						var state = xmlHttpRequest.responseText
 						var res = state.split("-")
 						
-						if(res[0]=="<%=Mode.MANUAL%>"){
+						if(res[0]=="<%=Mode.MANUAL%>"){//ci sei arrivato o dal manual o da progr
 							
 							if(saveButton.disabled==true||mode.value=="<%=Mode.PROGRAMMABLE%>"){//se sei progr il bottone è abilitato, di default
 								mode.value = res[0]
@@ -652,11 +695,13 @@ if(connectionState==0){
 								enableManualMode();
 							}
 							
-			    		}else if(mode.value!="<%=Mode.PROGRAMMABLE%>"){//se ti arriva progr e non sei in progr
+			    		}else if(res[0]=="<%=Mode.PROGRAMMABLE%>" && mode.value!="<%=Mode.PROGRAMMABLE%>"){//se ti arriva progr e non sei in progr
 			    			mode.value = res[0]
 			    			targetTemp.value=res[1]
 							targetTempShown.innerHTML =targetTemp.value+ "°"
 			    			disableManualMode();
+			    		}else if(res[0]=="<%=Mode.OFF%>"){
+			    			enableOff();
 			    		}
 						
 						console.log("getMode: " + mode.value+" "+targetTemp.value+" "+ act.value);  	
