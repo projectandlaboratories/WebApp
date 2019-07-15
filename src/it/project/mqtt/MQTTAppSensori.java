@@ -9,6 +9,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -142,7 +143,8 @@ public class MQTTAppSensori {
     					notifyModeChanged(room.getMode(), roomId, room.getManualTemp(), room.getManualSystem(), 0);
     				}	
     				else {
-    					DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+    					DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    					format.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
     		 			Date endTimestamp = format.parse(weekendEndDate);
     					notifyModeChanged(Mode.WEEKEND, roomId, 0, null, endTimestamp.getTime()/1000);
     				}
