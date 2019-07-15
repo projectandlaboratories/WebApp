@@ -28,7 +28,7 @@ import it.project.utils.DbIdentifiers;
 
 public class MQTTDbProf {
 	//private static final int qos = 2;
-	static AWSIotQos qos = AWSIotQos.QOS1;//non esiste 2
+	static AWSIotQos qos = AWSIotQos.QOS0;//non esiste 2
 	private static final String topicNotification = "pl19/notification";//subscribe
 	private static final String topicEvent =  "pl19/event";//only send
 	//private static MqttClient client;
@@ -56,8 +56,9 @@ public class MQTTDbProf {
 	    		client = new AWSIotMqttClient(endpoint, clientId, pair.keyStore, pair.keyPassword);
 
 	    		System.out.println("starting connect the server...");
+	    		client.setMaxOfflineQueueSize(1000);//64 
 	    		client.connect();	    		
-	    		System.out.println("connected!");
+	    		System.out.println("Connected to MQTTDbProf!");
 	    		
 	    		NotificationTopic topic = new NotificationTopic(topicNotification, qos);
 	    		client.subscribe(topic);
