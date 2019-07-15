@@ -55,7 +55,7 @@ public class IsWeekendMode extends HttpServlet {
 			Date endDate;
 			try {
 				endDate = format.parse(endTime);
-				System.out.println("Weekend mode until " + endDate.toString());
+				//System.out.println("Weekend mode until " + endDate.toString());
 				Date now = new Date();
 				if(endDate.compareTo(now) <= 0) { //esco dalla weekend mode
 					DBClass.stopWeekenMode();

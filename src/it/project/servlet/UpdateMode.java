@@ -72,7 +72,7 @@ public class UpdateMode extends HttpServlet {
 		 			format.setTimeZone(TimeZone.getTimeZone("Europe/Rome"));
 		 			Date now = new Date();
 		 			Date endTimestamp = format.parse(date);
-		 			System.out.println("Weekend Mode is now set until + " + endTimestamp.toString());
+		 			//System.out.println("Weekend Mode is now set until + " + endTimestamp.toString());
 		 			if(now.compareTo(endTimestamp)>=0) {
 		 				break;
 		 			}
@@ -82,7 +82,8 @@ public class UpdateMode extends HttpServlet {
 			 			DBClass.updateRoomMode(roomId, Mode.PROGRAMMABLE);	
 			 		}
 		 			//DBClass.updateRoomMode(currentRoomId, Mode.PROGRAMMABLE, 20.0, SystemType.COLD);
-		 			MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,endTimestamp.getTime()/1000);
+			 		long ms = (endTimestamp.getTime()/1000) + 2*60*60*1000;
+		 			MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,ms);
 		 		} catch (ParseException e) {
 		 			
 		 			e.printStackTrace();
@@ -92,7 +93,8 @@ public class UpdateMode extends HttpServlet {
 		 	case "removeWeekendMode":
 		 		DBClass.stopWeekenMode();
 				Date now = new Date();
-				MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,now.getTime()/1000);
+				long ms = (now.getTime()/1000) + 2*60*60*1000;
+				MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,ms);
 		 		break;
 		}
 		
