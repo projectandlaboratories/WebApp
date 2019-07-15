@@ -40,6 +40,15 @@
 	    z-index:9999;
 	    background:url("<%=request.getContextPath() + "/images/loading-icon.gif"%>") no-repeat center center rgba(0,0,0,0.25)
 	}
+	
+	#startLoading {
+	    width:100%;
+	    height:100%;
+	    position:fixed;
+	    z-index:9999;
+	    background:url("<%=request.getContextPath() + "/images/pi_white.jpg"%>") no-repeat center center rgba(0,0,0,0.25)
+	}
+	
 	.hide{
 		display:none;
 	}
@@ -64,6 +73,15 @@
 	session.setAttribute("localUser", DbIdentifiers.LOCAL.name());
 	session.setAttribute("awsUser", DbIdentifiers.AWS.name());
 	
+	//codice per rotellina iniziale
+	String firstTime = (String) session.getAttribute("firstTime");
+	 if(firstTime == null){
+		session.setAttribute("firstTime", "true");
+	}
+	else{
+		session.setAttribute("firstTime", "false");
+	} 
+	
 	String logged = "true";
 	if(user.equals(DbIdentifiers.AWS)){
 		logged = request.getParameter("logged");
@@ -78,6 +96,7 @@
 	}
 %>
 <!--  logged = ${logged}  -->
+<!--  first time = ${firstTime}  -->
 <c:choose>
 	<c:when test="${logged eq false}">
 		<jsp:include page="pages/login.jsp"/>
@@ -159,6 +178,7 @@ if(connectionState==0){
 
 <body onload=initializeParameters()>
 	<div id="load" class="hide"></div>
+	<div id="startLoading" class="hide"></div>
     <div id="wrapper" class="toggled">
         <div id="sidebar-wrapper" style="background-color: #2C3E50;">
             <ul class="sidebar-nav">
@@ -296,6 +316,9 @@ if(connectionState==0){
 	function showLoadingIcon(){
 		document.getElementById("load").classList.remove("hide")
 	}
+	function showStartLoadingIcon(){
+		document.getElementById("startLoading").classList.remove("hide")
+	}
 	
     var hotSystemButton = document.getElementById("<%=SystemType.HOT%>");
     var coldSystemButton = document.getElementById("<%=SystemType.COLD%>");
@@ -311,6 +334,17 @@ if(connectionState==0){
     var maindiv = document.getElementById("maindiv");
 	var alertdiv = document.getElementById("alertdiv");
     var weekendDate; 
+    var firstTime = true
+    
+    var timerFirstTime = setInterval(function() {
+		if(firstTime == false){
+			document.getElementById("startLoading").classList.add("hide")
+			document.getElementById("wrapper").style.display = "block";
+			clearInterval(timerFirstTime);
+		}
+		
+	}, 12 * 1000); 
+    
     
 	var timerID = setInterval(function() {
 		setDate();
@@ -328,6 +362,12 @@ if(connectionState==0){
     
 
     	function initializeParameters(){
+    		if(<%=session.getAttribute("firstTime")%> == true){
+    			document.getElementById("wrapper").style.display = "none";
+    			showStartLoadingIcon()
+    			firstTime = false
+    		}
+    		
     		weekendDate = formatDate()
     		mode.value="<%=currentMode%>"
    			
