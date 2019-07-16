@@ -239,7 +239,7 @@ if(connectionState==0){
                			
              			<div id="left" style="color: #2C3E50;">
              			
-             			<span style="font-size:24px; ">New Deploy</span>
+             			<span style="font-size:24px; ">Room Temperature</span>
              			<!-- img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;"> -->
              			<br>
              			<span id="currentTemp" style="font-size:900%;"></span><br>             			
@@ -549,7 +549,10 @@ if(connectionState==0){
 						targetTempShown.innerHTML =targetTemp.value+ "°"
 				    		
 					} else {
-						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+						if(xmlHttpRequest.status == 404){
+							alert("Thermo system application is updating...")
+						}
+						//alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
 					}
 				}
 			};
@@ -566,7 +569,10 @@ if(connectionState==0){
 					if (xmlHttpRequest.status == 200) {
 						currentTemp.innerHTML = xmlHttpRequest.responseText + "°"
 					} else {
-						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+						if(xmlHttpRequest.status == 404){
+							alert("Thermo system application is updating...")
+						}
+						//alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
 					}
 				}
 			};
@@ -598,7 +604,10 @@ if(connectionState==0){
 							document.getElementById("offButton").disabled=false;							
 						}
 					} else {
-						alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+						if(xmlHttpRequest.status == 404){
+							alert("Thermo system application is updating...")
+						}
+						//alert("HTTP error " + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
 					}
 				}
 			};
@@ -664,7 +673,10 @@ if(connectionState==0){
 					if (xmlHttpRequest.status == 200) {
 						updateIcons(xmlHttpRequest.responseText)
 					} else {
-						alert("HTTP error getActuatorState" + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+						if(xmlHttpRequest.status == 404){
+							alert("Thermo system application is updating...")
+						}
+						//alert("HTTP error getActuatorState" + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
 					}
 				}
 			};
@@ -688,7 +700,10 @@ if(connectionState==0){
 						}
 											
 					} else {
-						alert("HTTP error GetAntifreezeState" + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+						if(xmlHttpRequest.status == 404){
+							alert("Thermo system application is updating...")
+						}
+						//alert("HTTP error GetAntifreezeState" + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
 					}
 				}
 			};
@@ -718,7 +733,10 @@ if(connectionState==0){
 						}
 											
 					} else {
-						alert("HTTP error getConnectionState" + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+						if(xmlHttpRequest.status == 404){
+							alert("Thermo system application is updating...")
+						}
+						//alert("HTTP error getConnectionState" + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
 					}
 				}
 			};
@@ -761,7 +779,10 @@ if(connectionState==0){
 						console.log("getMode: " + mode.value+" "+targetTemp.value+" "+ act.value);  	
 						//updateIcons(xmlHttpRequest.responseText)
 					} else {
-						alert("HTTP error getMode" + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
+						if(xmlHttpRequest.status == 404){
+							alert("Thermo system application is updating...")
+						}
+						//alert("HTTP error getMode" + xmlHttpRequest.status + ": " + xmlHttpRequest.statusText);
 					}
 				}
 			};
