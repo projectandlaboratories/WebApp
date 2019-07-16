@@ -119,7 +119,7 @@ public class MQTTDbSync{
 							long timestamp = deployJson.getLong("timestamp");
 							System.out.println(new Date().toString() + "Deploy new version TOPIC arrived: " + deployJson.toString());
 							long now = new Date().getTime() /1000;
-							if(now - timestamp > 120) {
+							if(now - timestamp < 120) {
 								System.out.println(new Date().toString() + "Deploying new version..  ");
 								Process deployNewVersion = new ProcessBuilder("/bin/bash", servletContext.getRealPath("/bash/deploy_app.sh"), url)
 										.redirectErrorStream(true).start();
