@@ -113,19 +113,26 @@ public class MQTTDbSync{
 			    			DBClass.updateRoomStatus(roomId, roomStatus);
 						}
 						else if(topic.equals(Topics.DEPLOY_NEW_VERSION.getName())) {
-							String url = new String(message.getPayload());
-							System.out.println(new Date().toString() + "Deploy new version TOPIC arrived");
 							
-							Process deployNewVersion = new ProcessBuilder("/bin/bash", servletContext.getRealPath("/bash/deploy_app.sh"), url)
-									.redirectErrorStream(true).start();
-							
-							String line;
-							String output="";
-							BufferedReader input = new BufferedReader(new InputStreamReader(deployNewVersion.getInputStream()));
-							while ((line = input.readLine()) != null) {
-								output = line;
+							JSONObject deployJson = new JSONObject(new String(message.getPayload()));
+							String url = deployJson.getString("url");
+							long timestamp = deployJson.getLong("timestamp");
+							System.out.println(new Date().toString() + "Deploy new version TOPIC arrived: " + deployJson.toString());
+							long now = new Date().getTime() /1000;
+							if(now - timestamp > 120) {
+								System.out.println(new Date().toString() + "Deploying new version..  ");
+								Process deployNewVersion = new ProcessBuilder("/bin/bash", servletContext.getRealPath("/bash/deploy_app.sh"), url)
+										.redirectErrorStream(true).start();
+								
+								String line;
+								String output="";
+								BufferedReader input = new BufferedReader(new InputStreamReader(deployNewVersion.getInputStream()));
+								while ((line = input.readLine()) != null) {
+									output = line;
+								}
+								
 							}
-							System.out.println(new Date().toString() + "Deployed new version, output=  " + output);
+							
 							
 						}
 						else {
@@ -204,8 +211,12 @@ public class MQTTDbSync{
     
     public static void deployNewVersion() {
     	String url = "https://github.com/projectandlaboratories/WebApp/raw/master/WARFiles/WebApp.war";
-    	MqttMessage message = new MqttMessage(url.getBytes());
+    	JSONObject json = new JSONObject();
     	try {
+    		json.put("url", url);
+        	json.put("timestamp", new Date().getTime()/1000);
+        	MqttMessage message = new MqttMessage(json.toString().getBytes());
+        	message.setQos(qos);
 			client.publish(Topics.DEPLOY_NEW_VERSION.getName(), message);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
