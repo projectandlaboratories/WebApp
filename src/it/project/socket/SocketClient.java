@@ -18,11 +18,16 @@ public class SocketClient {
 	
 	public static String createConnection(String IpAddress, int port) {
 		try {
-			socket = new Socket(IpAddress, port);
-			if(socket != null)
-				return "OK";
-			else
-				return "NOT OK";
+			int count = 0;
+			while(count < 3) {
+				socket = new Socket(IpAddress, port);
+				count++;
+				if(socket != null)
+					return "OK";
+			}
+			
+			return "NOT OK";
+				
 		} catch (Exception e) {
 			e.printStackTrace();
 			return e.getMessage();

@@ -63,11 +63,18 @@ public class MQTTDbSync{
 					@Override
 					public void messageArrived(String topic, MqttMessage message) throws Exception {
 						if(topic.equals(Topics.MQTT_APP_SENSORI.getName())) {
-							JSONObject inputJson = new JSONObject(message.getPayload());
+							JSONObject inputJson = new JSONObject(new String(message.getPayload()));
 							System.out.println(new Date().toString() + "Topic MQTT_APP_SENSORI arrived: " + inputJson.toString());
-							String operation = inputJson.getString("operation");
-							JSONObject inputMessage = inputJson.getJSONObject("message");
-							String roomId = inputMessage.getString("roomId");
+							String operation = "None";
+							if(!inputJson.isNull("operation"))
+								operation = inputJson.getString("operation");
+							JSONObject inputMessage = null;
+							String roomId = "None";
+							if(!inputJson.isNull("message")) {
+								inputMessage = inputJson.getJSONObject("message");
+								roomId = inputMessage.getString("roomId");
+							}
+								
 							switch(operation) {
 							case "modechange":
 								MQTTAppSensori.notifyModeChanged(inputMessage,roomId);
@@ -105,7 +112,9 @@ public class MQTTDbSync{
 							}
 						}
 						else {
-							DBClass.executeQuery(new String(message.getPayload()));
+							String query = new String(message.getPayload());
+							System.out.println(new Date().toString() + "DbSync TOPIC arrived: " + query);
+							DBClass.executeQuery(query);
 						}
 						
 						
@@ -153,6 +162,7 @@ public class MQTTDbSync{
     	json.put("message", jsonMessage);
     	MqttMessage message = new MqttMessage(json.toString().getBytes());
         message.setQos(qos);
+        System.out.println(new Date().toString() + "- DbSync Topic MQTTAppSensori sent: " + json.toString());
         client.publish(Topics.MQTT_APP_SENSORI.getName(), message);
     }
     
@@ -161,6 +171,7 @@ public class MQTTDbSync{
     	try {
     		json.put("airCondModel", airCondModel);
         	json.put("brokerIp", brokerIp);
+        	json.put("timestamp", new Date().getTime()/1000);
         	MqttMessage message = new MqttMessage(json.toString().getBytes());
             message.setQos(qos);
             message.setRetained(true);

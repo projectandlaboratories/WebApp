@@ -68,7 +68,7 @@
 </head>
 
 <% 
-	DbIdentifiers user = DbIdentifiers.LOCAL;
+	DbIdentifiers user = DbIdentifiers.AWS;
 	session.setAttribute("user", user.name());
 	session.setAttribute("localUser", DbIdentifiers.LOCAL.name());
 	session.setAttribute("awsUser", DbIdentifiers.AWS.name());
@@ -183,7 +183,7 @@ if(connectionState==0){
         <div id="sidebar-wrapper" style="background-color: #2C3E50;">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand" style="height: 70px;"> </li>
-                <li> <a class="text-light" onclick="showLoadingIcon()" href="index.jsp" style="font-size: 20px;">Home</a></li>
+                <li> <a class="text-light" onclick="showLoadingIcon()" href="index.jsp?currentRoom=<%=currentRoomId%>" style="font-size: 20px;">Home</a></li>
                 <li> <a class="text-light" onclick="showLoadingIcon()" href="pages/profileList.jsp" style="font-size: 20px;">Temperature Profiles</a></li>
                 <li> <a class="text-light" onclick="showLoadingIcon()" href="pages/roomManagement.jsp" style="font-size: 20px;">Room Management</a></li>
                 <li> <a class="text-light" onclick="showLoadingIcon()" href="pages/statistics.jsp?chart=1&room=<%=currentRoomId%>" style="font-size: 20px;">Statistics</a></li>

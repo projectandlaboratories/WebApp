@@ -191,12 +191,14 @@ public class ProfileUtil {
 		while ((line = input.readLine()) != null) {
 			ESPipAddress = line.split(" ")[2];
 		}
+		System.out.println("ESP IP address is " + ESPipAddress);
 
 		//send Wifi Info to ESP
 		String socketResult = SocketClient.createConnection(ESPipAddress, 5001);
 		String localWifiSSid = DBClass.getConfigValue("localWifiSSid");
 		String localWifiPwd = DBClass.getConfigValue("localWifiPwd");
-		SocketClient.sendWifiInfo(localWifiSSid, localWifiPwd);
+		if(socketResult.equals("OK"))
+			SocketClient.sendWifiInfo(localWifiSSid, localWifiPwd);
 		//SocketClient.closeConnection();
 
 
@@ -221,8 +223,5 @@ public class ProfileUtil {
 
 		//send roomInfo to ESP via MQTT with online broker
 		MQTTDbSync.sendNewRoomInfo(roomId, airCondModelId, brokerIpAddress);
-		
-		//subscribe last will
-		MQTTAppSensori.subscribeLastWill(roomId);
 	}
 }
