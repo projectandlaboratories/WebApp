@@ -24,6 +24,7 @@ import it.project.enums.DayMoment;
 import it.project.enums.DayName;
 import it.project.enums.DayType;
 import it.project.enums.Season;
+import it.project.mqtt.MQTTAppSensori;
 import it.project.socket.SocketClient;
 
 public class ProfileUtil {
@@ -220,5 +221,8 @@ public class ProfileUtil {
 
 		//send roomInfo to ESP via MQTT with online broker
 		MQTTDbSync.sendNewRoomInfo(roomId, airCondModelId, brokerIpAddress);
+		
+		//subscribe last will
+		MQTTAppSensori.subscribeLastWill(roomId);
 	}
 }

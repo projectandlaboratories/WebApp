@@ -67,15 +67,15 @@ public class MQTTDbSync{
 							System.out.println(new Date().toString() + "Topic MQTT_APP_SENSORI arrived: " + inputJson.toString());
 							String operation = inputJson.getString("operation");
 							JSONObject inputMessage = inputJson.getJSONObject("message");
+							String roomId = inputMessage.getString("roomId");
 							switch(operation) {
 							case "modechange":
-								MQTTAppSensori.notifyModeChanged(inputMessage);
+								MQTTAppSensori.notifyModeChanged(inputMessage,roomId);
 								break;
 							case "profilechange":
-								MQTTAppSensori.notifyProfileChanged(inputMessage);
+								MQTTAppSensori.notifyProfileChanged(inputMessage,roomId);
 								break;
-							case "connectroom":
-								String roomId = inputMessage.getString("roomId");
+							case "connectroom":		
 								int airCondModelId = DBClass.getRoomByName(roomId).getIdAirCond();
 								String ssid = "ESP-" + roomId;
 								String espPassword =  DBClass.getConfigValue("espPassword");
@@ -151,7 +151,7 @@ public class MQTTDbSync{
     	json.put("operation", operation);
     	JSONObject jsonMessage = new JSONObject(payload);
     	json.put("message", jsonMessage);
-    	MqttMessage message = new MqttMessage(payload.getBytes());
+    	MqttMessage message = new MqttMessage(json.toString().getBytes());
         message.setQos(qos);
         client.publish(Topics.MQTT_APP_SENSORI.getName(), message);
     }
@@ -164,7 +164,7 @@ public class MQTTDbSync{
         	MqttMessage message = new MqttMessage(json.toString().getBytes());
             message.setQos(qos);
             message.setRetained(true);
-            client.publish(Topics.ADD_ROOM.getName(), message);
+            client.publish(Topics.ADD_ROOM.getName()+"/"+roomId, message);
             System.out.println(new Date().toString() + "- Room Info sent -->" + json.toString());
     	}
     	catch(Exception e) {
@@ -193,7 +193,10 @@ public class MQTTDbSync{
     		roomIdObject.put("roomId", roomId);
 			json.put("operation", "connectroom");
 			json.put("message", roomIdObject);
-		} catch (JSONException e) {
+			MqttMessage message = new MqttMessage(json.toString().getBytes());
+	        message.setQos(qos);
+	        client.publish(Topics.MQTT_APP_SENSORI.getName(), message);
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

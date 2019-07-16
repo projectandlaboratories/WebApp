@@ -88,7 +88,12 @@ public class MQTTAppSensori {
         		client.subscribe(Topics.ACTUATOR_STATUS.getName(), qos);
         		client.subscribe(Topics.TEMPERATURE.getName(), qos);
         		client.subscribe(Topics.ANTIFREEZE.getName(),qos);
-        		client.subscribe(Topics.LAST_WILL.getName(),qos);
+        		
+        		Map<String,Room> rooms = DBClass.getRooms();
+		 		for(String roomId:rooms.keySet()) {
+		 			subscribeLastWill(roomId);
+		 		}
+        		
         	} catch(Exception e) {
             	e.printStackTrace();
             }
@@ -96,36 +101,61 @@ public class MQTTAppSensori {
     	
     }
     
+    public static void subscribeLastWill(String roomId) {
+    	try {
+ 			client.subscribe(Topics.LAST_WILL.getName()+"/"+roomId,qos);
+ 			System.out.println(new Date().toString() + "- subscribed to topic : " + Topics.LAST_WILL.getName()+"/"+roomId);
+		} catch (MqttException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
+    public static void unsubscribeLastWill(String roomId) {
+    	try {
+			client.unsubscribe(Topics.LAST_WILL.getName()+"/"+roomId);
+			System.out.println(new Date().toString() + "- unsubscribed to topic : " + Topics.LAST_WILL.getName()+"/"+roomId);
+		} catch (MqttException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+    
     public static void topicReceived(String topic,MqttMessage message) throws Exception {
     	
-    	Topics receivedTopic = null;
-    	for(Topics currTopic : Topics.values()) {
-    		if(currTopic.getName().equals(topic)) {
-    			receivedTopic = currTopic;
-    			break;
-    		}
+//    	Topics receivedTopic = null;
+//    	for(Topics currTopic : Topics.values()) {
+//    		if(currTopic.getName().equals(topic)) {
+//    			receivedTopic = currTopic;
+//    			break;
+//    		}
+//    	}
+    	
+    	
+    	
+    	if(topic.startsWith("Last")) {
+    		topic = topic.split("/")[0];
     	}
     	String roomId = "";
-    	if(receivedTopic != null) {
-    		switch(receivedTopic) {
-    		case TEMPERATURE:
+    		switch(topic) {
+    		case "Temperature":
     			JSONObject tempJson = new JSONObject(new String(message.getPayload()));
     			roomId = tempJson.getString("roomId");
     			float currentTemp = Float.parseFloat(tempJson.getString("currentTemp"));
     			long tempTimestamp = tempJson.getLong("timestamp");
     			DBClass.saveCurrentTemperature(roomId,currentTemp,tempTimestamp);
-    			MQTTDbProf.sendAppSensoriLog(receivedTopic.getName(), roomId, Float.toString(currentTemp), tempTimestamp);
+    			MQTTDbProf.sendAppSensoriLog(topic, roomId, Float.toString(currentTemp), tempTimestamp);
     			break;
-    		case ACTUATOR_STATUS:
+    		case "ActuatorStatus":
     			JSONObject actJson = new JSONObject(new String(message.getPayload()));
     			System.out.println(new Date().toString() + " - Actuator status received: " + actJson.toString());
     			roomId = actJson.getString("roomId");
     			ActuatorState actStatus = ActuatorState.valueOf(actJson.getString("status"));
     			long actTimestamp = actJson.getLong("timestamp");
     			DBClass.saveActuatorStatus(roomId,actStatus,actTimestamp);
-    			MQTTDbProf.sendAppSensoriLog(receivedTopic.getName(), roomId, actStatus.toString(), actTimestamp);
+    			MQTTDbProf.sendAppSensoriLog(topic, roomId, actStatus.toString(), actTimestamp);
     			break;
-    		case LAST_WILL:
+    		case "LastWill":
     			JSONObject lastWillJson = new JSONObject(new String(message.getPayload()));
     			System.out.println(new Date().toString() + " - Last will received: " + lastWillJson.toString());
     			roomId = lastWillJson.getString("roomId");
@@ -151,9 +181,9 @@ public class MQTTAppSensori {
     					
     			}
     			DBClass.updateRoomStatus(roomId, roomStatus);
-    			MQTTDbProf.sendAppSensoriLog(receivedTopic.getName(), roomId, Integer.toString(roomStatus), System.currentTimeMillis());
+    			MQTTDbProf.sendAppSensoriLog(topic, roomId, Integer.toString(roomStatus), System.currentTimeMillis());
     			break;
-    		case ANTIFREEZE:
+    		case "Antifreeze":
     			JSONObject antifreezeJson = new JSONObject(new String(message.getPayload()));
     			System.out.println(new Date().toString() + " - Antifreeze received: " + antifreezeJson.toString());
     			int status = antifreezeJson.getInt("status");
@@ -164,9 +194,9 @@ public class MQTTAppSensori {
     			else
     				DBClass.disableAntiFreeze(timestampMillisecond);
     			
-    			MQTTDbProf.sendAppSensoriLog(receivedTopic.getName(), "-", Integer.toString(status), timestampMillisecond);
+    			MQTTDbProf.sendAppSensoriLog(topic, "-", Integer.toString(status), timestampMillisecond);
     		}
-    	}
+    	
 		
     }
     
@@ -193,7 +223,7 @@ public class MQTTAppSensori {
     		}
     		    		
     		if(user.equals(DbIdentifiers.LOCAL)) {
-    			publish(json.toString(),qos,Topics.MODE.getName());
+    			publish(json.toString(),qos,Topics.MODE.getName()+"/"+roomId);
     		}
     		else {
     			//pubblica su dbSync
@@ -211,9 +241,9 @@ public class MQTTAppSensori {
     }
     
     
-    public static void notifyModeChanged(JSONObject json) throws Exception {
+    public static void notifyModeChanged(JSONObject json, String roomId) throws Exception {
     	System.out.println(new Date().toString() + "Mode changed : " + json.toString());
-    	publish(json.toString(),qos,Topics.MODE.getName());  	
+    	publish(json.toString(),qos,Topics.MODE.getName()+"/"+roomId);  	
     }
     
     public static void notifyProfileChanged(String roomId, Season season, Program profile) {
@@ -226,7 +256,7 @@ public class MQTTAppSensori {
     		map.put("profile", profile);
     		String finalJson = new Gson().toJson(map);
     		if(user.equals(DbIdentifiers.LOCAL)) {
-    			publish(finalJson,qos,Topics.PROFILE_CHANGE.getName());
+    			publish(finalJson,qos,Topics.PROFILE_CHANGE.getName()+"/"+roomId);
     		}
     		else {
     			//pubblica su dbSync
@@ -242,9 +272,9 @@ public class MQTTAppSensori {
 
     }
     
-    public static void notifyProfileChanged(JSONObject json) throws Exception {
+    public static void notifyProfileChanged(JSONObject json,String roomId) throws Exception {
     	System.out.println(new Date().toString() + "Profile changed : " + json.toString());
-    	publish(json.toString(),qos,Topics.PROFILE_CHANGE.getName());
+    	publish(json.toString(),qos,Topics.PROFILE_CHANGE.getName()+"/"+roomId);
     }
     
     public static void publish(String stringMessage, int qos, String topic) throws Exception {
