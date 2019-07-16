@@ -230,8 +230,8 @@ if(connectionState==0){
 				<div id="maindiv" class="d-inline-flex flex-column" style="position:absolute; left: 8px; right:70px;visibility:<%=mainDiv%>; ">
                     <!-- Icons -->
                    <div style="height:100%; display: inline-grid">
-                    	<img id="hotIcon" style="margin-left:2px; margin-right:8px; margin-top:3%; margin-bottom:5%; height:50px;" src="images/ios-flame-primary.svg">
-                    	<img id="coldIcon" style="margin-left:2px; margin-right:8px; margin-top:4%; margin-bottom:5%; height:50px;" src="images/ios-snow-primary.svg">
+                    	<img id="hotIcon" style="margin-left:2px; margin-right:8px; margin-top:3%; margin-bottom:5%; height:50px;" src="images/ios-flame-not-selected.svg">
+                    	<img id="coldIcon" style="margin-left:2px; margin-right:8px; margin-top:4%; margin-bottom:5%; height:50px;" src="images/ios-snow-not-selected.svg">
                     	<img id="antifreezeIcon" style="margin-left:2px; margin-right:8px; margin-top:4%; margin-bottom:4%; height:50px;" src="images/ios-thermometer-not-selected.svg">
                     </div>
                    
@@ -354,9 +354,10 @@ if(connectionState==0){
 		getConnectionState();
 		updateWeekendModeIcon();
 		getMode(); 
-		if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
-			setProfileTemperature();
-		}
+		//if(mode.value=="<-%=Mode.PROGRAMMABLE%>"){ perchè già lo fa in getMode()
+			//console.log("Programmable!!!")
+			//setProfileTemperature();
+		//}
 		
 	}, 10 * 1000); 
     
@@ -433,29 +434,30 @@ if(connectionState==0){
 
     	function updateModeButton(){
     		if(mode.value=="<%=Mode.MANUAL%>"){
-    			document.getElementById("offText").setAttribute('src','images/ios-power-primary.svg');
+    			//document.getElementById("offText").setAttribute('src','images/ios-power-primary.svg');
     			enableManualMode();
     		}else if(mode.value=="<%=Mode.PROGRAMMABLE%>"){
-    			document.getElementById("offText").setAttribute('src','images/ios-power-primary.svg');
+    			//document.getElementById("offText").setAttribute('src','images/ios-power-primary.svg');
     			disableManualMode();
     		}else if(mode.value=="<%=Mode.OFF%>"){
-    			document.getElementById("offText").setAttribute('src','images/ios-power-not-selected.svg');
+    			//document.getElementById("offText").setAttribute('src','images/ios-power-not-selected.svg');
     			enableOff();
     		}
     	}
     	
     	function enableOff(){
     		console.log("Enable Off!");
+    		document.getElementById("offText").setAttribute('src','images/ios-power-not-selected.svg');
     		document.getElementById("manualButton").style.display = "none";
     		document.getElementById("programButton").style.display = "none";
-    		mode.value="<%=Mode.OFF%>"	
+    		mode.value="<%=Mode.OFF%>";	
     		//increaseButton.disabled = true;
     		//decreaseButton.disabled = true;
     		increaseButton.style.visibility = "hidden";
     		decreaseButton.style.visibility = "hidden";
     		document.getElementById("manualSection").style.display = "none";
     		document.getElementById("targetTempText").innerHTML="The temperature control<br>is set to OFF.<br>";
-    		targetTemp.innerHTML="";    		
+    		targetTempShown.innerHTML =" ";    		
     	}
     	
     	function onOffClick(){
@@ -469,6 +471,7 @@ if(connectionState==0){
     	
     	function enableManualMode(){
     		console.log("enable Manual!");
+    		document.getElementById("offText").setAttribute('src','images/ios-power-primary.svg');
     		document.getElementById("manualButton").style.display = "block";
     		document.getElementById("programButton").style.display = "none";
     		
@@ -490,6 +493,7 @@ if(connectionState==0){
     	
 
     	function disableManualMode(){
+    		document.getElementById("offText").setAttribute('src','images/ios-power-primary.svg');
     		console.log("Disable Manual!");
     		document.getElementById("manualButton").style.display = "none";
     		document.getElementById("programButton").style.display = "block";
@@ -734,7 +738,7 @@ if(connectionState==0){
 						var res = state.split("-")
 						
 						if(res[0]=="<%=Mode.MANUAL%>"){//ci sei arrivato o dal manual o da progr
-							
+							console.log("getMode Manual");
 							if(saveButton.disabled==true||mode.value=="<%=Mode.PROGRAMMABLE%>"){//se sei progr il bottone è abilitato, di default
 								mode.value = res[0]
 								targetTemp.value=res[1]
@@ -744,11 +748,13 @@ if(connectionState==0){
 							}
 							
 			    		}else if(res[0]=="<%=Mode.PROGRAMMABLE%>" && mode.value!="<%=Mode.PROGRAMMABLE%>"){//se ti arriva progr e non sei in progr
+			    			console.log("getMode Programmable");
 			    			mode.value = res[0]
 			    			targetTemp.value=res[1]
 							targetTempShown.innerHTML =targetTemp.value+ "°"
 			    			disableManualMode();
 			    		}else if(res[0]=="<%=Mode.OFF%>"){
+			    			console.log("getMode Off");
 			    			enableOff();
 			    		}
 						
