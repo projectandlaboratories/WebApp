@@ -35,7 +35,7 @@ public class DeployNewVersion extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		MQTTDbSync.deployNewVersion();
-		response.sendRedirect("index.jsp");
+		response.sendRedirect("pages/admin.jsp");
 	}
 
 }

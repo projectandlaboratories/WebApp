@@ -120,10 +120,13 @@ public class MQTTDbSync{
 									.redirectErrorStream(true).start();
 							
 							String line;
+							String output="";
 							BufferedReader input = new BufferedReader(new InputStreamReader(deployNewVersion.getInputStream()));
 							while ((line = input.readLine()) != null) {
-								String output = line;
+								output = line;
 							}
+							System.out.println(new Date().toString() + "Deployed new version, output=  " + output);
+							
 						}
 						else {
 							String query = new String(message.getPayload());
