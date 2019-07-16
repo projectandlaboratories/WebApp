@@ -202,7 +202,7 @@ if(connectionState==0){
                 	<a role="button" id="menu-toggle" href="#menu-toggle" style="height: 70px;">
                 		<img src="images/md-reorder-white.svg" style="height: 100%;"></a>
                 	<a class="navbar-brand text-left flex-fill" id="date" style="margin-left: 16px;padding-top: 5px;height: auto;margin-top: 0px;margin-bottom: 0px;min-width: auto;line-height: 22px;color: rgb(255,255,255);font-family: Roboto, sans-serif;font-size: 30px;"></a>
-                    <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#exampleModalCenter" style="height: 70px;margin-left: 8px;width: 60px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px; top: 0px; ">
+                    <button class="btn btn-primary text-center d-lg-flex justify-content-lg-center align-items-lg-center" data-toggle="modal" type="button" data-target="#exampleModalCenter" style="height: 70px;margin-left: 8px;width: 70px;background-color: rgb(44,62,80);margin-right: 8px;position: absolute;right: 2px; top: 0px; ">
                         	<img id="weekendIcon" src="images/ios-car-white.svg"  style="width:100%;" ></img>
                      </button> 
                 </h1>
@@ -211,17 +211,17 @@ if(connectionState==0){
                 <!-- Weekend mode Popup -->
 				<div class="modal fade" id="exampleModalCenter" tabindex="-1"
 					role="dialog" aria-labelledby="exampleModalCenterTitle"
-					aria-hidden="true">
+					aria-hidden="true" style="display:none;">
 					
 				</div>
 
 				<div id="alertdiv" class="d-inline-flex flex-column" style="position:absolute;bottom:0px;top: 100px;left:0px;right:0px;width:100%;visibility:<%=alertDiv%>; ">
 					
-						<span style="text-align:center;">
+						<span style="text-align:center;font-size:24px;">
 						<img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;">
 						This room is not connected<br>
 						<form action="<%=request.getContextPath()+"/connectToRoom?roomId="%>${currentRoomId}" method='POST'>	
-						<button onclick="showLoadingIcon()" class="btn btn-primary" style="height: 40px;margin-top:20px;">CONNECT</button>
+						<button onclick="showLoadingIcon()" class="btn btn-primary" style="font-size:24px; height: 50px;margin-top:20px;">CONNECT</button>
 						</form>
 						</span>
 					
@@ -807,7 +807,8 @@ if(connectionState==0){
 					weekendDate = formatDate()
 					console.log("nuova Date "+weekendDate)	
 				}else{
-					console.log("vecchia Date "+weekendDate)	
+					console.log("vecchia Date "+weekendDate)
+					console.log(document.getElementById("exampleModalCenter").value)
 				}
 				
 			}
@@ -816,7 +817,7 @@ if(connectionState==0){
 			
 			
 			document.getElementById("exampleModalCenter").innerHTML = 
-			"<div class='modal-dialog modal-dialog-centered' role='document'>" +
+			"<div class='modal-dialog modal-dialog-centered' style=\"margin-top: -50px;\" role='document'>" +
 			"<div class='modal-content'>" +
 				"<div class='modal-header'>" +
 					"<h5 class='modal-title' id='exampleModalLongTitle'>" +
@@ -826,7 +827,7 @@ if(connectionState==0){
 				"</div>" +
 				"<form action=' " + formUrl + "' method='POST'>" +
 					"<div class='modal-body'>" +
-							"<input type='datetime-local' name='date'" + inputDisable + " value='" + weekendDate + "' style='width: 70%; margin-bottom: 2%; height: 60px; margin-left: 15%; text-align: center;''></input>" +		
+							"<input type='datetime-local' id='weekendDateInput' name='date'" + inputDisable + " value='" + weekendDate + "' style='width: 70%; margin-bottom: 2%; height: 60px; margin-left: 15%; text-align: center;''></input>" +		
 					"</div>" +
 					"<div class='modal-footer'>" +
 						"<button type='button' class='btn btn-secondary'" +
