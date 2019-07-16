@@ -112,22 +112,22 @@ if(myProgram.getWakeupTimeW()!=null){//vengo dalla pagina precedente
         </h1>
  <form action="profileTimeHolidays.jsp?action=<%=action%>" method="POST">          
     <div>
-	    <div style="position:absolute; width:50%; height:50%; left:0; padding:2%; text-align:center;">
+	    <div style="position:absolute; width:50%; height:50%; left:0; padding:2%; text-align:center; font-size:24px;">
 	    What time do you wake up?<br><br>	    
 	    <input type="time" name="wakeup_time" value="<%=wakeupTime%>" style="align: center;" required>
 	    </div>
 	    
-	    <div style="position:absolute; width:50%; height:50%; left:0; top:50%; padding:2%; text-align:center;">
+	    <div style="position:absolute; width:50%; height:50%; left:0; top:50%; padding:2%; text-align:center; font-size:24px;">
 	    What time do you go to bed?<br><br>	    
 	    <input type="time" name="bed_time" value="<%=bedTime%>" style="align: center;" required>
 	    </div>
 	    
-	    <div style="position:absolute; width:50%; height:50%;  left:50%; padding:2%; text-align:center;" >
+	    <div style="position:absolute; width:50%; height:50%;  left:50%; padding:2%; text-align:center; font-size:24px;" >
 		What time do you leave home?<br><br>	    
 	    <input type="time" name="leave_time" value="<%=leaveTime%>" style="align: center;" required>
 	    </div>
 	    
-	    <div style="position:absolute; width:50%; height:50%; top:50%; left:50%; padding:2%; text-align:center;">
+	    <div style="position:absolute; width:50%; height:50%; top:50%; left:50%; padding:2%; text-align:center; font-size:24px;">
 		What time do you come back home?<br><br>	    
 	    <input type="time" name="back_time" value="<%=backTime%>" style="align: center;" required>
 	    </div>

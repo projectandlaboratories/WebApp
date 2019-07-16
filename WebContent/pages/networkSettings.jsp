@@ -121,7 +121,7 @@
 						<span aria-hidden='true'>&times;</span>
 					</button>
 				</div>
-						<div class='modal-body'>
+						<div class='modal-body' style="font-size:20px;">
 							You can use the IP address to connect to the chronotermostat from your pc. 
 							Open the browser and type in the search bar <br>
 							 ${ipAddress}:8080/WebApp

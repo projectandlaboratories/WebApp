@@ -95,12 +95,12 @@ if(myProgram.getWakeupTimeH()!=null){//vengo dalla pagina precedente
         </h1>
     
     <div style="margin-left: auto; margin-right: auto; width: 50%;">
-	    <div style="position:absolute; width:50%; height:50%; padding:2%; text-align:center;">
+	    <div style="position:absolute; width:50%; height:50%; padding:2%; text-align:center;font-size:24px;">
 	    What time do you wake up?<br><br>	    
 	    <input type="time" name="wakeup_time" value="<%=wakeupTime%>" style="align: center;" required>
 	    </div>
 	    
-	    <div style="position:absolute; width:50%; height:50%; top:50%; padding:2%; text-align:center;">
+	    <div style="position:absolute; width:50%; height:50%; top:50%; padding:2%; text-align:center;font-size:24px;">
 	    What time do you go to bed?<br><br>	    
 	    <input type="time" name="bed_time" value="<%=bedTime %>" style="align: center;" required>
 	    </div>

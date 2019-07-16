@@ -63,14 +63,14 @@ if(myProgram.getTemperatureMap()!=null){
         	<br>SET TEMPERATURE<br><br></a>
         </h1>
 <form action="profileSummary.jsp?action=<%=action%>" method="POST">                  
-    <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; padding-right:3%;">
+    <div style="margin-right: 10%; margin-left:10%; width: 80%; text-align: center; padding-right:3%;font-size:24px;">
     	<div>
     		<span style="width: 100px;display: inline-block;padding-top: 30px;">OUT</span> 
     		<input type="range" class="range" min="18" max="30" value="<%=temperatureMap.get(DayMoment.OUT) %>" name="out_temperature">
     	</div>
 	  
 	  	<div>
-    		<span style="width: 100px;display: inline-block;padding-top: 40px;">HOME</span>
+    		<span style="width: 100px;display: inline-block;padding-top: 50px;">HOME</span>
     		<input type="range" class="range" min="18" max="30" value="<%=temperatureMap.get(DayMoment.HOME) %>" name="home_temperature">
     	</div>
     	
