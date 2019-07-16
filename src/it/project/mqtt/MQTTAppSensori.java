@@ -58,7 +58,7 @@ public class MQTTAppSensori {
         		String clientId = user.name();
         		
         		conOpt = new MqttConnectOptions();
-        		conOpt.setCleanSession(false);
+        		conOpt.setCleanSession(true);
         		//conOpt.setUserName(username);
         		//conOpt.setPassword(password.toCharArray());
 
