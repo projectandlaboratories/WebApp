@@ -171,6 +171,29 @@ public class ProfileUtil {
 		return temperature;
 	}
 	
+	public static String reconnectToWifi(ServletContext context,String connectedSsid,String ssid) throws Exception {
+		int count=0;
+		while(connectedSsid.equals("") && count < 3){
+			count++;
+			Process reconnect= new ProcessBuilder("/bin/bash",context.getRealPath("/bash/reconnect.sh")).redirectErrorStream(true).start();
+			BufferedReader input = new BufferedReader(new InputStreamReader(reconnect.getInputStream()));
+			String line = "";
+			while ((line = input.readLine()) != null) {
+				connectedSsid = line;
+				String[] outputSplitted = line.split(":");
+				if(outputSplitted.length > 1){
+					connectedSsid = line.split(":")[1];
+					connectedSsid = connectedSsid.replace("\"", "");	
+				}	
+			}
+			System.out.println(new Date().getTime() + " -(count=" + count + ") Try to reconnect to Wifi SSID= " + ssid + ", output = " + connectedSsid);
+			
+			input.close();
+		}
+		
+		return connectedSsid;
+	}
+	
 	public static void connectToRoom(ServletContext context, String roomId, int airCondModelId, String ssid, String espPassword) throws Exception {
 		//connect to ESP AP
 		Process connectEspAP= new ProcessBuilder("/bin/bash",context.getRealPath("/bash/connect_wifi.sh"),ssid,espPassword).redirectErrorStream(true).start();
@@ -178,11 +201,16 @@ public class ProfileUtil {
 		BufferedReader input = new BufferedReader(new InputStreamReader(connectEspAP.getInputStream()));
 		String connectedSsid = "";
 		while ((line = input.readLine()) != null) {
-			System.out.println(new Date().toString() + "- Connection to Wifi SSID= " + ssid + " password = " + espPassword + ", output = " + line);
-			String[] outputSplitted = line.split(":");		
+			System.out.println("Connection to Wifi Line= " + line);
+			connectedSsid = line;
+			String[] outputSplitted = line.split(":");
 		}
+		System.out.println(new Date().toString() + "- Connection to Wifi SSID= " + ssid + " password = " + espPassword + ", output = " + line);
 		
 		
+		//TRY TO RECONNECT
+		connectedSsid = reconnectToWifi(context,connectedSsid,ssid);
+				
 		//get ESP IP
 		Process getAPipAddress = new ProcessBuilder("/bin/bash",context.getRealPath("/bash/getAPipAddress.sh")).redirectErrorStream(true).start();
 		//String line;

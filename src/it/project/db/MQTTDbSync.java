@@ -5,6 +5,8 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import it.project.dto.Room;
+import it.project.enums.Mode;
 import it.project.enums.Topics;
 import it.project.mqtt.MQTTAppSensori;
 import it.project.utils.DbIdentifiers;
@@ -18,6 +20,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 
@@ -72,12 +75,23 @@ public class MQTTDbSync{
 							String roomId = "None";
 							if(!inputJson.isNull("message")) {
 								inputMessage = inputJson.getJSONObject("message");
-								roomId = inputMessage.getString("roomId");
+								if(!inputMessage.isNull("roomId"))
+									roomId = inputMessage.getString("roomId");
 							}
 								
 							switch(operation) {
 							case "modechange":
-								MQTTAppSensori.notifyModeChanged(inputMessage,roomId);
+								Mode mode = Mode.valueOf(inputMessage.getString("mode"));
+								if(mode.equals(Mode.WEEKEND)) {
+									Map<String,Room> rooms = DBClass.getRooms();
+						 			for(String IdRoom:rooms.keySet()) {
+						 				MQTTAppSensori.notifyModeChanged(inputMessage,IdRoom);
+							 		}
+								}
+								else {
+									MQTTAppSensori.notifyModeChanged(inputMessage,roomId);
+								}
+								
 								break;
 							case "profilechange":
 								MQTTAppSensori.notifyProfileChanged(inputMessage,roomId);

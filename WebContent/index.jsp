@@ -68,7 +68,7 @@
 </head>
 
 <% 
-	DbIdentifiers user = DbIdentifiers.AWS;
+	DbIdentifiers user = DbIdentifiers.LOCAL;
 	session.setAttribute("user", user.name());
 	session.setAttribute("localUser", DbIdentifiers.LOCAL.name());
 	session.setAttribute("awsUser", DbIdentifiers.AWS.name());
@@ -239,7 +239,7 @@ if(connectionState==0){
                			
              			<div id="left" style="color: #2C3E50;">
              			
-             			<span style="font-size:24px; ">Room Temperature</span>
+             			<span style="font-size:24px; ">New Deploy</span>
              			<!-- img id="alertIcon" src="./images/ios-alert-red.svg" style="height: 25px; width: 25px; padding-bottom: 4px;"> -->
              			<br>
              			<span id="currentTemp" style="font-size:900%;"></span><br>             			

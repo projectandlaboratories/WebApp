@@ -78,12 +78,13 @@ public class UpdateMode extends HttpServlet {
 		 			}
 		 			DBClass.setWeekendMode(date.toString());
 		 			Map<String,Room> rooms = DBClass.getRooms();//la removeWeekendMode è chiamata solo se l'utente lo disattiva manualmente
-			 		for(String roomId:rooms.keySet()) {
+		 			long ms = endTimestamp.getTime()/1000;
+		 			for(String roomId:rooms.keySet()) {
 			 			DBClass.updateRoomMode(roomId, Mode.PROGRAMMABLE);	
+			 			MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,roomId, 0, null,ms);
 			 		}
 		 			//DBClass.updateRoomMode(currentRoomId, Mode.PROGRAMMABLE, 20.0, SystemType.COLD);
-			 		long ms = endTimestamp.getTime()/1000;
-		 			MQTTAppSensori.notifyModeChanged(Mode.WEEKEND,null, 0, null,ms);
+			 			
 		 		} catch (ParseException e) {
 		 			
 		 			e.printStackTrace();

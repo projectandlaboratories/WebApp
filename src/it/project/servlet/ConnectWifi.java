@@ -3,6 +3,7 @@ package it.project.servlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import it.project.db.DBClass;
 import it.project.db.MQTTDbSync;
 import it.project.utils.DbIdentifiers;
+import it.project.utils.ProfileUtil;
 
 /**
  * Servlet implementation class ConnectWifi
@@ -49,13 +51,20 @@ public class ConnectWifi extends HttpServlet {
 				connectedSsid = connectedSsid.replace("\"", "");	
 			}			
 		}
-		System.out.println("Connection to Wifi SSID= " + ssid + " password = " + password + ", output = " + connectedSsid);
+		System.out.println(new Date().getTime() + " - Connection to Wifi SSID= " + ssid + " password = " + password + ", output = " + connectedSsid);
 		input.close();
 		
-		if(!connectedSsid.equals(ssid)){
+		//TRY TO RECONNECT TO THE WIFI
+		try {
+			connectedSsid = ProfileUtil.reconnectToWifi(getServletContext(), connectedSsid, ssid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if(!connectedSsid.equals(ssid)) {
 			connectedSsid = "";
 			result = "false";
-		}
+		}	
 		else {
 			result = "true";
 			//salvo ssid e pwd sul db
